@@ -370,6 +370,11 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
      <option value="wall">Form: Wall plug</option>
      <option value="corded">Form: Corded</option>
     </select>
+    <select id="f-chargers-app" onchange="applyF('chargers')">
+     <option value="">App control: any</option>
+     <option value="yes">App control: Yes</option>
+     <option value="no">App control: No</option>
+    </select>
     <select id="f-chargers-v" onchange="applyF('chargers')">
      <option value="">All verdicts</option>
      <option>Excellent</option><option>Good</option><option>Caution</option><option>Poor</option>
@@ -685,7 +690,7 @@ const TYPES = {
                 throttle_single_drop:'num', throttle_total_drop:'num',
                 display:'bool', cable_in:'bool', xiaomi_tc:'bool', ports_reboot:'bool',
                 throttle_single_pass:'bool', throttle_total_pass:'bool',
-                ac_outlet:'bool', corded:'bool' },
+                ac_outlet:'bool', corded:'bool', app_control:'bool' },
   powerbanks: { rated:'num', rated_wh:'num', real:'num', eff5v:'num', eff_max:'num', price:'num',
                 maxpwr:'num', total_pwr:'num', max_charge_pwr:'num',
                 case_temp_single_c:'num', case_temp_total_c:'num',
@@ -1089,6 +1094,7 @@ const CMP_FIELDS={
     {label:'Built-in Cable', get:r=>yn(r.cable_in)},
     {label:'AC Outlet',      get:r=>yn(r.ac_outlet)},
     {label:'Form',           get:r=>r.corded?'Corded':'Wall plug'},
+    {label:'App Control',    get:r=>r.app_control?(r.app_detail||'Yes'):'No'},
     {label:'Stress Test',    get:stressCellChargers},
     {label:'Price',          get:r=>r.price?`$${r.price} @ review ${valueTag(r.value)}`:'—', win:rows=>rows.filter(r=>r.price).length?rows.filter(r=>r.price).reduce((a,b)=>b.price<a.price?b:a).name:null},
     {label:'Verdict',        get:r=>badge(r.v)},
@@ -1196,6 +1202,7 @@ function renderChargers(rows){
         ${r.cable_in ? '<span class="tag">🔌 Built-in cable</span>': ''}
         ${r.ac_outlet? '<span class="tag">AC outlet</span>'        : ''}
         ${r.corded   ? '<span class="tag">Corded</span>'           : ''}
+        ${r.app_control ? '<span class="tag">📱 App control</span>' : ''}
         ${protoBtn(r.protocols_extra,r.xiaomi_tc)}
       </div>
     </td>
@@ -1290,6 +1297,7 @@ function applyF(name){
   const ch_cable = name==='chargers'   ? document.getElementById('f-chargers-cable')?.value||''    : '';
   const ch_outlet= name==='chargers'   ? document.getElementById('f-chargers-outlet')?.value||''   : '';
   const ch_form  = name==='chargers'   ? document.getElementById('f-chargers-form')?.value||''     : '';
+  const ch_app   = name==='chargers'   ? document.getElementById('f-chargers-app')?.value||''      : '';
   const cap      = name==='powerbanks' ? document.getElementById('f-powerbanks-cap')?.value||''    : '';
   const pb_cable = name==='powerbanks' ? document.getElementById('f-powerbanks-cable')?.value||''  : '';
   const pb_disp  = name==='powerbanks' ? document.getElementById('f-powerbanks-display')?.value||'': '';
@@ -1326,6 +1334,8 @@ function applyF(name){
     if(ch_outlet==='no' && r.ac_outlet)              return false;
     if(ch_form  ==='wall'  && r.corded)              return false;
     if(ch_form  ==='corded'&&!r.corded)              return false;
+    if(ch_app   ==='yes'   &&!r.app_control)         return false;
+    if(ch_app   ==='no'    && r.app_control)         return false;
     // Powerbank filters
     if(cap){
       if(cap==='up10' &&!(r.rated<=10000))               return false;
