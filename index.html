@@ -310,16 +310,16 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
     <table id="tbl-cables">
      <thead><tr>
       <th class="cmp-th"></th>
-      <th onclick="srt('cables',0)">Cable <span class="sa">↕</span></th>
-      <th onclick="srt('cables',1)">Type <span class="sa">↕</span></th>
-      <th onclick="srt('cables',2)">Length <span class="sa">↕</span></th>
-      <th onclick="srt('cables',3)">Resistance <span class="sa">↕</span></th>
-      <th onclick="srt('cables',4)">Max Power <span class="sa">↕</span></th>
-      <th onclick="srt('cables',5)">Speed <span class="sa">↕</span></th>
+      <th onclick="srt('cables','name')" data-sort-key="name">Cable <span class="sa">↕</span></th>
+      <th onclick="srt('cables','conn')" data-sort-key="conn">Type <span class="sa">↕</span></th>
+      <th onclick="srt('cables','len')" data-sort-key="len">Length <span class="sa">↕</span></th>
+      <th onclick="srt('cables','res')" data-sort-key="res">Resistance <span class="sa">↕</span></th>
+      <th onclick="srt('cables','pwr')" data-sort-key="pwr">Max Power <span class="sa">↕</span></th>
+      <th onclick="srt('cables','spd')" data-sort-key="spd">Speed <span class="sa">↕</span></th>
       <th>E-Marker</th>
-      <th onclick="srt('cables',6)">Stress Test <span class="sa">↕</span></th>
-      <th onclick="srt('cables',7)">Verdict <span class="sa">↕</span></th>
-      <th onclick="srt('cables',8)">Price <span class="sa">↕</span></th>
+      <th onclick="srt('cables','stress_conn_c')" data-sort-key="stress_conn_c">Stress Test <span class="sa">↕</span></th>
+      <th onclick="srt('cables','v')" data-sort-key="v">Verdict <span class="sa">↕</span></th>
+      <th onclick="srt('cables','price')" data-sort-key="price">Price <span class="sa">↕</span></th>
       <th>Additional Info</th>
       <th>Links</th>
      </tr></thead>
@@ -386,15 +386,15 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
     <table id="tbl-chargers">
      <thead><tr>
       <th class="cmp-th"></th>
-      <th onclick="srt('chargers',0)">Charger <span class="sa">↕</span></th>
+      <th onclick="srt('chargers','name')" data-sort-key="name">Charger <span class="sa">↕</span></th>
       <th>Ports</th>
-      <th onclick="srt('chargers',1)">Power <span class="sa">↕</span></th>
-      <th onclick="srt('chargers',2)">Peak Efficiency <span class="sa">↕</span></th>
-      <th onclick="srt('chargers',3)">Ripple (peak) <span class="sa">↕</span></th>
+      <th onclick="srt('chargers','pwr')" data-sort-key="pwr">Power <span class="sa">↕</span></th>
+      <th onclick="srt('chargers','_effSort')" data-sort-key="_effSort">Peak Efficiency <span class="sa">↕</span></th>
+      <th onclick="srt('chargers','_rippleSort')" data-sort-key="_rippleSort">Ripple (peak) <span class="sa">↕</span></th>
       <th>Port Reset</th>
-      <th onclick="srt('chargers',4)">Stress Test <span class="sa">↕</span></th>
-      <th onclick="srt('chargers',5)">Verdict <span class="sa">↕</span></th>
-      <th onclick="srt('chargers',6)">Price <span class="sa">↕</span></th>
+      <th onclick="srt('chargers','case_temp_total_c')" data-sort-key="case_temp_total_c">Stress Test <span class="sa">↕</span></th>
+      <th onclick="srt('chargers','v')" data-sort-key="v">Verdict <span class="sa">↕</span></th>
+      <th onclick="srt('chargers','price')" data-sort-key="price">Price <span class="sa">↕</span></th>
       <th>Nuances</th>
       <th>Links</th>
      </tr></thead>
@@ -451,17 +451,17 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
     <table id="tbl-powerbanks">
      <thead><tr>
       <th class="cmp-th"></th>
-      <th onclick="srt('powerbanks',0)">Powerbank <span class="sa">↕</span></th>
-      <th onclick="srt('powerbanks',1)">Rated <span class="sa">↕</span></th>
-      <th onclick="srt('powerbanks',2)">Efficiency & Capacity <span class="sa">↕</span> <i class="ti ti-info-circle" style="font-size:11px;opacity:.6" title="Rated = manufacturer's claimed spec · Measured = obtained during testing"></i></th>
-      <th onclick="srt('powerbanks',3)">Output Power <span class="sa">↕</span></th>
-      <th onclick="srt('powerbanks',4)">Ripple (peak) <span class="sa">↕</span></th>
+      <th onclick="srt('powerbanks','name')" data-sort-key="name">Powerbank <span class="sa">↕</span></th>
+      <th onclick="srt('powerbanks','rated_wh')" data-sort-key="rated_wh">Rated <span class="sa">↕</span></th>
+      <th onclick="srt('powerbanks','real')" data-sort-key="real">Efficiency & Capacity <span class="sa">↕</span> <i class="ti ti-info-circle" style="font-size:11px;opacity:.6" title="Rated = manufacturer's claimed spec · Measured = obtained during testing"></i></th>
+      <th onclick="srt('powerbanks','maxpwr')" data-sort-key="maxpwr">Output Power <span class="sa">↕</span></th>
+      <th onclick="srt('powerbanks','_rippleSort')" data-sort-key="_rippleSort">Ripple (peak) <span class="sa">↕</span></th>
       <th>Charging Input</th>
-      <th onclick="srt('powerbanks',5)">Stress Test <span class="sa">↕</span></th>
+      <th onclick="srt('powerbanks','case_temp_total_c')" data-sort-key="case_temp_total_c">Stress Test <span class="sa">↕</span></th>
       <th>Wireless (Qi)</th>
       <th>Pass-through</th>
-      <th onclick="srt('powerbanks',6)">Verdict <span class="sa">↕</span></th>
-      <th onclick="srt('powerbanks',7)">Price <span class="sa">↕</span></th>
+      <th onclick="srt('powerbanks','v')" data-sort-key="v">Verdict <span class="sa">↕</span></th>
+      <th onclick="srt('powerbanks','price')" data-sort-key="price">Price <span class="sa">↕</span></th>
       <th>Links</th>
      </tr></thead>
      <tbody id="body-powerbanks"></tbody>
@@ -706,24 +706,57 @@ function castRow(row, types){
   const out = {...row};
   for(const key in types){
     const t = types[key];
-    const raw = String(out[key] ?? '').trim().toLowerCase();
-    if(t==='num')  out[key] = parseFloat(out[key]) || 0;
-    if(t==='bool') out[key] = raw==='true' || raw==='yes';
+    const raw = String(out[key] ?? '').trim();
+    // Пусто ≠ 0: пустая ячейка означает "нет данных", а не "измерили и вышло 0".
+    // Раньше parseFloat('')||0 схлопывал оба случая в 0, и, например, отсутствующая
+    // температура порта показывалась как настоящий "0°C".
+    if(t==='num'){
+      const n = parseFloat(raw);
+      out[key] = raw==='' || Number.isNaN(n) ? null : n;
+    }
+    // Пусто ≠ false: пустая ячейка означает "тест не проводился", а не "провален".
+    // Раньше оба случая схлопывались в false, и было невозможно отличить "не тестировали"
+    // от настоящего провала теста.
+    if(t==='bool') out[key] = raw==='' ? null : (raw.toLowerCase()==='true' || raw.toLowerCase()==='yes');
   }
   return out;
 }
+// Единая проверка "это реальное число, а не null/NaN из пустой ячейки" —
+// используется по всему сайту вместо голого typeof, чтобы не разводить
+// разные способы проверки одного и того же в каждой функции рендера.
+function isNum(v){ return typeof v==='number' && !Number.isNaN(v); }
+const DASH='<span class="sub">—</span>';
+
+// Раньше при сетевой ошибке (Google Sheets недоступен, лист удалён и т.п.)
+// промис всё равно резолвился в [] — пользователь видел "No results found",
+// неотличимое от honestly-пустой таблицы. LOAD_ERROR помнит, что причина
+// пустоты — не "ничего не нашлось", а "не смогли загрузить".
+let LOAD_ERROR = { cables:false, chargers:false, powerbanks:false };
 
 function loadSheet(name){
   return new Promise(resolve=>{
     if(!URLS[name] || URLS[name].startsWith('ВСТАВЬ')){
       console.warn(`URL for "${name}" is not set — sheet will be empty`);
+      LOAD_ERROR[name]=true;
       resolve([]);
       return;
     }
     Papa.parse(URLS[name], {
       download:true, header:true, skipEmptyLines:true,
-      complete: res => resolve(res.data.map(r=>castRow(r, TYPES[name]))),
-      error: err => { console.error(`Failed to load "${name}":`, err); resolve([]); }
+      complete: res => {
+        // PapaParse иногда резолвит "успешно" с пустым res.data при сетевой
+        // ошибке (например 404 на опубликованный CSV) — если данных нет
+        // и при этом сам парсер пожаловался, это тоже ошибка загрузки, а не
+        // honestly пустой лист
+        if((!res.data || !res.data.length) && res.errors && res.errors.length){
+          console.error(`Failed to load "${name}":`, res.errors);
+          LOAD_ERROR[name]=true;
+          resolve([]);
+          return;
+        }
+        resolve(res.data.map(r=>castRow(r, TYPES[name])));
+      },
+      error: err => { console.error(`Failed to load "${name}":`, err); LOAD_ERROR[name]=true; resolve([]); }
     });
   });
 }
@@ -733,6 +766,21 @@ async function initData(){
     ['cables','chargers','powerbanks'].map(loadSheet)
   );
   DATA.cables = c; DATA.chargers = ch; DATA.powerbanks = pb;
+
+  // Раз у эффективности/пульсации больше нет отдельного "заглавного" числа —
+  // для сортировки колонок берём худшее/лучшее значение прямо из разбивки
+  // (eff_curve/ripple_curve), а не из отдельного поля. Запасной вариант —
+  // старое поле r.eff/r.ripple, если разбивки ещё нет (старые записи).
+  DATA.chargers.forEach(r=>{
+    const effPts = parseEffCurve(r.eff_curve);
+    r._effSort = effPts.length ? Math.max(...effPts.map(p=>p.val)) : (r.eff||0);
+    const ripPts = parseRippleCurve(r.ripple_curve);
+    r._rippleSort = ripPts.length ? Math.max(...ripPts.map(p=>p.mv)) : (r.ripple||0);
+  });
+  DATA.powerbanks.forEach(r=>{
+    const ripPts = parseRippleCurve(r.ripple_curve);
+    r._rippleSort = ripPts.length ? Math.max(...ripPts.map(p=>p.mv)) : (r.ripple||0);
+  });
 
   ['cables','chargers','powerbanks'].forEach(n=>{
     // По умолчанию — сортировка по названию, чтобы при первом заходе
@@ -745,15 +793,18 @@ async function initData(){
     if(lbl) lbl.textContent = `${DATA[n].length} items`;
     render(n, S[n].sorted);
   });
+
+  // Открыть ту вкладку, где пользователь был в прошлый раз
+  restoreLastTab();
 }
 
 // ══════════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════════
 const S={
-  cables:    {sorted:null,col:-1,asc:true},
-  chargers:  {sorted:null,col:-1,asc:true},
-  powerbanks:{sorted:null,col:-1,asc:true},
+  cables:    {sorted:null,col:null,asc:true},
+  chargers:  {sorted:null,col:null,asc:true},
+  powerbanks:{sorted:null,col:null,asc:true},
 };
 
 // ══════════════════════════════════════════════
@@ -773,36 +824,52 @@ function yn(v){
 }
 function rc(v){return v<100?'vg':v<200?'vo':'vr'}
 function ec(v){return v>=88?'vg':v>=80?'vo':'vr'}
+// v может быть null (пустая ячейка) — тогда просто "—" без цвета,
+// а не ложный красный/зелёный по случайному сравнению с null
+function resStr(v){ return isNum(v) ? `<span class="${rc(v)}">${v} mΩ</span>` : DASH; }
+function effPctStr(v){ return isNum(v) ? `<span class="${ec(v)}">${v}%</span>` : DASH; }
 
+// Разбор строки вида "5V/3A:84%, 9V/3A:88%" — намеренно нестрогий:
+// не требуем точного суффикса "%"/"mV" и не привязываемся к концу строки,
+// иначе одна нестандартно оформленная точка (лишний пробел, отсутствие
+// единицы) молча выкидывала всю запись из списка.
 function parseEffCurve(curve){
   if(!curve) return [];
   return curve.split(',').map(s=>s.trim()).filter(Boolean).map(s=>{
-    const m=s.match(/^(.*?):\s*([\d.]+)\s*%?$/);
-    return m?{label:m[1].trim(),val:parseFloat(m[2])}:null;
+    const idx=s.indexOf(':');
+    if(idx<0) return null;
+    const label=s.slice(0,idx).trim();
+    const numMatch=s.slice(idx+1).match(/[\d.]+/);
+    if(!numMatch) return null;
+    return {label,val:parseFloat(numMatch[0])};
   }).filter(Boolean);
 }
-function effColor(v){return v>=90?'vg':v>=80?'vo':'vr'}
-function effLines(curve,peakEff){
+function effColor(v){return v>=88?'vg':v>=80?'vo':'vr'}
+function effList(curve,fallback){
   const pts=parseEffCurve(curve);
-  // Прячем точку, которая просто дублирует то же число, что уже показано крупным шрифтом сверху —
-  // сравниваем с точностью до сотых (а не до целого), раз теперь показываем именно сотые:
-  // иначе 93.00% и 92.98% ошибочно считались бы одним и тем же значением.
-  const filtered=(peakEff!=null)?pts.filter(p=>p.val.toFixed(2)!==Number(peakEff).toFixed(2)):pts;
-  if(!filtered.length) return '';
-  return `<div style="margin-top:4px;font-size:10px;font-weight:600;line-height:1.65">
-    ${filtered.map(p=>`<div class="${effColor(p.val)}">${p.label}: ${p.val.toFixed(2)}%</div>`).join('')}
+  if(!pts.length){
+    if(fallback===undefined||fallback===null||fallback==='') return '—';
+    return `<div class="${effColor(Number(fallback))}">${Number(fallback).toFixed(2)}%</div>`;
+  }
+  return `<div style="font-size:12px;font-weight:600;line-height:1.65">
+    ${pts.map(p=>`<div class="${effColor(p.val)}">${p.label}: ${p.val.toFixed(2)}%</div>`).join('')}
   </div>`;
 }
 
+// Та же логика для пульсации: ищем напряжение по первой цифре перед буквой "V"
+// ГДЕ УГОДНО в подписи (а не только строго в начале) — так переживает и опечатки
+// вида "15V3A" без слэша, и случайные лишние пробелы.
 function parseRippleCurve(curve){
   if(!curve) return [];
   return curve.split(',').map(s=>s.trim()).filter(Boolean).map(s=>{
-    const m=s.match(/^(.*?):\s*([\d.]+)\s*mV$/i);
-    if(!m) return null;
-    const label=m[1].trim();
-    const mv=parseFloat(m[2]);
-    const vm=label.match(/^([\d.]+)\s*V/i);
-    return {label,mv,voltage:vm?parseFloat(vm[1]):null};
+    const idx=s.indexOf(':');
+    if(idx<0) return null;
+    const label=s.slice(0,idx).trim();
+    const numMatch=s.slice(idx+1).match(/[\d.]+/);
+    if(!numMatch) return null;
+    const mv=parseFloat(numMatch[0]);
+    const vMatch=label.match(/([\d.]+)\s*v/i);
+    return {label,mv,voltage:vMatch?parseFloat(vMatch[1]):null};
   }).filter(Boolean);
 }
 // Порог не в абсолютных мВ, а в % от номинального напряжения в этой точке —
@@ -812,23 +879,23 @@ function rippleColorPct(mv,voltage){
   const pct=mv/(voltage*10);
   return pct<1?'vg':pct<=2?'vo':'vr';
 }
-// Заголовочное (худшее) значение теперь красится по той же % от напряжения логике,
-// а не по фиксированным абсолютным порогам — раз мы знаем, на каком напряжении
-// оно замерено (по совпадению с точкой в ripple_curve). Если совпадения нет
-// (старые записи без ripple_curve) — используем прежний абсолютный порог как запасной вариант.
-function ripplePeakColor(ripple,curve){
+function rippleList(curve,fallback){
   const pts=parseRippleCurve(curve);
-  const match=pts.find(p=>Math.round(p.mv)===Math.round(ripple));
-  if(match&&match.voltage) return rippleColorPct(match.mv,match.voltage);
-  return ripple<=30?'vg':ripple<=60?'vo':'vr';
-}
-function rippleLines(curve,peakMv){
-  const pts=parseRippleCurve(curve);
-  const filtered=(peakMv!=null)?pts.filter(p=>Math.round(p.mv)!==Math.round(peakMv)):pts;
-  if(!filtered.length) return '';
-  return `<div style="margin-top:4px;font-size:10px;font-weight:600;line-height:1.65">
-    ${filtered.map(p=>`<div class="${rippleColorPct(p.mv,p.voltage)}">${p.label}: ${p.mv}mV</div>`).join('')}
+  if(!pts.length){
+    if(fallback===undefined||fallback===null||fallback==='') return '—';
+    return `<div class="vo">${fallback} mV</div>`;
+  }
+  return `<div style="font-size:12px;font-weight:600;line-height:1.65">
+    ${pts.map(p=>`<div class="${rippleColorPct(p.mv,p.voltage)}">${p.label}: ${p.mv}mV</div>`).join('')}
   </div>`;
+}
+// Аккуратный вывод температуры, которая может отсутствовать в таблице —
+// показываем строку только если значение реально есть, без "0°C" по умолчанию
+function tempLine(label,raw){
+  if(raw===undefined||raw===null||String(raw).trim()==='') return '';
+  const n=Number(raw);
+  if(Number.isNaN(n)) return '';
+  return `${label}: ${tSpan(n)}`;
 }
 function ytId(url){
   if(!url) return '';
@@ -838,7 +905,7 @@ function ytId(url){
 function reviewBtn(yt){
   if(!yt||yt==='#') return '';
   const id=ytId(yt);
-  return `<a class="yt-prev" href="${yt}" target="_blank" rel="nofollow">
+  return `<a class="yt-prev" href="${safeUrl(yt)}" target="_blank" rel="nofollow">
     ${id?`<img class="yt-thumb" src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="" loading="lazy">`:''}
     <span class="btn btn-yt"><i class="ti ti-brand-youtube" style="font-size:13px"></i> Review</span>
   </a>`;
@@ -858,7 +925,7 @@ function priceCell(price,value){
 }
 function lnks(yt,buy){
   return `<div class="btns">
-    ${buy&&buy!='#'?`<a class="btn" href="${buy}" target="_blank" rel="nofollow sponsored"><i class="ti ti-shopping-cart" style="font-size:12px"></i> Buy</a>`:''}
+    ${buy&&buy!='#'?`<a class="btn" href="${safeUrl(buy)}" target="_blank" rel="nofollow sponsored"><i class="ti ti-shopping-cart" style="font-size:12px"></i> Buy</a>`:''}
     ${reviewBtn(yt)}
   </div>`;
 }
@@ -866,11 +933,16 @@ function tc(v){return v>=75?'vr':v>=60?'vo':'vg'}
 function toF(c){return Math.round(c*9/5+32)}
 function mToFt(m){return (m*3.28084).toFixed(1)}
 function lenStr(m){
+  if(!isNum(m)) return DASH;
   const main = m>=1 ? m+' m' : Math.round(m*100)+' cm';
   return `${main} <span style="opacity:.6;font-weight:400">(${mToFt(m)} ft)</span>`;
 }
-function tSpan(c){return `<span class="${tc(c)}">${c}°C <span style="opacity:.6;font-weight:400">(${toF(c)}°F)</span></span>`;}
+function tSpan(c){
+  if(!isNum(c)) return DASH;
+  return `<span class="${tc(c)}">${c}°C <span style="opacity:.6;font-weight:400">(${toF(c)}°F)</span></span>`;
+}
 function stressTier(pwr){
+  if(!isNum(pwr)) return 'Test tier unknown';
   if(pwr>=240) return '140W test (28V/5A)';
   if(pwr>=100) return '100W test (20V/5A)';
   return '60W test (20V/3A)';
@@ -879,13 +951,13 @@ let buyId=0;
 function buyBtn(am,ali){
   const hasAm=am&&am!=='#', hasAli=ali&&ali!=='#';
   if(!hasAm&&!hasAli) return '';
-  if(hasAm&&!hasAli) return `<a class="btn" href="${am}" target="_blank" rel="nofollow sponsored"><i class="ti ti-shopping-cart" style="font-size:12px"></i> Buy</a>`;
-  if(!hasAm&&hasAli) return `<a class="btn" href="${ali}" target="_blank" rel="nofollow sponsored"><i class="ti ti-shopping-cart" style="font-size:12px"></i> Buy</a>`;
+  if(hasAm&&!hasAli) return `<a class="btn" href="${safeUrl(am)}" target="_blank" rel="nofollow sponsored"><i class="ti ti-shopping-cart" style="font-size:12px"></i> Buy</a>`;
+  if(!hasAm&&hasAli) return `<a class="btn" href="${safeUrl(ali)}" target="_blank" rel="nofollow sponsored"><i class="ti ti-shopping-cart" style="font-size:12px"></i> Buy</a>`;
   return `<div class="buy-drop">
     <button class="btn" onclick="toggleBuy(event,this)"><i class="ti ti-shopping-cart" style="font-size:12px"></i> Buy <i class="ti ti-chevron-down" style="font-size:9px"></i></button>
     <div class="buy-menu">
-      <a href="${am}" target="_blank" rel="nofollow sponsored"><i class="ti ti-brand-amazon" style="font-size:13px"></i> Amazon</a>
-      <a href="${ali}" target="_blank" rel="nofollow sponsored"><i class="ti ti-shopping-bag" style="font-size:13px"></i> AliExpress</a>
+      <a href="${safeUrl(am)}" target="_blank" rel="nofollow sponsored"><i class="ti ti-brand-amazon" style="font-size:13px"></i> Amazon</a>
+      <a href="${safeUrl(ali)}" target="_blank" rel="nofollow sponsored"><i class="ti ti-shopping-bag" style="font-size:13px"></i> AliExpress</a>
     </div>
   </div>`;
 }
@@ -901,10 +973,10 @@ function qiBtn(hasQi,standard,pwr,realWh,eff,pass,drop){
   return `<div class="proto-drop">
     <button class="tag proto-btn" onclick="toggleDrop(event,this,'proto-menu')">📶 Qi wireless</button>
     <div class="proto-menu">
-      ${standard?`<div class="proto-item">Standard: ${standard}</div>`:''}
-      <div class="proto-item">Rated: ${pwr} W</div>
-      <div class="proto-item">Measured: ${realWh} Wh delivered (${eff}% eff.)</div>
-      <div class="proto-item">${pass?`<span class="b bg"><i class="ti ti-check" style="font-size:11px"></i> No throttling</span>`:`<span class="b br"><i class="ti ti-flame" style="font-size:11px"></i> Throttles → ${drop} W</span>`}</div>
+      ${standard?`<div class="proto-item">Standard: ${escAttr(standard)}</div>`:''}
+      <div class="proto-item">Rated: ${isNum(pwr)?pwr+' W':'—'}</div>
+      <div class="proto-item">Measured: ${isNum(realWh)?realWh+' Wh delivered':'—'}${isNum(eff)?` (${eff}% eff.)`:''}</div>
+      <div class="proto-item">${pass?`<span class="b bg"><i class="ti ti-check" style="font-size:11px"></i> No throttling</span>`:`<span class="b br"><i class="ti ti-flame" style="font-size:11px"></i> Throttles → ${isNum(drop)?drop+' W':'unknown'}</span>`}</div>
     </div>
   </div>`;
 }
@@ -915,7 +987,7 @@ function protoBtn(extra,xiaomiTC){
     <button class="tag proto-btn" onclick="toggleDrop(event,this,'proto-menu')"><i class="ti ti-list-details" style="font-size:11px"></i> +protocols</button>
     <div class="proto-menu">
       ${xiaomiTC?`<div class="proto-item proto-xm"><i class="ti ti-bolt" style="font-size:12px"></i> Xiaomi Turbo Charge<div class="sub" style="margin-top:2px">Tested via Xiaomi Pad Mini (up to 67W)</div></div>`:''}
-      ${list.map(i=>`<div class="proto-item">${i}</div>`).join('')}
+      ${list.map(i=>`<div class="proto-item">${escAttr(i)}</div>`).join('')}
     </div>
   </div>`;
 }
@@ -933,8 +1005,20 @@ document.addEventListener('click',()=>{
 // ══════════════════════════════════════════════
 //  COMPARE
 // ══════════════════════════════════════════════
+// Данные из Google Таблицы (name, brand, заметки, ссылки) раньше вставлялись
+// в innerHTML/href без экранирования. Риск невысокий — таблицу ведёт сам
+// автор — но чинить дёшево, а функция уже была определена и просто нигде
+// не вызывалась.
 function escAttr(s){
-  return String(s??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  return String(s??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+// Ссылки (yt/buy) идут прямо в href из ячеек таблицы — пропускаем только
+// настоящие http(s)-адреса, чтобы через данные нельзя было подсунуть
+// javascript: или другую схему
+function safeUrl(u){
+  if(!u || u==='#') return '#';
+  const s=String(u).trim();
+  return /^https?:\/\//i.test(s) ? escAttr(s) : '#';
 }
 
 function showInfoPopover(el){
@@ -1035,81 +1119,87 @@ function stressCellCables(r){
   return `${r.stress_pass?'<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Passed</span>':'<span class="b br"><i class="ti ti-flame" style="font-size:12px"></i> Throttled</span>'}
     <div class="sub" style="margin-top:4px">Conn ${tSpan(r.stress_conn_c)} · Cable ${tSpan(r.stress_cable_c)}</div>`;
 }
+// Один блок теста (single ИЛИ total) — вынесен отдельно, чтобы не дублировать
+// разметку между тремя сценариями ниже (только single / только total / оба)
+function chargerTestBlock(label,pass,drop,pwr,portTemp,caseTemp,first){
+  const temps=[tempLine('Port',portTemp),tempLine('Case',caseTemp)].filter(Boolean).join(' · ');
+  return `<div class="sub" style="font-weight:600${first?'':';margin-top:6px'}">${label}${isNum(pwr)?` (${pwr}W)`:''}</div>
+    <div>${pass?'<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Passed</span>':`<span class="b br"><i class="ti ti-flame" style="font-size:12px"></i> → ${isNum(drop)?drop+' W':'unknown'}</span>`}</div>
+    ${temps?`<div class="sub">${temps}</div>`:''}`;
+}
 function stressCellChargers(r){
-  // У подавляющего большинства зарядок один порт уже способен выдать всю
-  // заявленную суммарную мощность — в этом случае показывать "Single port (140W)"
-  // и "Total load (140W)" отдельными блоками с одинаковой цифрой выглядит как
-  // случайное дублирование. Схлопываем в один тест "Max output", когда
-  // pwr >= total_pwr, и оставляем оба отдельно только для настоящих
-  // мульти-портовых случаев, где общая мощность реально выше, чем у одного порта.
+  // Пусто (null) — тест не проводился; true/false — реально протестировано.
+  // Раньше "не проводился" и "провален" выглядели одинаково.
+  const hasSingle = r.throttle_single_pass===true || r.throttle_single_pass===false;
+  const hasTotal  = r.throttle_total_pass ===true || r.throttle_total_pass ===false;
+  if(!hasSingle && !hasTotal) return '<span class="sub">—</span>';
+  // Протестирован только один вариант — показываем ровно то, что реально измерено,
+  // не дорисовывая второй тест, которого не было
+  if(hasSingle && !hasTotal) return chargerTestBlock('Single port',r.throttle_single_pass,r.throttle_single_drop,r.pwr,r.port_temp_single_c,r.case_temp_single_c,true);
+  if(!hasSingle && hasTotal) return chargerTestBlock('Total load', r.throttle_total_pass, r.throttle_total_drop, r.total_pwr,r.port_temp_total_c,r.case_temp_total_c,true);
+  // Оба теста проведены: у 95% зарядок один порт и так выдаёт всю заявленную
+  // мощность — тогда "Single port (140W)" и "Total load (140W)" с одинаковой
+  // цифрой выглядят как случайное дублирование. Схлопываем в "Max output".
   const merge = r.pwr && r.total_pwr && Number(r.pwr) >= Number(r.total_pwr);
-  if(merge){
-    return `<div class="sub" style="font-weight:600">Max output${r.pwr?` (${r.pwr}W)`:''}</div>
-    <div>${r.throttle_single_pass?'<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Passed</span>':`<span class="b br"><i class="ti ti-flame" style="font-size:12px"></i> → ${r.throttle_single_drop} W</span>`}</div>
-    <div class="sub">Case: ${tSpan(r.case_temp_single_c)}</div>`;
-  }
-  return `<div class="sub" style="font-weight:600">Single port${r.pwr?` (${r.pwr}W)`:''}</div>
-    <div>${r.throttle_single_pass?'<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Passed</span>':`<span class="b br"><i class="ti ti-flame" style="font-size:12px"></i> → ${r.throttle_single_drop} W</span>`}</div>
-    <div class="sub">Case: ${tSpan(r.case_temp_single_c)}</div>
-    <div class="sub" style="font-weight:600;margin-top:6px">Total load${r.total_pwr?` (${r.total_pwr}W)`:''}</div>
-    <div>${r.throttle_total_pass?'<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Passed</span>':`<span class="b br"><i class="ti ti-flame" style="font-size:12px"></i> → ${r.throttle_total_drop} W</span>`}</div>
-    <div class="sub">Case: ${tSpan(r.case_temp_total_c)}</div>`;
+  if(merge) return chargerTestBlock('Max output',r.throttle_single_pass,r.throttle_single_drop,r.pwr,r.port_temp_single_c,r.case_temp_single_c,true);
+  return chargerTestBlock('Single port',r.throttle_single_pass,r.throttle_single_drop,r.pwr,r.port_temp_single_c,r.case_temp_single_c,true)
+       + chargerTestBlock('Total load', r.throttle_total_pass, r.throttle_total_drop, r.total_pwr,r.port_temp_total_c,r.case_temp_total_c,false);
 }
 function stressCellPowerbanks(r){
   return `<div class="sub" style="font-weight:600">5V discharge</div>
-    <div>${r.throttle_5v_pass?'<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Passed</span>':`<span class="b br"><i class="ti ti-flame" style="font-size:12px"></i> → ${r.throttle_5v_drop} W</span>`}</div>
-    ${r.wh5v?`<div class="sub">${r.wh5v} Wh delivered</div>`:''}
-    <div class="sub" style="font-weight:600;margin-top:6px">Single port${r.maxpwr?` (${r.maxpwr}W)`:''}</div>
-    <div>${r.throttle_single_pass?'<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Passed</span>':`<span class="b br"><i class="ti ti-flame" style="font-size:12px"></i> → ${r.throttle_single_drop} W</span>`}</div>
-    ${r.wh_max?`<div class="sub">${r.wh_max} Wh delivered</div>`:''}
+    <div>${r.throttle_5v_pass?'<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Passed</span>':`<span class="b br"><i class="ti ti-flame" style="font-size:12px"></i> → ${isNum(r.throttle_5v_drop)?r.throttle_5v_drop+' W':'unknown'}</span>`}</div>
+    ${isNum(r.wh5v)?`<div class="sub">${r.wh5v} Wh delivered</div>`:''}
+    <div class="sub" style="font-weight:600;margin-top:6px">Single port${isNum(r.maxpwr)?` (${r.maxpwr}W)`:''}</div>
+    <div>${r.throttle_single_pass?'<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Passed</span>':`<span class="b br"><i class="ti ti-flame" style="font-size:12px"></i> → ${isNum(r.throttle_single_drop)?r.throttle_single_drop+' W':'unknown'}</span>`}</div>
+    ${isNum(r.wh_max)?`<div class="sub">${r.wh_max} Wh delivered</div>`:''}
     <div class="sub">Case: ${tSpan(r.case_temp_single_c)}</div>
-    <div class="sub" style="font-weight:600;margin-top:6px">Total load${r.total_pwr?` (${r.total_pwr}W)`:''}</div>
-    <div>${r.throttle_total_pass?'<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Passed</span>':`<span class="b br"><i class="ti ti-flame" style="font-size:12px"></i> → ${r.throttle_total_drop} W</span>`}</div>
+    <div class="sub" style="font-weight:600;margin-top:6px">Total load${isNum(r.total_pwr)?` (${r.total_pwr}W)`:''}</div>
+    <div>${r.throttle_total_pass?'<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Passed</span>':`<span class="b br"><i class="ti ti-flame" style="font-size:12px"></i> → ${isNum(r.throttle_total_drop)?r.throttle_total_drop+' W':'unknown'}</span>`}</div>
     <div class="sub">Case: ${tSpan(r.case_temp_total_c)}</div>`;
 }
 
 // win: необязательная функция (arr rows)->key лучшего значения, для подсветки победителя в строке
 const CMP_FIELDS={
   cables:[
-    {label:'Connector',      get:r=>`<span class="chip">${r.conn}</span>`},
+    {label:'Connector',      get:r=>`<span class="chip">${escAttr(r.conn)}</span>`},
     {label:'Length',         get:r=>`<span class="num">${lenStr(r.len)}</span>`},
-    {label:'Resistance',     get:r=>`<span class="num ${rc(r.res)}">${r.res} mΩ</span>`, win:rows=>rows.reduce((a,b)=>b.res<a.res?b:a).name},
-    {label:'Max Power',      get:r=>`<span class="num">${r.pwr} W</span>`,               win:rows=>rows.reduce((a,b)=>b.pwr>a.pwr?b:a).name},
-    {label:'Speed',          get:r=>`${r.spd_lbl}${r.spd>r.adv_spd?`<div style="font-size:11px;font-weight:600;color:var(--green)">↑ real: ${r.real_spd}</div>`:''}`, win:rows=>rows.reduce((a,b)=>b.spd>a.spd?b:a).name},
+    {label:'Resistance',     get:r=>resStr(r.res), win:rows=>{const c=rows.filter(r=>isNum(r.res)); return c.length?c.reduce((a,b)=>b.res<a.res?b:a).name:null;}},
+    {label:'Max Power',      get:r=>`<span class="num">${isNum(r.pwr)?r.pwr+' W':DASH}</span>`, win:rows=>{const c=rows.filter(r=>isNum(r.pwr)); return c.length?c.reduce((a,b)=>b.pwr>a.pwr?b:a).name:null;}},
+    {label:'Speed',          get:r=>`${escAttr(r.spd_lbl)}${isNum(r.spd)&&isNum(r.adv_spd)&&r.spd>r.adv_spd?`<div style="font-size:11px;font-weight:600;color:var(--green)">↑ real: ${escAttr(r.real_spd)}</div>`:''}`, win:rows=>{const c=rows.filter(r=>isNum(r.spd)); return c.length?c.reduce((a,b)=>b.spd>a.spd?b:a).name:null;}},
     {label:'E-Marker',       get:r=>yn(r.emark)},
     {label:'Display',        get:r=>yn(r.display)},
     {label:'Stress Test',    get:stressCellCables},
     {label:'Price',          get:r=>r.price?`$${r.price} @ review ${valueTag(r.value)}`:'—', win:rows=>rows.filter(r=>r.price).length?rows.filter(r=>r.price).reduce((a,b)=>b.price<a.price?b:a).name:null},
     {label:'Verdict',        get:r=>badge(r.v)},
-    {label:'Notes',          get:r=>r.extra||'—'},
+    {label:'Notes',          get:r=>r.extra?escAttr(r.extra):'—'},
   ],
   chargers:[
-    {label:'Ports',          get:r=>`<span class="chip">${r.ports}</span>`},
-    {label:'Power',          get:r=>`<div>${r.pwr} W <span style="font-size:10px;color:var(--text3)">/ port</span></div><div class="sub">${r.total_pwr} W total</div>${r.pwr>=r.total_pwr?'<div style="font-size:10px;font-weight:600;color:var(--green)">★ full power solo</div>':''}`, win:rows=>rows.reduce((a,b)=>b.total_pwr>a.total_pwr?b:a).name},
-    {label:'Peak Efficiency',get:r=>`<span class="num ${ec(r.eff)}">${Number(r.eff).toFixed(2)}%</span>${effLines(r.eff_curve,r.eff)}`, win:rows=>rows.reduce((a,b)=>b.eff>a.eff?b:a).name},
-    {label:'Ripple (peak)',  get:r=>`<span class="num ${ripplePeakColor(r.ripple,r.ripple_curve)}">${r.ripple} mV</span>${rippleLines(r.ripple_curve,r.ripple)}`, win:rows=>rows.reduce((a,b)=>b.ripple<a.ripple?b:a).name},
+    {label:'Ports',          get:r=>`<span class="chip">${escAttr(r.ports)}</span>`},
+    {label:'Power',          get:r=>`<div>${isNum(r.pwr)?r.pwr+' W':DASH} <span style="font-size:10px;color:var(--text3)">/ port</span></div><div class="sub">${isNum(r.total_pwr)?r.total_pwr+' W total':''}</div>${isNum(r.pwr)&&isNum(r.total_pwr)&&r.pwr>=r.total_pwr?'<div style="font-size:10px;font-weight:600;color:var(--green)">★ full power solo</div>':''}`, win:rows=>{const c=rows.filter(r=>isNum(r.total_pwr)); return c.length?c.reduce((a,b)=>b.total_pwr>a.total_pwr?b:a).name:null;}},
+    {label:'Peak Efficiency',get:r=>effList(r.eff_curve,r.eff), win:rows=>rows.reduce((a,b)=>(b._effSort??0)>(a._effSort??0)?b:a).name},
+    {label:'Ripple (peak)',  get:r=>rippleList(r.ripple_curve,r.ripple), win:rows=>rows.reduce((a,b)=>(b._rippleSort??Infinity)<(a._rippleSort??Infinity)?b:a).name},
     {label:'Port Reset',     get:r=>r.ports_reboot?'<span class="b bo"><i class="ti ti-alert-triangle" style="font-size:12px"></i> Resets ports</span>':'<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Stable</span>'},
-    {label:'Protocols',      get:r=>`<span class="tag">${r.pd}</span> ${(r.protocols_extra||'').split(',').map(s=>s.trim()).filter(Boolean).map(s=>`<span class="tag">${s}</span>`).join(' ')}${r.xiaomi_tc?'<span class="tag">Xiaomi Turbo Charge</span>':''}`},
+    {label:'Protocols',      get:r=>`<span class="tag">${escAttr(r.pd)}</span> ${(r.protocols_extra||'').split(',').map(s=>s.trim()).filter(Boolean).map(s=>`<span class="tag">${escAttr(s)}</span>`).join(' ')}${r.xiaomi_tc?'<span class="tag">Xiaomi Turbo Charge</span>':''}`},
     {label:'Display',        get:r=>yn(r.display)},
     {label:'Built-in Cable', get:r=>yn(r.cable_in)},
     {label:'AC Outlet',      get:r=>yn(r.ac_outlet)},
     {label:'Form',           get:r=>r.corded?'Corded':'Wall plug'},
-    {label:'App Control',    get:r=>r.app_control?(r.app_detail||'Yes'):'No'},
+    {label:'App Control',    get:r=>r.app_control?(r.app_detail?escAttr(r.app_detail):'Yes'):'No'},
     {label:'Stress Test',    get:stressCellChargers},
     {label:'Price',          get:r=>r.price?`$${r.price} @ review ${valueTag(r.value)}`:'—', win:rows=>rows.filter(r=>r.price).length?rows.filter(r=>r.price).reduce((a,b)=>b.price<a.price?b:a).name:null},
     {label:'Verdict',        get:r=>badge(r.v)},
-    {label:'Notes',          get:r=>r.extra||'—'},
+    {label:'Notes',          get:r=>r.extra?escAttr(r.extra):'—'},
   ],
   powerbanks:[
-    {label:'Rated Capacity', get:r=>`${r.rated.toLocaleString()} mAh<div class="sub">${r.rated_wh} Wh rated</div>`, win:rows=>rows.reduce((a,b)=>b.rated_wh>a.rated_wh?b:a).name},
-    {label:'Measured',       get:r=>`${r.real} Wh <span style="font-size:10px;color:var(--text3)">measured</span><div class="sub"><span class="${ec(r.eff5v)}">${r.eff5v}%</span> @5V · <span class="${ec(r.eff_max)}">${r.eff_max}%</span> @max</div>`, win:rows=>rows.reduce((a,b)=>b.real>a.real?b:a).name},
-    {label:'Output Power',   get:r=>`<div>${r.maxpwr} W <span style="font-size:10px;color:var(--text3)">/ port</span></div><div class="sub">${r.total_pwr} W total</div>${r.maxpwr>=r.total_pwr?'<div style="font-size:10px;font-weight:600;color:var(--green)">★ full power solo</div>':''}`, win:rows=>rows.reduce((a,b)=>b.total_pwr>a.total_pwr?b:a).name},
-    {label:'Ripple (peak)',  get:r=>r.ripple?`<span class="num ${ripplePeakColor(r.ripple,r.ripple_curve)}">${r.ripple} mV</span>${rippleLines(r.ripple_curve,r.ripple)}`:'—', win:rows=>rows.filter(r=>r.ripple).length?rows.filter(r=>r.ripple).reduce((a,b)=>b.ripple<a.ripple?b:a).name:null},
-    {label:'Charging Input', get:r=>`${r.max_charge_pwr} W input<div class="sub">${r.recharge}</div>`, win:rows=>rows.reduce((a,b)=>b.max_charge_pwr>a.max_charge_pwr?b:a).name},
+    {label:'Rated Capacity', get:r=>`${isNum(r.rated)?r.rated.toLocaleString()+' mAh':DASH}<div class="sub">${isNum(r.rated_wh)?r.rated_wh+' Wh rated':''}</div>`, win:rows=>{const c=rows.filter(r=>isNum(r.rated_wh)); return c.length?c.reduce((a,b)=>b.rated_wh>a.rated_wh?b:a).name:null;}},
+    {label:'Measured',       get:r=>`${isNum(r.real)?r.real+' Wh':DASH} <span style="font-size:10px;color:var(--text3)">measured</span><div class="sub">${effPctStr(r.eff5v)} @5V · ${effPctStr(r.eff_max)} @max</div>`, win:rows=>{const c=rows.filter(r=>isNum(r.real)); return c.length?c.reduce((a,b)=>b.real>a.real?b:a).name:null;}},
+    {label:'Output Power',   get:r=>`<div>${isNum(r.maxpwr)?r.maxpwr+' W':DASH} <span style="font-size:10px;color:var(--text3)">/ port</span></div><div class="sub">${isNum(r.total_pwr)?r.total_pwr+' W total':''}</div>${isNum(r.maxpwr)&&isNum(r.total_pwr)&&r.maxpwr>=r.total_pwr?'<div style="font-size:10px;font-weight:600;color:var(--green)">★ full power solo</div>':''}`, win:rows=>{const c=rows.filter(r=>isNum(r.total_pwr)); return c.length?c.reduce((a,b)=>b.total_pwr>a.total_pwr?b:a).name:null;}},
+    {label:'Ripple (peak)',  get:r=>rippleList(r.ripple_curve,r.ripple), win:rows=>rows.filter(r=>r._rippleSort!=null).length?rows.filter(r=>r._rippleSort!=null).reduce((a,b)=>b._rippleSort<a._rippleSort?b:a).name:null},
+    {label:'Charging Input', get:r=>`${isNum(r.max_charge_pwr)?r.max_charge_pwr+' W input':DASH}<div class="sub">${r.recharge||''}</div>`, win:rows=>{const c=rows.filter(r=>isNum(r.max_charge_pwr)); return c.length?c.reduce((a,b)=>b.max_charge_pwr>a.max_charge_pwr?b:a).name:null;}},
     {label:'Stress Test',    get:stressCellPowerbanks},
-    {label:'Wireless (Qi)',  get:r=>r.wireless_qi?`${r.qi_standard||'Qi'}<div class="sub">${r.qi_pwr} W rated · ${r.qi_real_wh} Wh @ ${r.qi_eff}%</div>`:yn(false)},
+    {label:'Wireless (Qi)',  get:r=>r.wireless_qi?`${r.qi_standard?escAttr(r.qi_standard):'Qi'}<div class="sub">${isNum(r.qi_pwr)?r.qi_pwr+' W rated':'—'} · ${isNum(r.qi_real_wh)?r.qi_real_wh+' Wh':'—'}${isNum(r.qi_eff)?` @ ${r.qi_eff}%`:''}</div>`:yn(false)},
     {label:'Pass-through',   get:r=>yn(r.pt==='Yes'?true:r.pt==='Limited'?r.pt:false)},
-    {label:'Protocols',      get:r=>`<span class="tag">${r.pd}</span> ${(r.protocols_extra||'').split(',').map(s=>s.trim()).filter(Boolean).map(s=>`<span class="tag">${s}</span>`).join(' ')}${r.xiaomi_tc?'<span class="tag">Xiaomi Turbo Charge</span>':''}`},
+    {label:'Protocols',      get:r=>`<span class="tag">${escAttr(r.pd)}</span> ${(r.protocols_extra||'').split(',').map(s=>s.trim()).filter(Boolean).map(s=>`<span class="tag">${escAttr(s)}</span>`).join(' ')}${r.xiaomi_tc?'<span class="tag">Xiaomi Turbo Charge</span>':''}`},
     {label:'Display',        get:r=>yn(r.display)},
     {label:'Built-in Cable', get:r=>yn(r.cable)},
     {label:'Price',          get:r=>r.price?`$${r.price} @ review ${valueTag(r.value)}`:'—', win:rows=>rows.filter(r=>r.price).length?rows.filter(r=>r.price).reduce((a,b)=>b.price<a.price?b:a).name:null},
@@ -1125,7 +1215,7 @@ function openCompareModal(){
   const fields=CMP_FIELDS[name];
   document.getElementById('cmp-modal-title').textContent=`Comparing ${rows.length} ${name}`;
   let html=`<table class="cmp-table"><thead><tr><th class="cmp-field"></th>`;
-  html+=rows.map(r=>`<th class="cmp-model-hdr"><div class="cmp-model-name">${r.name}</div><div class="cmp-model-brand">${r.brand}</div></th>`).join('');
+  html+=rows.map(r=>`<th class="cmp-model-hdr"><div class="cmp-model-name">${escAttr(r.name)}</div><div class="cmp-model-brand">${escAttr(r.brand)}</div></th>`).join('');
   html+=`</tr></thead><tbody>`;
   fields.forEach(f=>{
     const winner=f.win?f.win(rows):null;
@@ -1149,26 +1239,26 @@ document.addEventListener('keydown',e=>{
 // ══════════════════════════════════════════════
 function renderCables(rows){
   const b=document.getElementById('body-cables');
-  if(!rows.length){b.innerHTML=`<tr><td colspan="13"><div class="empty"><i class="ti ti-search"></i>No results found</div></td></tr>`;return;}
+  if(!rows.length){b.innerHTML=emptyRow('cables',13);return;}
   b.innerHTML=rows.map(r=>{
-    const exceeds=r.spd>r.adv_spd;
+    const exceeds=isNum(r.spd)&&isNum(r.adv_spd)&&r.spd>r.adv_spd;
     return `<tr>
     <td class="cmp-td"><input type="checkbox" class="cmp-chk" ${CMP.cables.sel.has(r.name)?'checked':''} ${(!CMP.cables.sel.has(r.name)&&CMP.cables.sel.size>=CMP_MAX)?'disabled':''}></td>
     <td>
-      <div class="nm">${r.name}</div>
+      <div class="nm">${escAttr(r.name)}</div>
       <div class="sub" style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap;align-items:center">
-        ${r.brand}
+        ${escAttr(r.brand)}
         ${r.display ? '<span class="tag">📺 Display</span>' : ''}
-        ${r.trigger ? `<span class="tag">⚡ ${r.trigger}</span>` : ''}
+        ${r.trigger ? `<span class="tag">⚡ ${escAttr(r.trigger)}</span>` : ''}
       </div>
     </td>
-    <td><span class="chip">${r.conn}</span></td>
+    <td><span class="chip">${escAttr(r.conn)}</span></td>
     <td class="num">${lenStr(r.len)}</td>
-    <td class="num ${rc(r.res)}">${r.res} mΩ</td>
-    <td class="num">${r.pwr} W</td>
+    <td class="num">${resStr(r.res)}</td>
+    <td class="num">${isNum(r.pwr)?r.pwr+' W':DASH}</td>
     <td>
-      <div style="font-size:11px;color:var(--text3)">${r.spd_lbl}</div>
-      ${exceeds?`<div style="font-size:11px;font-weight:600;color:var(--green)">↑ real: ${r.real_spd}</div>`:''}
+      <div style="font-size:11px;color:var(--text3)">${escAttr(r.spd_lbl)}</div>
+      ${exceeds?`<div style="font-size:11px;font-weight:600;color:var(--green)">↑ real: ${escAttr(r.real_spd)}</div>`:''}
     </td>
     <td>${yn(r.emark)}</td>
     <td>
@@ -1178,7 +1268,7 @@ function renderCables(rows){
     </td>
     <td>${badge(r.v)}</td>
     <td>${priceCell(r.price,r.value)}</td>
-    <td style="font-size:11px;color:var(--text2);max-width:180px;line-height:1.5">${r.extra||'—'}</td>
+    <td style="font-size:11px;color:var(--text2);max-width:180px;line-height:1.5">${r.extra?escAttr(r.extra):'—'}</td>
     <td>
       <div class="btns">
         ${buyBtn(r.buy_am,r.buy_ali)}
@@ -1191,13 +1281,13 @@ function renderCables(rows){
 
 function renderChargers(rows){
   const b=document.getElementById('body-chargers');
-  if(!rows.length){b.innerHTML=`<tr><td colspan="11"><div class="empty"><i class="ti ti-search"></i>No results found</div></td></tr>`;return;}
+  if(!rows.length){b.innerHTML=emptyRow('chargers',12);return;}
   b.innerHTML=rows.map(r=>`<tr>
     <td class="cmp-td"><input type="checkbox" class="cmp-chk" ${CMP.chargers.sel.has(r.name)?'checked':''} ${(!CMP.chargers.sel.has(r.name)&&CMP.chargers.sel.size>=CMP_MAX)?'disabled':''}></td>
     <td>
-      <div class="nm">${r.name}</div>
+      <div class="nm">${escAttr(r.name)}</div>
       <div class="sub" style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap;align-items:center">
-        <span class="tag">${r.pd}</span>
+        <span class="tag">${escAttr(r.pd)}</span>
         ${r.display  ? '<span class="tag">📺 Display</span>'       : ''}
         ${r.cable_in ? '<span class="tag">🔌 Built-in cable</span>': ''}
         ${r.ac_outlet? '<span class="tag">AC outlet</span>'        : ''}
@@ -1206,21 +1296,21 @@ function renderChargers(rows){
         ${protoBtn(r.protocols_extra,r.xiaomi_tc)}
       </div>
     </td>
-    <td><span class="chip">${r.ports}</span></td>
+    <td><span class="chip">${escAttr(r.ports)}</span></td>
     <td class="num" style="line-height:1.6">
-      <div>${r.pwr} W <span style="font-size:10px;font-weight:400;color:var(--text3)">/ port</span></div>
-      <div class="sub">${r.total_pwr} W total</div>
-      ${r.pwr>=r.total_pwr?`<div style="font-size:10px;font-weight:600;color:var(--green)">★ full power solo</div>`:''}
+      <div>${isNum(r.pwr)?r.pwr+' W':DASH} <span style="font-size:10px;font-weight:400;color:var(--text3)">/ port</span></div>
+      <div class="sub">${isNum(r.total_pwr)?r.total_pwr+' W total':''}</div>
+      ${isNum(r.pwr)&&isNum(r.total_pwr)&&r.pwr>=r.total_pwr?`<div style="font-size:10px;font-weight:600;color:var(--green)">★ full power solo</div>`:''}
     </td>
-    <td class="num ${ec(r.eff)}">${Number(r.eff).toFixed(2)}%${effLines(r.eff_curve,r.eff)}</td>
-    <td class="num ${ripplePeakColor(r.ripple,r.ripple_curve)}">${r.ripple} mV${rippleLines(r.ripple_curve,r.ripple)}</td>
+    <td>${effList(r.eff_curve,r.eff)}</td>
+    <td>${rippleList(r.ripple_curve,r.ripple)}</td>
     <td>${r.ports_reboot?`<span class="b bo"><i class="ti ti-alert-triangle" style="font-size:12px"></i> Resets ports</span>`:`<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Stable</span>`}</td>
     <td>
       ${stressCellChargers(r)}
     </td>
     <td>${badge(r.v)}</td>
     <td>${priceCell(r.price,r.value)}</td>
-    <td style="font-size:11px;color:var(--text2);max-width:180px;line-height:1.5">${r.extra||'—'}</td>
+    <td style="font-size:11px;color:var(--text2);max-width:180px;line-height:1.5">${r.extra?escAttr(r.extra):'—'}</td>
     <td>
       <div class="btns">
         ${buyBtn(r.buy_am,r.buy_ali)}
@@ -1233,13 +1323,13 @@ function renderChargers(rows){
 
 function renderPowerbanks(rows){
   const b=document.getElementById('body-powerbanks');
-  if(!rows.length){b.innerHTML=`<tr><td colspan="12"><div class="empty"><i class="ti ti-search"></i>No results found</div></td></tr>`;return;}
+  if(!rows.length){b.innerHTML=emptyRow('powerbanks',13);return;}
   b.innerHTML=rows.map(r=>`<tr>
     <td class="cmp-td"><input type="checkbox" class="cmp-chk" ${CMP.powerbanks.sel.has(r.name)?'checked':''} ${(!CMP.powerbanks.sel.has(r.name)&&CMP.powerbanks.sel.size>=CMP_MAX)?'disabled':''}></td>
     <td>
-      <div class="nm">${r.name}</div>
+      <div class="nm">${escAttr(r.name)}</div>
       <div class="sub" style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap;align-items:center">
-        <span class="tag">${r.pd}</span>
+        <span class="tag">${escAttr(r.pd)}</span>
         ${r.display     ? '<span class="tag">📺 Display</span>'       : ''}
         ${r.cable       ? '<span class="tag">🔌 Built-in cable</span>': ''}
         ${qiBtn(r.wireless_qi,r.qi_standard,r.qi_pwr,r.qi_real_wh,r.qi_eff,r.qi_throttle_pass,r.qi_throttle_drop)}
@@ -1247,23 +1337,23 @@ function renderPowerbanks(rows){
       </div>
     </td>
     <td class="num" style="line-height:1.6">
-      ${r.rated.toLocaleString()} mAh<br>
-      <span style="font-size:11px;color:var(--text3)">${r.rated_wh} Wh <em style="font-style:normal;color:var(--text3)">rated</em></span>
+      ${isNum(r.rated)?r.rated.toLocaleString()+' mAh':DASH}<br>
+      <span style="font-size:11px;color:var(--text3)">${isNum(r.rated_wh)?r.rated_wh+' Wh':DASH} <em style="font-style:normal;color:var(--text3)">rated</em></span>
     </td>
     <td class="num" style="line-height:1.6">
-      <div>${r.real} Wh <span style="font-size:10px;font-weight:400;color:var(--text3)">measured</span></div>
-      <div class="sub"><span class="${ec(r.eff5v)}">${r.eff5v}%</span> @5V · <span class="${ec(r.eff_max)}">${r.eff_max}%</span> @max</div>
+      <div>${isNum(r.real)?r.real+' Wh':DASH} <span style="font-size:10px;font-weight:400;color:var(--text3)">measured</span></div>
+      <div class="sub">${effPctStr(r.eff5v)} @5V · ${effPctStr(r.eff_max)} @max</div>
       <div style="font-size:10px;color:var(--text3)">efficiency, measured</div>
     </td>
     <td class="num" style="line-height:1.6">
-      <div>${r.maxpwr} W <span style="font-size:10px;font-weight:400;color:var(--text3)">/ port</span></div>
-      <div class="sub">${r.total_pwr} W total</div>
-      ${r.maxpwr>=r.total_pwr?`<div style="font-size:10px;font-weight:600;color:var(--green)">★ full power solo</div>`:''}
+      <div>${isNum(r.maxpwr)?r.maxpwr+' W':DASH} <span style="font-size:10px;font-weight:400;color:var(--text3)">/ port</span></div>
+      <div class="sub">${isNum(r.total_pwr)?r.total_pwr+' W total':''}</div>
+      ${isNum(r.maxpwr)&&isNum(r.total_pwr)&&r.maxpwr>=r.total_pwr?`<div style="font-size:10px;font-weight:600;color:var(--green)">★ full power solo</div>`:''}
     </td>
-    <td class="num ${r.ripple?ripplePeakColor(r.ripple,r.ripple_curve):''}">${r.ripple?r.ripple+' mV':'—'}${r.ripple?rippleLines(r.ripple_curve,r.ripple):''}</td>
+    <td>${rippleList(r.ripple_curve,r.ripple)}</td>
     <td style="font-size:12px;color:var(--text2);line-height:1.6">
-      <div class="num" style="font-size:13px">${r.max_charge_pwr} W <span style="font-size:10px;font-weight:400;color:var(--text3)">input</span></div>
-      <div class="sub">${r.recharge}</div>
+      <div class="num" style="font-size:13px">${isNum(r.max_charge_pwr)?r.max_charge_pwr+' W':DASH} <span style="font-size:10px;font-weight:400;color:var(--text3)">input</span></div>
+      <div class="sub">${r.recharge?escAttr(r.recharge):''}</div>
     </td>
     <td>${stressCellPowerbanks(r)}</td>
     <td>${yn(r.pt==='Yes'?true:r.pt==='Limited'?r.pt:false)}</td>
@@ -1272,6 +1362,15 @@ function renderPowerbanks(rows){
     <td>${lnks(r.yt,r.buy)}</td>
   </tr>`).join('');
   wireCmpCheckboxes('powerbanks',b,rows);
+}
+
+// Общий разметка пустой таблицы — отличает "ничего не нашлось по фильтрам"
+// от "не удалось загрузить данные" (см. LOAD_ERROR выше)
+function emptyRow(name,colspan){
+  if(LOAD_ERROR[name]){
+    return `<tr><td colspan="${colspan}"><div class="empty"><i class="ti ti-alert-triangle"></i>Couldn't load data — check your connection and <a href="#" onclick="location.reload();return false;" style="color:var(--accent)">try again</a></div></td></tr>`;
+  }
+  return `<tr><td colspan="${colspan}"><div class="empty"><i class="ti ti-search"></i>No results found</div></td></tr>`;
 }
 
 function render(name,rows){
@@ -1285,6 +1384,7 @@ function render(name,rows){
 // ══════════════════════════════════════════════
 function applyF(name){
   const q=(document.getElementById('s-'+name)?.value||'').toLowerCase();
+  const qWords=q.split(/\s+/).filter(Boolean);
   const v        = document.getElementById('f-'+name+'-v')?.value||'';
   const conn     = name==='cables'     ? document.getElementById('f-cables-conn')?.value||''       : '';
   const c_pwr    = name==='cables'     ? document.getElementById('f-cables-pwr')?.value||''         : '';
@@ -1306,7 +1406,7 @@ function applyF(name){
 
   let out=DATA[name].filter(r=>{
     const txt=Object.values(r).join(' ').toLowerCase();
-    if(q&&!txt.includes(q))return false;
+    if(qWords.length&&!qWords.every(w=>txt.includes(w)))return false;
     if(v&&r.v!==v)return false;
     if(conn&&r.conn!==conn)return false;
     if(c_pwr&&Number(r.pwr)!==Number(c_pwr))return false;
@@ -1315,6 +1415,9 @@ function applyF(name){
     if(c_spd&&Number(r.adv_spd)!==Number(c_spd)&&Number(r.spd)!==Number(c_spd))return false;
     // Charger filters
     if(pwr){
+      // null (нет данных) сравнивается с числами как 0 — без явной проверки
+      // строка без замера мощности могла случайно попасть в диапазон "до 65Вт"
+      if(!isNum(r.pwr))                              return false;
       if(pwr==='up65'   &&!(r.pwr<=65))             return false;
       if(pwr==='65-100' &&!(r.pwr>65&&r.pwr<=100))  return false;
       if(pwr==='100-140'&&!(r.pwr>100&&r.pwr<=140)) return false;
@@ -1338,6 +1441,7 @@ function applyF(name){
     if(ch_app   ==='no'    && r.app_control)         return false;
     // Powerbank filters
     if(cap){
+      if(!isNum(r.rated))                                return false;
       if(cap==='up10' &&!(r.rated<=10000))               return false;
       if(cap==='10-20'&&!(r.rated>10000&&r.rated<=20000))return false;
       if(cap==='20+'  &&!(r.rated>20000))                return false;
@@ -1351,7 +1455,7 @@ function applyF(name){
     if(pb_qi&&pb_qi!=='none'&&r.qi_standard!==pb_qi)  return false;
     return true;
   });
-  if(S[name].col>=0)out=doSort(name,out);
+  if(S[name].col)out=doSort(name,out);
   S[name].sorted=out;
   document.getElementById('lbl-'+name).textContent=out.length===DATA[name].length?`${out.length} items`:`${out.length} of ${DATA[name].length}`;
   document.getElementById('cnt-'+name).textContent=out.length;
@@ -1361,20 +1465,22 @@ function applyF(name){
 // ══════════════════════════════════════════════
 //  SORT
 // ══════════════════════════════════════════════
-const COLS={
-  cables:    ['name','conn','len','res','pwr','spd','stress_conn_c','v','price'],
-  chargers:  ['name','pwr','eff','ripple','case_temp_total_c','v','price'],
-  powerbanks:['name','rated_wh','real','maxpwr','ripple','case_temp_total_c','v','price'],
-};
-
-function srt(name,col){
+// Раньше подсветка активного заголовка шла по физическому индексу <th> в DOM,
+// а сама сортировка — по "логическому" номеру среди сортируемых колонок
+// (переданному прямо в onclick). Эти два индекса не совпадали, как только в
+// таблице появлялась хоть одна несортируемая колонка между сортируемыми
+// (например "Ports" или "E-Marker") — подсветка уезжала на соседний заголовок.
+// Теперь вместо номера передаём сам ключ поля — сортировка и подсветка бьют
+// по одному и тому же значению, разъехаться им негде.
+function srt(name,key){
   const s=S[name];
-  s.asc=(s.col===col)?!s.asc:true;
-  s.col=col;
-  document.querySelectorAll(`#tbl-${name} thead th`).forEach((th,i)=>{
-    th.classList.toggle('on',i===col);
+  s.asc=(s.col===key)?!s.asc:true;
+  s.col=key;
+  document.querySelectorAll(`#tbl-${name} thead th`).forEach(th=>{
+    const on=th.dataset.sortKey===key;
+    th.classList.toggle('on',on);
     const a=th.querySelector('.sa');
-    if(a)a.textContent=i===col?(s.asc?'↑':'↓'):'↕';
+    if(a)a.textContent=on?(s.asc?'↑':'↓'):'↕';
   });
   const rows=S[name].sorted||DATA[name];
   S[name].sorted=doSort(name,rows);
@@ -1383,10 +1489,17 @@ function srt(name,col){
 
 function doSort(name,arr){
   const s=S[name];
-  if(s.col<0)return arr;
-  const key=COLS[name][s.col];
+  if(!s.col)return arr;
+  const key=s.col;
   return [...arr].sort((a,b)=>{
     const av=a[key],bv=b[key];
+    // Строки без данных по этому полю — всегда в конец списка, независимо
+    // от направления сортировки (иначе null проваливается то в начало, то
+    // в конец в зависимости от ↑/↓, что выглядит как случайное поведение)
+    const an=av===null||av===undefined||av==='', bn=bv===null||bv===undefined||bv==='';
+    if(an&&bn) return 0;
+    if(an) return 1;
+    if(bn) return -1;
     let res=typeof av==='string'?av.localeCompare(bv):av-bv;
     return s.asc?res:-res;
   });
@@ -1405,6 +1518,15 @@ function sw(name,btn){
   if(notice) notice.style.display=(name==='gear'||name==='support')?'none':'flex';
   if(CMP[name]){ activeTab=name; updateCmpBar(); }
   else { document.getElementById('cmp-bar').classList.remove('show'); }
+  // запоминаем вкладку, чтобы при следующем заходе открыть именно её
+  try{ localStorage.setItem('wt-last-tab', name); }catch(e){}
+}
+function restoreLastTab(){
+  let last;
+  try{ last = localStorage.getItem('wt-last-tab'); }catch(e){ return; }
+  if(!last) return;
+  const btn = document.querySelector(`[onclick*="sw('${last}'"]`);
+  if(btn) sw(last, btn);
 }
 
 // ══════════════════════════════════════════════
