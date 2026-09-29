@@ -349,6 +349,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
      <option value="">All PD standards</option>
      <option value="PD 3.0">PD 3.0 (up to 20V)</option>
      <option value="PD 3.1 EPR">PD 3.1 EPR (28V+)</option>
+     <option value="PD 3.2">PD 3.2 (up to 20V)</option>
+     <option value="PD 3.2 EPR">PD 3.2 EPR (28V+)</option>
     </select>
     <select id="f-chargers-display" onchange="applyF('chargers')">
      <option value="">Display: any</option>
@@ -417,6 +419,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
      <option value="">All PD standards</option>
      <option value="PD 3.0">PD 3.0 (up to 20V)</option>
      <option value="PD 3.1 EPR">PD 3.1 EPR (28V+)</option>
+     <option value="PD 3.2">PD 3.2 (up to 20V)</option>
+     <option value="PD 3.2 EPR">PD 3.2 EPR (28V+)</option>
     </select>
     <select id="f-powerbanks-cable" onchange="applyF('powerbanks')">
      <option value="">Built-in cable: any</option>
@@ -1399,6 +1403,9 @@ function applyF(name){
   const ch_form  = name==='chargers'   ? document.getElementById('f-chargers-form')?.value||''     : '';
   const ch_app   = name==='chargers'   ? document.getElementById('f-chargers-app')?.value||''      : '';
   const cap      = name==='powerbanks' ? document.getElementById('f-powerbanks-cap')?.value||''    : '';
+  // Дропдаун "All PD standards" у пауэрбанков существовал в разметке, но его
+  // значение нигде не читалось — выбор в нём не делал вообще ничего
+  const pb_pd    = name==='powerbanks' ? document.getElementById('f-powerbanks-pd')?.value||''     : '';
   const pb_cable = name==='powerbanks' ? document.getElementById('f-powerbanks-cable')?.value||''  : '';
   const pb_disp  = name==='powerbanks' ? document.getElementById('f-powerbanks-display')?.value||'': '';
   const pb_pt    = name==='powerbanks' ? document.getElementById('f-powerbanks-pt')?.value||''     : '';
@@ -1446,6 +1453,7 @@ function applyF(name){
       if(cap==='10-20'&&!(r.rated>10000&&r.rated<=20000))return false;
       if(cap==='20+'  &&!(r.rated>20000))                return false;
     }
+    if(pb_pd    &&r.pd!==pb_pd)      return false;
     if(pb_cable==='yes'&&!r.cable)   return false;
     if(pb_cable==='no' && r.cable)   return false;
     if(pb_disp ==='yes'&&!r.display) return false;
