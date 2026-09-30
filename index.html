@@ -1444,13 +1444,22 @@ function applyF(name){
     // числовую ось без дыр и без пересечений: (-∞,65] | (65,100) | [100,140) | [140,∞) —
     // так подпись на кнопке всегда совпадает с тем, что реально туда попадёт.
     if(pwr){
-      // null (нет данных) сравнивается с числами как 0 — без явной проверки
-      // строка без замера мощности могла случайно попасть в диапазон "до 65Вт"
-      if(!isNum(r.total_pwr))                                return false;
-      if(pwr==='up65'   &&!(r.total_pwr<=65))                return false;
-      if(pwr==='65-99'  &&!(r.total_pwr>65&&r.total_pwr<100))return false;
-      if(pwr==='100-139'&&!(r.total_pwr>=100&&r.total_pwr<140)) return false;
-      if(pwr==='140+'   &&!(r.total_pwr>=140))               return false;
+      // total_pwr в таблице часто честно оставляют пустым для однопортовых
+      // зарядок — она попросту равна pwr, дублировать незачем. Остальной
+      // сайт уже так и считает (бейдж "full power solo", строка "N W total"
+      // в карточке — везде тихо откатываются на pwr, если total_pwr пуст).
+      // Фильтр диапазонов требовал total_pwr строго, и именно из-за этого
+      // такие зарядки полностью выпадали из ЛЮБОГО диапазона мощности —
+      // отсюда пустой список на "65-99W", хотя подходящая модель была.
+      const totalPwr = isNum(r.total_pwr) ? r.total_pwr : r.pwr;
+      // null (нет данных вообще, ни total_pwr, ни pwr) сравнивается с числами
+      // как 0 — без явной проверки строка без единого замера мощности могла
+      // случайно попасть в диапазон "до 65Вт"
+      if(!isNum(totalPwr))                                return false;
+      if(pwr==='up65'   &&!(totalPwr<=65))                return false;
+      if(pwr==='65-99'  &&!(totalPwr>65&&totalPwr<100))   return false;
+      if(pwr==='100-139'&&!(totalPwr>=100&&totalPwr<140)) return false;
+      if(pwr==='140+'   &&!(totalPwr>=140))               return false;
     }
     if(ports){
       if(ports==='1'&&r.ports_n!==1) return false;
