@@ -255,9 +255,9 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
    </div>
   </div>
   <div class="tab-bar">
-   <button class="tab on" onclick="sw('cables',this)"><i class="ti ti-plug"></i> Cables <span class="cnt" id="cnt-cables">6</span></button>
-   <button class="tab" onclick="sw('chargers',this)"><i class="ti ti-bolt"></i> Chargers <span class="cnt" id="cnt-chargers">4</span></button>
-   <button class="tab" onclick="sw('powerbanks',this)"><i class="ti ti-battery-charging"></i> Powerbanks <span class="cnt" id="cnt-powerbanks">3</span></button>
+   <button class="tab on" onclick="sw('cables',this)"><i class="ti ti-plug"></i> Cables <span class="cnt" id="cnt-cables">…</span></button>
+   <button class="tab" onclick="sw('chargers',this)"><i class="ti ti-bolt"></i> Chargers <span class="cnt" id="cnt-chargers">…</span></button>
+   <button class="tab" onclick="sw('powerbanks',this)"><i class="ti ti-battery-charging"></i> Powerbanks <span class="cnt" id="cnt-powerbanks">…</span></button>
    <button class="tab" onclick="sw('gear',this)"><i class="ti ti-tool"></i> Test Gear</button>
    <button class="tab tab-support" onclick="sw('support',this)"><i class="ti ti-heart"></i> Support</button>
   </div>
@@ -707,7 +707,16 @@ const TYPES = {
 };
 
 function castRow(row, types){
-  const out = {...row};
+  // Триммим ВСЕ текстовые поля на входе, не только числовые/булевы.
+  // Случайный пробел в начале/конце ячейки в Google Таблице (например "PD 3.0 "
+  // вместо "PD 3.0") невидим на экране и не мешает поиску (это подстрока), но
+  // ломает точное сравнение "===" в дропдаунах-фильтрах — выбор конкретного
+  // значения молча даёт пустой список, хотя "All ..." (без фильтра) работает.
+  const out = {};
+  for(const key in row){
+    const v = row[key];
+    out[key] = typeof v==='string' ? v.trim() : v;
+  }
   for(const key in types){
     const t = types[key];
     const raw = String(out[key] ?? '').trim();
@@ -1421,14 +1430,20 @@ function applyF(name){
     if(c_emark==='no'&&r.emark)return false;
     if(c_spd&&Number(r.adv_spd)!==Number(c_spd)&&Number(r.spd)!==Number(c_spd))return false;
     // Charger filters
+    // Диапазон мощности — это заявленный класс устройства целиком (то, что
+    // напечатано на коробке, "100W charger"), а не то, что выжмет один порт
+    // соло. Раньше фильтр сравнивал именно r.pwr (мощность одного порта),
+    // из-за чего, например, Ugreen Nexode Pro 100W (pwr=100/port, но
+    // total_pwr=95 суммарно) мог попасть не в тот диапазон, а зарядки,
+    // которые честно указывают total_pwr ниже pwr, — вообще выпадать.
     if(pwr){
       // null (нет данных) сравнивается с числами как 0 — без явной проверки
       // строка без замера мощности могла случайно попасть в диапазон "до 65Вт"
-      if(!isNum(r.pwr))                              return false;
-      if(pwr==='up65'   &&!(r.pwr<=65))             return false;
-      if(pwr==='65-100' &&!(r.pwr>65&&r.pwr<=100))  return false;
-      if(pwr==='100-140'&&!(r.pwr>100&&r.pwr<=140)) return false;
-      if(pwr==='140+'   &&!(r.pwr>140))              return false;
+      if(!isNum(r.total_pwr))                                return false;
+      if(pwr==='up65'   &&!(r.total_pwr<=65))               return false;
+      if(pwr==='65-100' &&!(r.total_pwr>65&&r.total_pwr<=100))  return false;
+      if(pwr==='100-140'&&!(r.total_pwr>100&&r.total_pwr<=140)) return false;
+      if(pwr==='140+'   &&!(r.total_pwr>140))                return false;
     }
     if(ports){
       if(ports==='1'&&r.ports_n!==1) return false;
