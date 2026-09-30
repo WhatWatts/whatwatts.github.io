@@ -335,8 +335,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
     <select id="f-chargers-pwr" onchange="applyF('chargers')">
      <option value="">All power ranges</option>
      <option value="up65">Up to 65 W</option>
-     <option value="65-100">65–100 W</option>
-     <option value="100-140">100–140 W</option>
+     <option value="65-99">65–99 W</option>
+     <option value="100-139">100–139 W</option>
      <option value="140+">140 W+</option>
     </select>
     <select id="f-chargers-ports" onchange="applyF('chargers')">
@@ -1436,14 +1436,21 @@ function applyF(name){
     // из-за чего, например, Ugreen Nexode Pro 100W (pwr=100/port, но
     // total_pwr=95 суммарно) мог попасть не в тот диапазон, а зарядки,
     // которые честно указывают total_pwr ниже pwr, — вообще выпадать.
+    //
+    // Границы диапазонов раньше пересекались по надписи: "Up to 65W"
+    // (<=65) и "65–100W" (>65 && <=100) оба формально "содержали" 65Вт по
+    // смыслу подписи, а 100Вт-зарядка молча уходила во второй диапазон,
+    // хотя на кнопке было написано "100–140W". Теперь границы разбивают
+    // числовую ось без дыр и без пересечений: (-∞,65] | (65,100) | [100,140) | [140,∞) —
+    // так подпись на кнопке всегда совпадает с тем, что реально туда попадёт.
     if(pwr){
       // null (нет данных) сравнивается с числами как 0 — без явной проверки
       // строка без замера мощности могла случайно попасть в диапазон "до 65Вт"
       if(!isNum(r.total_pwr))                                return false;
-      if(pwr==='up65'   &&!(r.total_pwr<=65))               return false;
-      if(pwr==='65-100' &&!(r.total_pwr>65&&r.total_pwr<=100))  return false;
-      if(pwr==='100-140'&&!(r.total_pwr>100&&r.total_pwr<=140)) return false;
-      if(pwr==='140+'   &&!(r.total_pwr>140))                return false;
+      if(pwr==='up65'   &&!(r.total_pwr<=65))                return false;
+      if(pwr==='65-99'  &&!(r.total_pwr>65&&r.total_pwr<100))return false;
+      if(pwr==='100-139'&&!(r.total_pwr>=100&&r.total_pwr<140)) return false;
+      if(pwr==='140+'   &&!(r.total_pwr>=140))               return false;
     }
     if(ports){
       if(ports==='1'&&r.ports_n!==1) return false;
