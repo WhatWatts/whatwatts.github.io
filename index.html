@@ -348,7 +348,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
     <select id="f-chargers-pd" onchange="applyF('chargers')">
      <option value="">All PD standards</option>
      <option value="PD 3.0">PD 3.0 (up to 20V)</option>
-     <option value="PD 3.1 EPR">PD 3.1 EPR (28V+)</option>
+     <option value="PD 3.1">PD 3.1 EPR (28V+)</option>
      <option value="PD 3.2">PD 3.2</option>
     </select>
     <select id="f-chargers-display" onchange="applyF('chargers')">
@@ -417,7 +417,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
     <select id="f-powerbanks-pd" onchange="applyF('powerbanks')">
      <option value="">All PD standards</option>
      <option value="PD 3.0">PD 3.0 (up to 20V)</option>
-     <option value="PD 3.1 EPR">PD 3.1 EPR (28V+)</option>
+     <option value="PD 3.1">PD 3.1 EPR (28V+)</option>
      <option value="PD 3.2">PD 3.2</option>
     </select>
     <select id="f-powerbanks-cable" onchange="applyF('powerbanks')">
@@ -755,7 +755,14 @@ function pdMatches(cellValue, filterValue){
   // такую пару всё ещё не совпадало ("pd3.0" не начинается с "pd 3.0").
   // Без пробелов вообще обе формы записи сходятся к одному и тому же "pd3.0".
   const norm = s => String(s).toLowerCase().replace(/,/g,'.').replace(/\s+/g,'');
-  return norm(cellValue).startsWith(norm(filterValue));
+  const c = norm(cellValue), f = norm(filterValue);
+  if(!c.startsWith(f)) return false;
+  // Страховка от пересечения версий: "pd3.1" не должен засчитываться за
+  // будущую гипотетическую "pd3.10" просто потому что это префикс. Символ
+  // сразу после совпавшей части либо отсутствует, либо не цифра (например
+  // буква "e" из "epr", или скобка из "(up to 20v)").
+  const next = c[f.length];
+  return next===undefined || !/[0-9]/.test(next);
 }
 
 // Раньше при сетевой ошибке (Google Sheets недоступен, лист удалён и т.п.)
