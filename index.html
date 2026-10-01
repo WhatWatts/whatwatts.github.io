@@ -349,8 +349,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
      <option value="">All PD standards</option>
      <option value="PD 3.0">PD 3.0 (up to 20V)</option>
      <option value="PD 3.1 EPR">PD 3.1 EPR (28V+)</option>
-     <option value="PD 3.2">PD 3.2 (up to 20V)</option>
-     <option value="PD 3.2 EPR">PD 3.2 EPR (28V+)</option>
+     <option value="PD 3.2">PD 3.2</option>
     </select>
     <select id="f-chargers-display" onchange="applyF('chargers')">
      <option value="">Display: any</option>
@@ -419,8 +418,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
      <option value="">All PD standards</option>
      <option value="PD 3.0">PD 3.0 (up to 20V)</option>
      <option value="PD 3.1 EPR">PD 3.1 EPR (28V+)</option>
-     <option value="PD 3.2">PD 3.2 (up to 20V)</option>
-     <option value="PD 3.2 EPR">PD 3.2 EPR (28V+)</option>
+     <option value="PD 3.2">PD 3.2</option>
     </select>
     <select id="f-powerbanks-cable" onchange="applyF('powerbanks')">
      <option value="">Built-in cable: any</option>
@@ -739,6 +737,21 @@ function castRow(row, types){
 // разные способы проверки одного и того же в каждой функции рендера.
 function isNum(v){ return typeof v==='number' && !Number.isNaN(v); }
 const DASH='<span class="sub">—</span>';
+// Строгое "===" на поле pd (PD-протокол) постоянно давало пустой список на
+// реальных данных: в таблице это поле иногда заполняют не коротким кодом
+// ("PD 3.0"), а полным текстом вроде "PD 3.0 (up to 20V)" — ровно той же
+// фразой, что написана на кнопке в выпадающем списке, — либо с опечаткой
+// по регистру/запятой вместо точки. Строгое сравнение не прощает ни того,
+// ни другого, и single wrong cell делает фильтр мёртвым целиком. Сравниваем
+// по нормализованному префиксу: регистр и "," → "." не важны, а значение в
+// таблице может честно продолжаться дальше ("PD 3.0 (up to 20V)" всё равно
+// засчитывается за "PD 3.0").
+function pdMatches(cellValue, filterValue){
+  if(!filterValue) return true;
+  if(!cellValue) return false;
+  const norm = s => String(s).toLowerCase().replace(/,/g,'.').replace(/\s+/g,' ').trim();
+  return norm(cellValue).startsWith(norm(filterValue));
+}
 
 // Раньше при сетевой ошибке (Google Sheets недоступен, лист удалён и т.п.)
 // промис всё равно резолвился в [] — пользователь видел "No results found",
@@ -1468,7 +1481,7 @@ function applyF(name){
       if(ports==='2'&&r.ports_n!==2) return false;
       if(ports==='3'&&r.ports_n<3)   return false;
     }
-    if(pd       &&r.pd!==pd)                         return false;
+    if(pd       &&!pdMatches(r.pd,pd))                return false;
     if(ch_disp  ==='yes'&&!r.display)                return false;
     if(ch_disp  ==='no' && r.display)                return false;
     if(ch_cable ==='yes'&&!r.cable_in)               return false;
@@ -1486,7 +1499,7 @@ function applyF(name){
       if(cap==='10-20'&&!(r.rated>10000&&r.rated<=20000))return false;
       if(cap==='20+'  &&!(r.rated>20000))                return false;
     }
-    if(pb_pd    &&r.pd!==pb_pd)      return false;
+    if(pb_pd    &&!pdMatches(r.pd,pb_pd))      return false;
     if(pb_cable==='yes'&&!r.cable)   return false;
     if(pb_cable==='no' && r.cable)   return false;
     if(pb_disp ==='yes'&&!r.display) return false;
