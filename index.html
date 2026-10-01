@@ -749,7 +749,12 @@ const DASH='<span class="sub">—</span>';
 function pdMatches(cellValue, filterValue){
   if(!filterValue) return true;
   if(!cellValue) return false;
-  const norm = s => String(s).toLowerCase().replace(/,/g,'.').replace(/\s+/g,' ').trim();
+  // Убираем ПРОБЕЛЫ ПОЛНОСТЬЮ, а не схлопываем до одного: в реальных данных
+  // встречается "PD3.0" без единого пробела между буквами и цифрой, а в
+  // фильтре — "PD 3.0" с пробелом. Схлопывание лишних пробелов до одного
+  // такую пару всё ещё не совпадало ("pd3.0" не начинается с "pd 3.0").
+  // Без пробелов вообще обе формы записи сходятся к одному и тому же "pd3.0".
+  const norm = s => String(s).toLowerCase().replace(/,/g,'.').replace(/\s+/g,'');
   return norm(cellValue).startsWith(norm(filterValue));
 }
 
