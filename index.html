@@ -334,7 +334,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
     <input type="text" id="s-chargers" placeholder="🔍 Search chargers…" oninput="applyF('chargers')">
     <select id="f-chargers-pwr" onchange="applyF('chargers')">
      <option value="">All power ranges</option>
-     <option value="up65">Up to 65 W</option>
+     <option value="up64">Up to 64 W</option>
      <option value="65-99">65–99 W</option>
      <option value="100-139">100–139 W</option>
      <option value="140+">140 W+</option>
@@ -1441,8 +1441,10 @@ function applyF(name){
     // (<=65) и "65–100W" (>65 && <=100) оба формально "содержали" 65Вт по
     // смыслу подписи, а 100Вт-зарядка молча уходила во второй диапазон,
     // хотя на кнопке было написано "100–140W". Теперь границы разбивают
-    // числовую ось без дыр и без пересечений: (-∞,65] | (65,100) | [100,140) | [140,∞) —
+    // числовую ось без дыр и без пересечений: (-∞,64] | [65,100) | [100,140) | [140,∞) —
     // так подпись на кнопке всегда совпадает с тем, что реально туда попадёт.
+    // "Up to 64W" и "65-99W" разведены по целым числам нарочно: 65-ваттная
+    // зарядка однозначно уходит во вторую корзину, а не повисает на стыке.
     if(pwr){
       // total_pwr в таблице часто честно оставляют пустым для однопортовых
       // зарядок — она попросту равна pwr, дублировать незачем. Остальной
@@ -1456,8 +1458,8 @@ function applyF(name){
       // как 0 — без явной проверки строка без единого замера мощности могла
       // случайно попасть в диапазон "до 65Вт"
       if(!isNum(totalPwr))                                return false;
-      if(pwr==='up65'   &&!(totalPwr<=65))                return false;
-      if(pwr==='65-99'  &&!(totalPwr>65&&totalPwr<100))   return false;
+      if(pwr==='up64'   &&!(totalPwr<=64))                return false;
+      if(pwr==='65-99'  &&!(totalPwr>=65&&totalPwr<100))  return false;
       if(pwr==='100-139'&&!(totalPwr>=100&&totalPwr<140)) return false;
       if(pwr==='140+'   &&!(totalPwr>=140))               return false;
     }
