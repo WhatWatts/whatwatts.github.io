@@ -290,7 +290,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
      <option value="240">240 W</option>
     </select>
     <select id="f-cables-emark" onchange="applyF('cables')">
-     <option value="">E-Marker: any</option>
+     <option value="">E-Marker: Any</option>
      <option value="yes">Has E-Marker</option>
      <option value="no">No E-Marker</option>
     </select>
@@ -352,27 +352,27 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
      <option value="PD 3.2">PD 3.2</option>
     </select>
     <select id="f-chargers-display" onchange="applyF('chargers')">
-     <option value="">Display: any</option>
+     <option value="">Display: Any</option>
      <option value="yes">Display: Yes</option>
      <option value="no">Display: No</option>
     </select>
     <select id="f-chargers-cable" onchange="applyF('chargers')">
-     <option value="">Built-in cable: any</option>
+     <option value="">Built-in cable: Any</option>
      <option value="yes">Built-in cable: Yes</option>
      <option value="no">Built-in cable: No</option>
     </select>
     <select id="f-chargers-outlet" onchange="applyF('chargers')">
-     <option value="">AC outlet: any</option>
+     <option value="">AC outlet: Any</option>
      <option value="yes">AC outlet: Yes</option>
      <option value="no">AC outlet: No</option>
     </select>
     <select id="f-chargers-form" onchange="applyF('chargers')">
-     <option value="">Form: any</option>
+     <option value="">Form: Any</option>
      <option value="wall">Form: Wall plug</option>
      <option value="corded">Form: Corded</option>
     </select>
     <select id="f-chargers-app" onchange="applyF('chargers')">
-     <option value="">App control: any</option>
+     <option value="">App control: Any</option>
      <option value="yes">App control: Yes</option>
      <option value="no">App control: No</option>
     </select>
@@ -421,23 +421,23 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
      <option value="PD 3.2">PD 3.2</option>
     </select>
     <select id="f-powerbanks-cable" onchange="applyF('powerbanks')">
-     <option value="">Built-in cable: any</option>
+     <option value="">Built-in cable: Any</option>
      <option value="yes">Built-in cable: Yes</option>
      <option value="no">Built-in cable: No</option>
     </select>
     <select id="f-powerbanks-display" onchange="applyF('powerbanks')">
-     <option value="">Display: any</option>
+     <option value="">Display: Any</option>
      <option value="yes">Display: Yes</option>
      <option value="no">Display: No</option>
     </select>
     <select id="f-powerbanks-pt" onchange="applyF('powerbanks')">
-     <option value="">Pass-through: any</option>
+     <option value="">Pass-through: Any</option>
      <option value="Yes">Pass-through: Yes</option>
      <option value="Limited">Pass-through: Limited</option>
      <option value="No">Pass-through: No</option>
     </select>
     <select id="f-powerbanks-qi" onchange="applyF('powerbanks')">
-     <option value="">Wireless (Qi): any</option>
+     <option value="">Wireless (Qi): Any</option>
      <option value="none">Wireless (Qi): None</option>
      <option value="Qi2.0 (15W)">Qi2.0 (15W)</option>
      <option value="Qi2.2 (25W)">Qi2.2 (25W)</option>
@@ -728,7 +728,21 @@ function castRow(row, types){
     // Пусто ≠ false: пустая ячейка означает "тест не проводился", а не "провален".
     // Раньше оба случая схлопывались в false, и было невозможно отличить "не тестировали"
     // от настоящего провала теста.
-    if(t==='bool') out[key] = raw==='' ? null : (raw.toLowerCase()==='true' || raw.toLowerCase()==='yes');
+    if(t==='bool'){
+      // Точное сравнение raw==='true' ломалось точно так же, как раньше с PD:
+      // если в ячейке не голое "Yes"/"No", а описательный текст ("Yes - per-port
+      // limits", "No native app"), строгое "===" не находит ни истину, ни ложь.
+      // Сравниваем по началу строки — "yes..."/"true..." это true,
+      // "no..."/"false..." это false, пусто — null (нет данных), а любой
+      // совсем нераспознанный текст — тоже null, а не угаданное true/false.
+      const low = raw.toLowerCase();
+      if(raw==='')                                               out[key] = null;
+      else if(low.startsWith('true')||low.startsWith('yes')||low==='y'||low==='1'||low==='✓')
+                                                                   out[key] = true;
+      else if(low.startsWith('false')||low.startsWith('no')||low==='n'||low==='0')
+                                                                   out[key] = false;
+      else                                                        out[key] = null;
+    }
   }
   return out;
 }
