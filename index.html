@@ -1224,6 +1224,7 @@ const CMP_FIELDS={
     {label:'Price',          get:r=>r.price?`$${r.price} @ review ${valueTag(r.value)}`:'—', win:rows=>rows.filter(r=>r.price).length?rows.filter(r=>r.price).reduce((a,b)=>b.price<a.price?b:a).name:null},
     {label:'Verdict',        get:r=>badge(r.v)},
     {label:'Notes',          get:r=>r.extra?escAttr(r.extra):'—'},
+    {label:'Links',          get:r=>`<div class="btns">${buyBtn(r.buy_am,r.buy_ali)}${reviewBtn(r.yt)}</div>`},
   ],
   chargers:[
     {label:'Ports',          get:r=>`<span class="chip">${escAttr(r.ports)}</span>`},
@@ -1241,6 +1242,7 @@ const CMP_FIELDS={
     {label:'Price',          get:r=>r.price?`$${r.price} @ review ${valueTag(r.value)}`:'—', win:rows=>rows.filter(r=>r.price).length?rows.filter(r=>r.price).reduce((a,b)=>b.price<a.price?b:a).name:null},
     {label:'Verdict',        get:r=>badge(r.v)},
     {label:'Notes',          get:r=>r.extra?escAttr(r.extra):'—'},
+    {label:'Links',          get:r=>`<div class="btns">${buyBtn(r.buy_am,r.buy_ali)}${reviewBtn(r.yt)}</div>`},
   ],
   powerbanks:[
     {label:'Rated Capacity', get:r=>`${isNum(r.rated)?r.rated.toLocaleString()+' mAh':DASH}<div class="sub">${isNum(r.rated_wh)?r.rated_wh+' Wh rated':''}</div>`, win:rows=>{const c=rows.filter(r=>isNum(r.rated_wh)); return c.length?c.reduce((a,b)=>b.rated_wh>a.rated_wh?b:a).name:null;}},
@@ -1256,6 +1258,7 @@ const CMP_FIELDS={
     {label:'Built-in Cable', get:r=>yn(r.cable)},
     {label:'Price',          get:r=>r.price?`$${r.price} @ review ${valueTag(r.value)}`:'—', win:rows=>rows.filter(r=>r.price).length?rows.filter(r=>r.price).reduce((a,b)=>b.price<a.price?b:a).name:null},
     {label:'Verdict',        get:r=>badge(r.v)},
+    {label:'Links',          get:r=>lnks(r.yt,r.buy)},
   ],
 };
 
