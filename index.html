@@ -6,6 +6,19 @@
 <meta name='impact-site-verification' content='e0f27593-98c2-4be6-a5c4-c522fd86dd3f'>
 <title>WhatWatts — USB Testing Database</title>
 <meta name="description" content="Real-world USB cable, charger and powerbank tests. Actual measurements, not marketing specs.">
+<link rel="canonical" href="https://whatwatts.github.io/">
+<!-- Open Graph / social (Reddit, Discord, Telegram, Facebook) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="WhatWatts">
+<meta property="og:title" content="WhatWatts — USB Testing Database">
+<meta property="og:description" content="Real-world USB cable, charger and powerbank tests. Actual measurements, not marketing specs.">
+<meta property="og:url" content="https://whatwatts.github.io/">
+<meta property="og:image" content="https://whatwatts.github.io/android-chrome-512x512.png">
+<!-- Twitter/X Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WhatWatts — USB Testing Database">
+<meta name="twitter:description" content="Real-world USB cable, charger and powerbank tests. Actual measurements, not marketing specs.">
+<meta name="twitter:image" content="https://whatwatts.github.io/android-chrome-512x512.png">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -669,11 +682,8 @@ function toggleTheme(){
 }
 
 // ══════════════════════════════════════════════
-//  DATA — грузится из Google Sheets (CSV)
 // ══════════════════════════════════════════════
 
-// Вставь сюда три ссылки, полученные через
-// File → Share → Publish to web → [лист] → CSV
 const URLS = {
   cables:     'https://docs.google.com/spreadsheets/d/e/2PACX-1vTUTJYjJlglY6KCi2xVJ6SQEu4eupsQHAmwN2clNO7UYdRoCW3VylfKJQFfujAzk4uTu1hCISzTiK7V/pub?gid=0&single=true&output=csv',
   chargers:   'https://docs.google.com/spreadsheets/d/e/2PACX-1vTUTJYjJlglY6KCi2xVJ6SQEu4eupsQHAmwN2clNO7UYdRoCW3VylfKJQFfujAzk4uTu1hCISzTiK7V/pub?gid=684819996&single=true&output=csv',
@@ -682,7 +692,6 @@ const URLS = {
 
 let DATA = { cables: [], chargers: [], powerbanks: [] };
 
-// какие поля нужно превратить из текста CSV в числа/булевы
 const TYPES = {
   cables:     { len:'num', res:'num', pwr:'num', spd:'num', adv_spd:'num', price:'num',
                 stress_conn_c:'num', stress_cable_c:'num',
@@ -705,11 +714,6 @@ const TYPES = {
 };
 
 function castRow(row, types){
-  // Триммим ВСЕ текстовые поля на входе, не только числовые/булевы.
-  // Случайный пробел в начале/конце ячейки в Google Таблице (например "PD 3.0 "
-  // вместо "PD 3.0") невидим на экране и не мешает поиску (это подстрока), но
-  // ломает точное сравнение "===" в дропдаунах-фильтрах — выбор конкретного
-  // значения молча даёт пустой список, хотя "All ..." (без фильтра) работает.
   const out = {};
   for(const key in row){
     const v = row[key];
@@ -718,23 +722,11 @@ function castRow(row, types){
   for(const key in types){
     const t = types[key];
     const raw = String(out[key] ?? '').trim();
-    // Пусто ≠ 0: пустая ячейка означает "нет данных", а не "измерили и вышло 0".
-    // Раньше parseFloat('')||0 схлопывал оба случая в 0, и, например, отсутствующая
-    // температура порта показывалась как настоящий "0°C".
     if(t==='num'){
       const n = parseFloat(raw);
       out[key] = raw==='' || Number.isNaN(n) ? null : n;
     }
-    // Пусто ≠ false: пустая ячейка означает "тест не проводился", а не "провален".
-    // Раньше оба случая схлопывались в false, и было невозможно отличить "не тестировали"
-    // от настоящего провала теста.
     if(t==='bool'){
-      // Точное сравнение raw==='true' ломалось точно так же, как раньше с PD:
-      // если в ячейке не голое "Yes"/"No", а описательный текст ("Yes - per-port
-      // limits", "No native app"), строгое "===" не находит ни истину, ни ложь.
-      // Сравниваем по началу строки — "yes..."/"true..." это true,
-      // "no..."/"false..." это false, пусто — null (нет данных), а любой
-      // совсем нераспознанный текст — тоже null, а не угаданное true/false.
       const low = raw.toLowerCase();
       if(raw==='')                                               out[key] = null;
       else if(low.startsWith('true')||low.startsWith('yes')||low==='y'||low==='1'||low==='✓')
@@ -746,48 +738,23 @@ function castRow(row, types){
   }
   return out;
 }
-// Единая проверка "это реальное число, а не null/NaN из пустой ячейки" —
-// используется по всему сайту вместо голого typeof, чтобы не разводить
-// разные способы проверки одного и того же в каждой функции рендера.
 function isNum(v){ return typeof v==='number' && !Number.isNaN(v); }
 const DASH='<span class="sub">—</span>';
-// Строгое "===" на поле pd (PD-протокол) постоянно давало пустой список на
-// реальных данных: в таблице это поле иногда заполняют не коротким кодом
-// ("PD 3.0"), а полным текстом вроде "PD 3.0 (up to 20V)" — ровно той же
-// фразой, что написана на кнопке в выпадающем списке, — либо с опечаткой
-// по регистру/запятой вместо точки. Строгое сравнение не прощает ни того,
-// ни другого, и single wrong cell делает фильтр мёртвым целиком. Сравниваем
-// по нормализованному префиксу: регистр и "," → "." не важны, а значение в
-// таблице может честно продолжаться дальше ("PD 3.0 (up to 20V)" всё равно
-// засчитывается за "PD 3.0").
 function pdMatches(cellValue, filterValue){
   if(!filterValue) return true;
   if(!cellValue) return false;
-  // Убираем ПРОБЕЛЫ ПОЛНОСТЬЮ, а не схлопываем до одного: в реальных данных
-  // встречается "PD3.0" без единого пробела между буквами и цифрой, а в
-  // фильтре — "PD 3.0" с пробелом. Схлопывание лишних пробелов до одного
-  // такую пару всё ещё не совпадало ("pd3.0" не начинается с "pd 3.0").
-  // Без пробелов вообще обе формы записи сходятся к одному и тому же "pd3.0".
   const norm = s => String(s).toLowerCase().replace(/,/g,'.').replace(/\s+/g,'');
   const c = norm(cellValue), f = norm(filterValue);
   if(!c.startsWith(f)) return false;
-  // Страховка от пересечения версий: "pd3.1" не должен засчитываться за
-  // будущую гипотетическую "pd3.10" просто потому что это префикс. Символ
-  // сразу после совпавшей части либо отсутствует, либо не цифра (например
-  // буква "e" из "epr", или скобка из "(up to 20v)").
   const next = c[f.length];
   return next===undefined || !/[0-9]/.test(next);
 }
 
-// Раньше при сетевой ошибке (Google Sheets недоступен, лист удалён и т.п.)
-// промис всё равно резолвился в [] — пользователь видел "No results found",
-// неотличимое от honestly-пустой таблицы. LOAD_ERROR помнит, что причина
-// пустоты — не "ничего не нашлось", а "не смогли загрузить".
 let LOAD_ERROR = { cables:false, chargers:false, powerbanks:false };
 
 function loadSheet(name){
   return new Promise(resolve=>{
-    if(!URLS[name] || URLS[name].startsWith('ВСТАВЬ')){
+    if(!URLS[name] || URLS[name].startsWith('PASTE_URL')){
       console.warn(`URL for "${name}" is not set — sheet will be empty`);
       LOAD_ERROR[name]=true;
       resolve([]);
@@ -796,10 +763,6 @@ function loadSheet(name){
     Papa.parse(URLS[name], {
       download:true, header:true, skipEmptyLines:true,
       complete: res => {
-        // PapaParse иногда резолвит "успешно" с пустым res.data при сетевой
-        // ошибке (например 404 на опубликованный CSV) — если данных нет
-        // и при этом сам парсер пожаловался, это тоже ошибка загрузки, а не
-        // honestly пустой лист
         if((!res.data || !res.data.length) && res.errors && res.errors.length){
           console.error(`Failed to load "${name}":`, res.errors);
           LOAD_ERROR[name]=true;
@@ -819,10 +782,6 @@ async function initData(){
   );
   DATA.cables = c; DATA.chargers = ch; DATA.powerbanks = pb;
 
-  // Раз у эффективности/пульсации больше нет отдельного "заглавного" числа —
-  // для сортировки колонок берём худшее/лучшее значение прямо из разбивки
-  // (eff_curve/ripple_curve), а не из отдельного поля. Запасной вариант —
-  // старое поле r.eff/r.ripple, если разбивки ещё нет (старые записи).
   DATA.chargers.forEach(r=>{
     const effPts = parseEffCurve(r.eff_curve);
     r._effSort = effPts.length ? Math.max(...effPts.map(p=>p.val)) : (r.eff||0);
@@ -835,8 +794,6 @@ async function initData(){
   });
 
   ['cables','chargers','powerbanks'].forEach(n=>{
-    // По умолчанию — сортировка по названию, чтобы при первом заходе
-    // список не выглядел вразнобой (порядок строк в самой Google Таблице не гарантирован)
     DATA[n].sort((a,b)=>(a.name||'').localeCompare(b.name||''));
     S[n].sorted = [...DATA[n]];
     const cnt = document.getElementById('cnt-'+n);
@@ -846,7 +803,6 @@ async function initData(){
     render(n, S[n].sorted);
   });
 
-  // Открыть ту вкладку, где пользователь был в прошлый раз
   restoreLastTab();
 }
 
@@ -876,15 +832,9 @@ function yn(v){
 }
 function rc(v){return v<100?'vg':v<200?'vo':'vr'}
 function ec(v){return v>=88?'vg':v>=80?'vo':'vr'}
-// v может быть null (пустая ячейка) — тогда просто "—" без цвета,
-// а не ложный красный/зелёный по случайному сравнению с null
 function resStr(v){ return isNum(v) ? `<span class="${rc(v)}">${v} mΩ</span>` : DASH; }
 function effPctStr(v){ return isNum(v) ? `<span class="${ec(v)}">${v}%</span>` : DASH; }
 
-// Разбор строки вида "5V/3A:84%, 9V/3A:88%" — намеренно нестрогий:
-// не требуем точного суффикса "%"/"mV" и не привязываемся к концу строки,
-// иначе одна нестандартно оформленная точка (лишний пробел, отсутствие
-// единицы) молча выкидывала всю запись из списка.
 function parseEffCurve(curve){
   if(!curve) return [];
   return curve.split(',').map(s=>s.trim()).filter(Boolean).map(s=>{
@@ -908,9 +858,6 @@ function effList(curve,fallback){
   </div>`;
 }
 
-// Та же логика для пульсации: ищем напряжение по первой цифре перед буквой "V"
-// ГДЕ УГОДНО в подписи (а не только строго в начале) — так переживает и опечатки
-// вида "15V3A" без слэша, и случайные лишние пробелы.
 function parseRippleCurve(curve){
   if(!curve) return [];
   return curve.split(',').map(s=>s.trim()).filter(Boolean).map(s=>{
@@ -924,8 +871,6 @@ function parseRippleCurve(curve){
     return {label,mv,voltage:vMatch?parseFloat(vMatch[1]):null};
   }).filter(Boolean);
 }
-// Порог не в абсолютных мВ, а в % от номинального напряжения в этой точке —
-// одни и те же 20 мВ на 5V куда заметнее, чем на 20V
 function rippleColorPct(mv,voltage){
   if(!voltage) return 'vo';
   const pct=mv/(voltage*10);
@@ -941,8 +886,6 @@ function rippleList(curve,fallback){
     ${pts.map(p=>`<div class="${rippleColorPct(p.mv,p.voltage)}">${p.label}: ${p.mv}mV</div>`).join('')}
   </div>`;
 }
-// Аккуратный вывод температуры, которая может отсутствовать в таблице —
-// показываем строку только если значение реально есть, без "0°C" по умолчанию
 function tempLine(label,raw){
   if(raw===undefined||raw===null||String(raw).trim()==='') return '';
   const n=Number(raw);
@@ -1057,16 +1000,9 @@ document.addEventListener('click',()=>{
 // ══════════════════════════════════════════════
 //  COMPARE
 // ══════════════════════════════════════════════
-// Данные из Google Таблицы (name, brand, заметки, ссылки) раньше вставлялись
-// в innerHTML/href без экранирования. Риск невысокий — таблицу ведёт сам
-// автор — но чинить дёшево, а функция уже была определена и просто нигде
-// не вызывалась.
 function escAttr(s){
   return String(s??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
-// Ссылки (yt/buy) идут прямо в href из ячеек таблицы — пропускаем только
-// настоящие http(s)-адреса, чтобы через данные нельзя было подсунуть
-// javascript: или другую схему
 function safeUrl(u){
   if(!u || u==='#') return '#';
   const s=String(u).trim();
@@ -1139,7 +1075,6 @@ function toggleCmp(name,key,cb){
   } else {
     c.sel.delete(key);
   }
-  // включаем/выключаем оставшиеся чекбоксы в зависимости от лимита
   document.querySelectorAll(`#tbl-${name} .cmp-chk`).forEach(el=>{
     if(!el.checked) el.disabled=c.sel.size>=CMP_MAX;
   });
@@ -1166,13 +1101,10 @@ function updateCmpBar(){
   document.getElementById('cmp-bar-go').disabled = n<2;
 }
 
-// ── Какие поля показывать в сравнении для каждой категории ──
 function stressCellCables(r){
   return `${r.stress_pass?'<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Passed</span>':'<span class="b br"><i class="ti ti-flame" style="font-size:12px"></i> Throttled</span>'}
     <div class="sub" style="margin-top:4px">Conn ${tSpan(r.stress_conn_c)} · Cable ${tSpan(r.stress_cable_c)}</div>`;
 }
-// Один блок теста (single ИЛИ total) — вынесен отдельно, чтобы не дублировать
-// разметку между тремя сценариями ниже (только single / только total / оба)
 function chargerTestBlock(label,pass,drop,pwr,portTemp,caseTemp,first){
   const temps=[tempLine('Port',portTemp),tempLine('Case',caseTemp)].filter(Boolean).join(' · ');
   return `<div class="sub" style="font-weight:600${first?'':';margin-top:6px'}">${label}${isNum(pwr)?` (${pwr}W)`:''}</div>
@@ -1180,18 +1112,11 @@ function chargerTestBlock(label,pass,drop,pwr,portTemp,caseTemp,first){
     ${temps?`<div class="sub">${temps}</div>`:''}`;
 }
 function stressCellChargers(r){
-  // Пусто (null) — тест не проводился; true/false — реально протестировано.
-  // Раньше "не проводился" и "провален" выглядели одинаково.
   const hasSingle = r.throttle_single_pass===true || r.throttle_single_pass===false;
   const hasTotal  = r.throttle_total_pass ===true || r.throttle_total_pass ===false;
   if(!hasSingle && !hasTotal) return '<span class="sub">—</span>';
-  // Протестирован только один вариант — показываем ровно то, что реально измерено,
-  // не дорисовывая второй тест, которого не было
   if(hasSingle && !hasTotal) return chargerTestBlock('Single port',r.throttle_single_pass,r.throttle_single_drop,r.pwr,r.port_temp_single_c,r.case_temp_single_c,true);
   if(!hasSingle && hasTotal) return chargerTestBlock('Total load', r.throttle_total_pass, r.throttle_total_drop, r.total_pwr,r.port_temp_total_c,r.case_temp_total_c,true);
-  // Оба теста проведены: у 95% зарядок один порт и так выдаёт всю заявленную
-  // мощность — тогда "Single port (140W)" и "Total load (140W)" с одинаковой
-  // цифрой выглядят как случайное дублирование. Схлопываем в "Max output".
   const merge = r.pwr && r.total_pwr && Number(r.pwr) >= Number(r.total_pwr);
   if(merge) return chargerTestBlock('Max output',r.throttle_single_pass,r.throttle_single_drop,r.pwr,r.port_temp_single_c,r.case_temp_single_c,true);
   return chargerTestBlock('Single port',r.throttle_single_pass,r.throttle_single_drop,r.pwr,r.port_temp_single_c,r.case_temp_single_c,true)
@@ -1210,7 +1135,6 @@ function stressCellPowerbanks(r){
     <div class="sub">Case: ${tSpan(r.case_temp_total_c)}</div>`;
 }
 
-// win: необязательная функция (arr rows)->key лучшего значения, для подсветки победителя в строке
 const CMP_FIELDS={
   cables:[
     {label:'Connector',      get:r=>`<span class="chip">${escAttr(r.conn)}</span>`},
@@ -1419,8 +1343,6 @@ function renderPowerbanks(rows){
   wireCmpCheckboxes('powerbanks',b,rows);
 }
 
-// Общий разметка пустой таблицы — отличает "ничего не нашлось по фильтрам"
-// от "не удалось загрузить данные" (см. LOAD_ERROR выше)
 function emptyRow(name,colspan){
   if(LOAD_ERROR[name]){
     return `<tr><td colspan="${colspan}"><div class="empty"><i class="ti ti-alert-triangle"></i>Couldn't load data — check your connection and <a href="#" onclick="location.reload();return false;" style="color:var(--accent)">try again</a></div></td></tr>`;
@@ -1454,8 +1376,6 @@ function applyF(name){
   const ch_form  = name==='chargers'   ? document.getElementById('f-chargers-form')?.value||''     : '';
   const ch_app   = name==='chargers'   ? document.getElementById('f-chargers-app')?.value||''      : '';
   const cap      = name==='powerbanks' ? document.getElementById('f-powerbanks-cap')?.value||''    : '';
-  // Дропдаун "All PD standards" у пауэрбанков существовал в разметке, но его
-  // значение нигде не читалось — выбор в нём не делал вообще ничего
   const pb_pd    = name==='powerbanks' ? document.getElementById('f-powerbanks-pd')?.value||''     : '';
   const pb_cable = name==='powerbanks' ? document.getElementById('f-powerbanks-cable')?.value||''  : '';
   const pb_disp  = name==='powerbanks' ? document.getElementById('f-powerbanks-display')?.value||'': '';
@@ -1472,33 +1392,9 @@ function applyF(name){
     if(c_emark==='no'&&r.emark)return false;
     if(c_spd&&Number(r.adv_spd)!==Number(c_spd)&&Number(r.spd)!==Number(c_spd))return false;
     // Charger filters
-    // Диапазон мощности — это заявленный класс устройства целиком (то, что
-    // напечатано на коробке, "100W charger"), а не то, что выжмет один порт
-    // соло. Раньше фильтр сравнивал именно r.pwr (мощность одного порта),
-    // из-за чего, например, Ugreen Nexode Pro 100W (pwr=100/port, но
-    // total_pwr=95 суммарно) мог попасть не в тот диапазон, а зарядки,
-    // которые честно указывают total_pwr ниже pwr, — вообще выпадать.
     //
-    // Границы диапазонов раньше пересекались по надписи: "Up to 65W"
-    // (<=65) и "65–100W" (>65 && <=100) оба формально "содержали" 65Вт по
-    // смыслу подписи, а 100Вт-зарядка молча уходила во второй диапазон,
-    // хотя на кнопке было написано "100–140W". Теперь границы разбивают
-    // числовую ось без дыр и без пересечений: (-∞,64] | [65,100) | [100,140) | [140,∞) —
-    // так подпись на кнопке всегда совпадает с тем, что реально туда попадёт.
-    // "Up to 64W" и "65-99W" разведены по целым числам нарочно: 65-ваттная
-    // зарядка однозначно уходит во вторую корзину, а не повисает на стыке.
     if(pwr){
-      // total_pwr в таблице часто честно оставляют пустым для однопортовых
-      // зарядок — она попросту равна pwr, дублировать незачем. Остальной
-      // сайт уже так и считает (бейдж "full power solo", строка "N W total"
-      // в карточке — везде тихо откатываются на pwr, если total_pwr пуст).
-      // Фильтр диапазонов требовал total_pwr строго, и именно из-за этого
-      // такие зарядки полностью выпадали из ЛЮБОГО диапазона мощности —
-      // отсюда пустой список на "65-99W", хотя подходящая модель была.
       const totalPwr = isNum(r.total_pwr) ? r.total_pwr : r.pwr;
-      // null (нет данных вообще, ни total_pwr, ни pwr) сравнивается с числами
-      // как 0 — без явной проверки строка без единого замера мощности могла
-      // случайно попасть в диапазон "до 65Вт"
       if(!isNum(totalPwr))                                return false;
       if(pwr==='up64'   &&!(totalPwr<=64))                return false;
       if(pwr==='65-99'  &&!(totalPwr>=65&&totalPwr<100))  return false;
@@ -1548,13 +1444,6 @@ function applyF(name){
 // ══════════════════════════════════════════════
 //  SORT
 // ══════════════════════════════════════════════
-// Раньше подсветка активного заголовка шла по физическому индексу <th> в DOM,
-// а сама сортировка — по "логическому" номеру среди сортируемых колонок
-// (переданному прямо в onclick). Эти два индекса не совпадали, как только в
-// таблице появлялась хоть одна несортируемая колонка между сортируемыми
-// (например "Ports" или "E-Marker") — подсветка уезжала на соседний заголовок.
-// Теперь вместо номера передаём сам ключ поля — сортировка и подсветка бьют
-// по одному и тому же значению, разъехаться им негде.
 function srt(name,key){
   const s=S[name];
   s.asc=(s.col===key)?!s.asc:true;
@@ -1576,9 +1465,6 @@ function doSort(name,arr){
   const key=s.col;
   return [...arr].sort((a,b)=>{
     const av=a[key],bv=b[key];
-    // Строки без данных по этому полю — всегда в конец списка, независимо
-    // от направления сортировки (иначе null проваливается то в начало, то
-    // в конец в зависимости от ↑/↓, что выглядит как случайное поведение)
     const an=av===null||av===undefined||av==='', bn=bv===null||bv===undefined||bv==='';
     if(an&&bn) return 0;
     if(an) return 1;
@@ -1596,12 +1482,10 @@ function sw(name,btn){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
   btn.classList.add('on');
   document.getElementById('panel-'+name).classList.add('on');
-  // скрываем affiliate notice для нетабличных вкладок
   const notice=document.querySelector('.affiliate-note');
   if(notice) notice.style.display=(name==='gear'||name==='support')?'none':'flex';
   if(CMP[name]){ activeTab=name; updateCmpBar(); }
   else { document.getElementById('cmp-bar').classList.remove('show'); }
-  // запоминаем вкладку, чтобы при следующем заходе открыть именно её
   try{ localStorage.setItem('wt-last-tab', name); }catch(e){}
 }
 function restoreLastTab(){
@@ -1617,6 +1501,6 @@ function restoreLastTab(){
 // ══════════════════════════════════════════════
 initData();
 </script>
-<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "532ee6b9fe4a48e2bfb5e419de1eaa52"}'></script><!-- End Cloudflare Web Analytics -->
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "00320e9ea32942e3a3115cb698965612"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
