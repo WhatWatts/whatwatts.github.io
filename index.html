@@ -192,6 +192,36 @@ table.cmp-on .cmp-th,table.cmp-on .cmp-td{display:table-cell}
 .cmp-table .cmp-model-brand{font-size:11px;color:var(--text3);margin-top:1px}
 .cmp-win{background:var(--gbg)!important;border-radius:var(--r)}
 
+/* ── Photo proof gallery ── */
+.proof-trigger{cursor:pointer}
+.proof-trigger .proof-ico{font-size:12px;color:var(--text3);margin-left:4px;vertical-align:-1px;transition:color .15s}
+.proof-trigger:hover .proof-ico,.proof-trigger:focus-visible .proof-ico{color:var(--accent)}
+.proof-trigger:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.proof-trigger.blk{display:block;position:relative}
+.proof-trigger.blk>.proof-ico{position:absolute;top:1px;right:-14px;margin:0}
+.proof-link{display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--accent)}
+.proof-link .proof-ico{margin:0;color:var(--accent)}
+.proof-item{padding-top:6px;margin-top:4px;border-top:1px solid var(--border)}
+.gal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:300;align-items:center;justify-content:center;padding:4vh 3vw}
+.gal-overlay.show{display:flex}
+.gal-box{max-width:1000px;width:100%;display:flex;flex-direction:column;align-items:center;gap:14px}
+.gal-hdr{display:flex;align-items:center;justify-content:space-between;width:100%;color:#fff}
+.gal-title{font-size:14px;font-weight:600}
+.gal-count{font-size:12px;color:#9ca3af;margin-left:8px;font-weight:400}
+.gal-close{width:34px;height:34px;border-radius:var(--r);border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;font-size:16px;display:inline-flex;align-items:center;justify-content:center}
+.gal-close:hover{background:rgba(255,255,255,.14)}
+.gal-stage{position:relative;width:100%;display:flex;align-items:center;justify-content:center}
+.gal-img{max-width:100%;max-height:70vh;border-radius:var(--r);box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.gal-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.45);color:#fff;cursor:pointer;font-size:18px;display:inline-flex;align-items:center;justify-content:center}
+.gal-nav:hover{background:rgba(0,0,0,.7)}
+.gal-prev{left:-8px}
+.gal-next{right:-8px}
+.gal-cap{color:#e5e7eb;font-size:13px;min-height:18px;text-align:center}
+.gal-thumbs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.gal-thumb{width:56px;height:56px;object-fit:cover;border-radius:6px;cursor:pointer;opacity:.55;border:2px solid transparent;transition:opacity .15s,border-color .15s}
+.gal-thumb:hover{opacity:.85}
+.gal-thumb.on{opacity:1;border-color:var(--accent)}
+
 /* ── Footer ── */
 footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:var(--text3);line-height:1.8}
 .ftr{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap}
@@ -657,6 +687,22 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
  </div>
 </div>
 
+<div class="gal-overlay" id="gal-overlay" onclick="if(event.target===this)closeGallery()">
+ <div class="gal-box" onclick="event.stopPropagation()">
+  <div class="gal-hdr">
+   <div class="gal-title"><span id="gal-title">—</span><span class="gal-count" id="gal-count"></span></div>
+   <button class="gal-close" onclick="closeGallery()" aria-label="Close"><i class="ti ti-x"></i></button>
+  </div>
+  <div class="gal-stage">
+   <button class="gal-nav gal-prev" onclick="galStep(-1)" aria-label="Previous"><i class="ti ti-chevron-left"></i></button>
+   <img class="gal-img" id="gal-img" src="" alt="">
+   <button class="gal-nav gal-next" onclick="galStep(1)" aria-label="Next"><i class="ti ti-chevron-right"></i></button>
+  </div>
+  <div class="gal-cap" id="gal-cap"></div>
+  <div class="gal-thumbs" id="gal-thumbs"></div>
+ </div>
+</div>
+
 <script>
 document.getElementById('cur-year').textContent = new Date().getFullYear();
 
@@ -975,14 +1021,17 @@ function qiBtn(hasQi,standard,pwr,realWh,eff,pass,drop){
     </div>
   </div>`;
 }
-function protoBtn(extra,xiaomiTC){
+function protoBtn(extra,xiaomiTC,ctx){
   const list=(extra||'').split(',').map(s=>s.trim()).filter(Boolean);
-  if(!list.length&&!xiaomiTC) return '';
+  const phProto=ctx?proofLink(ctx.type,ctx.name,'protocols',ctx.protocols,ctx.name+' — Protocol tests','Protocol test photos'):'';
+  const phXm=ctx?proofLink(ctx.type,ctx.name,'xiaomi',ctx.xiaomi,ctx.name+' — Xiaomi Turbo Charge test','Xiaomi test photos'):'';
+  if(!list.length&&!xiaomiTC&&!phProto) return '';
   return `<div class="proto-drop">
     <button class="tag proto-btn" onclick="toggleDrop(event,this,'proto-menu')"><i class="ti ti-list-details" style="font-size:11px"></i> +protocols</button>
     <div class="proto-menu">
-      ${xiaomiTC?`<div class="proto-item proto-xm"><i class="ti ti-bolt" style="font-size:12px"></i> Xiaomi Turbo Charge<div class="sub" style="margin-top:2px">Tested via Xiaomi Pad Mini (up to 67W)</div></div>`:''}
+      ${xiaomiTC?`<div class="proto-item proto-xm"><i class="ti ti-bolt" style="font-size:12px"></i> Xiaomi Turbo Charge<div class="sub" style="margin-top:2px">Tested via Xiaomi Pad Mini (up to 67W)</div>${phXm?`<div style="margin-top:4px">${phXm}</div>`:''}</div>`:''}
       ${list.map(i=>`<div class="proto-item">${escAttr(i)}</div>`).join('')}
+      ${phProto?`<div class="proof-item">${phProto}</div>`:''}
     </div>
   </div>`;
 }
@@ -1214,6 +1263,91 @@ document.addEventListener('keydown',e=>{
 });
 
 // ══════════════════════════════════════════════
+//  PHOTO PROOF GALLERY
+//  Files: media/<cables|chargers|powerbanks>/<model-slug>/<category>/<file>
+//  Sheet columns photos_<category> hold comma-separated file names.
+// ══════════════════════════════════════════════
+const MEDIA_ROOT='media';
+function photoList(raw){
+  return (raw||'').split(',').map(s=>s.trim()).filter(Boolean);
+}
+function slug(name){
+  return String(name||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+}
+function capFromFile(f){
+  return f.replace(/\.[^.]+$/,'').replace(/^\d+[-_ ]*/,'').replace(/[-_]+/g,' ').trim();
+}
+function proofAttrs(type,name,category,raw,label){
+  return `data-pt="${escAttr(type)}" data-pn="${escAttr(name)}" data-pc="${escAttr(category)}" data-pf="${escAttr(raw)}" data-pl="${escAttr(label)}"`;
+}
+function proofSpan(type,name,category,raw,label,innerHtml,block){
+  if(!photoList(raw).length) return innerHtml;
+  const el=block?'div':'span';
+  return `<${el} class="proof-trigger${block?' blk':''}" role="button" tabindex="0" ${proofAttrs(type,name,category,raw,label)} title="View photos">${innerHtml}<i class="ti ti-camera proof-ico"></i></${el}>`;
+}
+function proofLink(type,name,category,raw,label,text){
+  const n=photoList(raw).length;
+  if(!n) return '';
+  return `<span class="proof-trigger proof-link" role="button" tabindex="0" ${proofAttrs(type,name,category,raw,label)}><i class="ti ti-camera proof-ico"></i> ${text} (${n})</span>`;
+}
+const GAL={photos:[],i:0};
+function openGallery(type,name,category,raw,label){
+  const list=photoList(raw);
+  if(!list.length) return;
+  const base=`${MEDIA_ROOT}/${type}/${slug(name)}/${category}/`;
+  GAL.photos=list.map(f=>({src:base+encodeURIComponent(f),cap:capFromFile(f)}));
+  GAL.i=0;
+  document.getElementById('gal-title').textContent=label;
+  galRender();
+  document.getElementById('gal-overlay').classList.add('show');
+}
+function closeGallery(){
+  document.getElementById('gal-overlay').classList.remove('show');
+}
+function galStep(d){
+  GAL.i=(GAL.i+d+GAL.photos.length)%GAL.photos.length;
+  galRender();
+}
+function galRender(){
+  const p=GAL.photos[GAL.i];
+  const img=document.getElementById('gal-img');
+  const cap=document.getElementById('gal-cap');
+  img.onerror=()=>{ cap.textContent='File not found: '+decodeURIComponent(p.src); };
+  img.alt=p.cap;
+  img.src=p.src;
+  cap.textContent=p.cap;
+  document.getElementById('gal-count').textContent=` ${GAL.i+1} / ${GAL.photos.length}`;
+  document.getElementById('gal-thumbs').innerHTML=GAL.photos.map((q,i)=>
+    `<img class="gal-thumb${i===GAL.i?' on':''}" src="${q.src}" alt="" loading="lazy" onclick="GAL.i=${i};galRender()">`
+  ).join('');
+}
+function proofOpen(el){
+  const d=el.dataset;
+  openGallery(d.pt,d.pn,d.pc,d.pf,d.pl);
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest&&e.target.closest('.proof-trigger');
+  if(!t) return;
+  e.preventDefault();
+  e.stopPropagation();
+  document.querySelectorAll('.buy-menu.show,.proto-menu.show').forEach(m=>m.classList.remove('show'));
+  proofOpen(t);
+},true);
+document.addEventListener('keydown',e=>{
+  const galOpen=document.getElementById('gal-overlay').classList.contains('show');
+  if(!galOpen){
+    if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('proof-trigger')){
+      e.preventDefault();
+      proofOpen(e.target);
+    }
+    return;
+  }
+  if(e.key==='Escape') closeGallery();
+  if(e.key==='ArrowLeft') galStep(-1);
+  if(e.key==='ArrowRight') galStep(1);
+});
+
+// ══════════════════════════════════════════════
 //  RENDER
 // ══════════════════════════════════════════════
 function renderCables(rows){
@@ -1224,7 +1358,7 @@ function renderCables(rows){
     return `<tr>
     <td class="cmp-td"><input type="checkbox" class="cmp-chk" ${CMP.cables.sel.has(r.name)?'checked':''} ${(!CMP.cables.sel.has(r.name)&&CMP.cables.sel.size>=CMP_MAX)?'disabled':''}></td>
     <td>
-      <div class="nm">${escAttr(r.name)}</div>
+      <div class="nm">${proofSpan('cables',r.name,'exterior',r.photos_exterior,r.name+' — Exterior',escAttr(r.name))}</div>
       <div class="sub" style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap;align-items:center">
         ${escAttr(r.brand)}
         ${r.display ? '<span class="tag">📺 Display</span>' : ''}
@@ -1233,17 +1367,17 @@ function renderCables(rows){
     </td>
     <td><span class="chip">${escAttr(r.conn)}</span></td>
     <td class="num">${lenStr(r.len)}</td>
-    <td class="num">${resStr(r.res)}</td>
+    <td class="num">${proofSpan('cables',r.name,'res',r.photos_res,r.name+' — Resistance',resStr(r.res))}</td>
     <td class="num">${isNum(r.pwr)?r.pwr+' W':DASH}</td>
     <td>
-      <div style="font-size:11px;color:var(--text3)">${escAttr(r.spd_lbl)}</div>
-      ${exceeds?`<div style="font-size:11px;font-weight:600;color:var(--green)">↑ real: ${escAttr(r.real_spd)}</div>`:''}
+      ${proofSpan('cables',r.name,'speed',r.photos_speed,r.name+' — Speed',`<div style="font-size:11px;color:var(--text3)">${escAttr(r.spd_lbl)}</div>
+      ${exceeds?`<div style="font-size:11px;font-weight:600;color:var(--green)">↑ real: ${escAttr(r.real_spd)}</div>`:''}`,true)}
     </td>
-    <td>${yn(r.emark)}</td>
+    <td>${proofSpan('cables',r.name,'emark',r.photos_emark,r.name+' — E-Marker',yn(r.emark))}</td>
     <td>
-      <div>${r.stress_pass?`<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Passed</span>`:`<span class="b br"><i class="ti ti-flame" style="font-size:12px"></i> Throttled</span>`}</div>
+      ${proofSpan('cables',r.name,'stress',r.photos_stress,r.name+' — Stress test',`<div>${r.stress_pass?`<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Passed</span>`:`<span class="b br"><i class="ti ti-flame" style="font-size:12px"></i> Throttled</span>`}</div>
       <div class="sub">${stressTier(r.pwr)}</div>
-      <div class="sub">Conn ${tSpan(r.stress_conn_c)} · Cable ${tSpan(r.stress_cable_c)}</div>
+      <div class="sub">Conn ${tSpan(r.stress_conn_c)} · Cable ${tSpan(r.stress_cable_c)}</div>`,true)}
     </td>
     <td>${badge(r.v)}</td>
     <td>${priceCell(r.price,r.value)}</td>
@@ -1264,28 +1398,28 @@ function renderChargers(rows){
   b.innerHTML=rows.map(r=>`<tr>
     <td class="cmp-td"><input type="checkbox" class="cmp-chk" ${CMP.chargers.sel.has(r.name)?'checked':''} ${(!CMP.chargers.sel.has(r.name)&&CMP.chargers.sel.size>=CMP_MAX)?'disabled':''}></td>
     <td>
-      <div class="nm">${escAttr(r.name)}</div>
+      <div class="nm">${proofSpan('chargers',r.name,'exterior',r.photos_exterior,r.name+' — Exterior',escAttr(r.name))}</div>
       <div class="sub" style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap;align-items:center">
-        <span class="tag">${escAttr(r.pd)}</span>
-        ${r.display  ? '<span class="tag">📺 Display</span>'       : ''}
+        ${proofSpan('chargers',r.name,'pd',r.photos_pd,r.name+' — Power Delivery',`<span class="tag">${escAttr(r.pd)}</span>`)}
+        ${r.display  ? proofSpan('chargers',r.name,'display',r.photos_display,r.name+' — Display','<span class="tag">📺 Display</span>') : ''}
         ${r.cable_in ? '<span class="tag">🔌 Built-in cable</span>': ''}
         ${r.ac_outlet? '<span class="tag">AC outlet</span>'        : ''}
         ${r.corded   ? '<span class="tag">Corded</span>'           : ''}
         ${r.app_control ? '<span class="tag">📱 App control</span>' : ''}
-        ${protoBtn(r.protocols_extra,r.xiaomi_tc)}
+        ${protoBtn(r.protocols_extra,r.xiaomi_tc,{type:'chargers',name:r.name,protocols:r.photos_protocols,xiaomi:r.photos_xiaomi})}
       </div>
     </td>
-    <td><span class="chip">${escAttr(r.ports)}</span></td>
+    <td>${proofSpan('chargers',r.name,'ports',r.photos_ports,r.name+' — Ports',`<span class="chip">${escAttr(r.ports)}</span>`)}</td>
     <td class="num" style="line-height:1.6">
       <div>${isNum(r.pwr)?r.pwr+' W':DASH} <span style="font-size:10px;font-weight:400;color:var(--text3)">/ port</span></div>
       <div class="sub">${isNum(r.total_pwr)?r.total_pwr+' W total':''}</div>
       ${isNum(r.pwr)&&isNum(r.total_pwr)&&r.pwr>=r.total_pwr?`<div style="font-size:10px;font-weight:600;color:var(--green)">★ full power solo</div>`:''}
     </td>
     <td>${effList(r.eff_curve,r.eff)}</td>
-    <td>${rippleList(r.ripple_curve,r.ripple)}</td>
+    <td>${proofSpan('chargers',r.name,'ripple',r.photos_ripple,r.name+' — Ripple',rippleList(r.ripple_curve,r.ripple),true)}</td>
     <td>${r.ports_reboot?`<span class="b bo"><i class="ti ti-alert-triangle" style="font-size:12px"></i> Resets ports</span>`:`<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Stable</span>`}</td>
     <td>
-      ${stressCellChargers(r)}
+      ${proofSpan('chargers',r.name,'stress',r.photos_stress,r.name+' — Stress test',stressCellChargers(r),true)}
     </td>
     <td>${badge(r.v)}</td>
     <td>${priceCell(r.price,r.value)}</td>
