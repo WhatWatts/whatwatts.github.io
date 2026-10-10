@@ -1408,20 +1408,20 @@ function renderChargers(rows){
     <td>
       <div class="nm">${proofSpan('chargers',r.name,'exterior',r.photos_exterior,r.name+' — Exterior',escAttr(r.name))}</div>
       <div class="sub" style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap;align-items:center">
-        ${proofSpan('chargers',r.name,'pd',r.photos_pd,r.name+' — Power Delivery',`<span class="tag">${escAttr(r.pd)}</span>`)}
+        <span class="tag">${escAttr(r.pd)}</span>
         ${r.display  ? proofSpan('chargers',r.name,'display',r.photos_display,r.name+' — Display','<span class="tag">📺 Display</span>') : ''}
         ${r.cable_in ? '<span class="tag">🔌 Built-in cable</span>': ''}
         ${r.ac_outlet? '<span class="tag">AC outlet</span>'        : ''}
         ${r.corded   ? '<span class="tag">Corded</span>'           : ''}
-        ${r.app_control ? '<span class="tag">📱 App control</span>' : ''}
+        ${r.app_control ? proofSpan('chargers',r.name,'app',r.photos_app,r.name+' — App','<span class="tag">📱 App control</span>') : ''}
         ${protoBtn(r.protocols_extra,r.xiaomi_tc,{type:'chargers',name:r.name,protocols:r.photos_protocols,xiaomi:r.photos_xiaomi})}
       </div>
     </td>
     <td>${proofSpan('chargers',r.name,'ports',r.photos_ports,r.name+' — Ports',`<span class="chip">${escAttr(r.ports)}</span>`)}</td>
     <td class="num" style="line-height:1.6">
-      <div>${isNum(r.pwr)?r.pwr+' W':DASH} <span style="font-size:10px;font-weight:400;color:var(--text3)">/ port</span></div>
+      ${proofSpan('chargers',r.name,'power',r.photos_power,r.name+' — Power output',`<div>${isNum(r.pwr)?r.pwr+' W':DASH} <span style="font-size:10px;font-weight:400;color:var(--text3)">/ port</span></div>
       <div class="sub">${isNum(r.total_pwr)?r.total_pwr+' W total':''}</div>
-      ${isNum(r.pwr)&&isNum(r.total_pwr)&&r.pwr>=r.total_pwr?`<div style="font-size:10px;font-weight:600;color:var(--green)">★ full power solo</div>`:''}
+      ${isNum(r.pwr)&&isNum(r.total_pwr)&&r.pwr>=r.total_pwr?`<div style="font-size:10px;font-weight:600;color:var(--green)">★ full power solo</div>`:''}`,true)}
     </td>
     <td>${effList(r.eff_curve,r.eff)}</td>
     <td>${proofSpan('chargers',r.name,'ripple',r.photos_ripple,r.name+' — Ripple',rippleList(r.ripple_curve,r.ripple),true)}</td>
