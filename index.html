@@ -1269,12 +1269,20 @@ document.addEventListener('keydown',e=>{
 // ══════════════════════════════════════════════
 const MEDIA_ROOT='media';
 function photoList(raw){
-  return (raw||'').split(',').map(s=>s.trim()).filter(Boolean);
+  return (raw||'').split(',').map(s=>s.trim()).filter(Boolean).map(s=>{
+    const i=s.indexOf('|');
+    return i<0?{file:s,cap:null}:{file:s.slice(0,i).trim(),cap:s.slice(i+1).trim()};
+  }).filter(p=>p.file);
 }
 function slug(name){
   return String(name||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 }
+function isCameraName(f){
+  const n=f.replace(/\.[^.]+$/,'');
+  return /^screenshot/i.test(n)||/^[a-z]{2,6}[-_ ]?\d{3,}/i.test(n)||/^\d{8}[-_ ]/.test(n);
+}
 function capFromFile(f){
+  if(isCameraName(f)) return '';
   return f.replace(/\.[^.]+$/,'').replace(/^\d+[-_ ]*/,'').replace(/[-_]+/g,' ').trim();
 }
 function proofAttrs(type,name,category,raw,label){
@@ -1295,7 +1303,7 @@ function openGallery(type,name,category,raw,label){
   const list=photoList(raw);
   if(!list.length) return;
   const base=`${MEDIA_ROOT}/${type}/${slug(name)}/${category}/`;
-  GAL.photos=list.map(f=>({src:base+encodeURIComponent(f),cap:capFromFile(f)}));
+  GAL.photos=list.map(p=>({src:base+encodeURIComponent(p.file),cap:p.cap!==null?p.cap:capFromFile(p.file)}));
   GAL.i=0;
   document.getElementById('gal-title').textContent=label;
   galRender();
