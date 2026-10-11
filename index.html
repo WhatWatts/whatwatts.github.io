@@ -1278,12 +1278,12 @@ function slug(name){
   return String(name||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 }
 function isCameraName(f){
-  const n=f.replace(/\.[^.]+$/,'');
-  return /^screenshot/i.test(n)||/^[a-z]{2,6}[-_ ]?\d{3,}/i.test(n)||/^\d{8}[-_ ]/.test(n);
+  const n=f.replace(/\.[^.]+$/,'').replace(/[-_ ]result$/i,'');
+  return /^screenshot/i.test(n)||/^[a-z]{2,6}[-_ ]?\d{3,}/i.test(n)||/^\d{8}[-_ ]/.test(n)||/^-?\d{6,}/.test(n)||/^\d+$/.test(n);
 }
 function capFromFile(f){
   if(isCameraName(f)) return '';
-  return f.replace(/\.[^.]+$/,'').replace(/^\d+[-_ ]*/,'').replace(/[-_]+/g,' ').trim();
+  return f.replace(/\.[^.]+$/,'').replace(/[-_ ]result$/i,'').replace(/^\d+[-_ ]+/,'').replace(/[-_]+/g,' ').replace(/\s+/g,' ').trim();
 }
 function proofAttrs(type,name,category,raw,label){
   return `data-pt="${escAttr(type)}" data-pn="${escAttr(name)}" data-pc="${escAttr(category)}" data-pf="${escAttr(raw)}" data-pl="${escAttr(label)}"`;
