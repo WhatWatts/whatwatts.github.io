@@ -70,8 +70,12 @@ header{border-bottom:1px solid var(--border);padding:1.25rem 0}
 .hdr-right a:hover{color:var(--text);border-color:var(--borders)}
 
 /* ── Tabs ── */
-.tab-bar{display:flex;gap:2px;padding-top:1.2rem;border-bottom:1px solid var(--border)}
-.tab{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border-radius:var(--r) var(--r) 0 0;border:1px solid transparent;border-bottom:none;background:none;transition:color .15s,background .15s;position:relative;bottom:-1px;white-space:nowrap}
+.tab-bar{display:flex;gap:2px;padding-top:1.2rem;box-shadow:inset 0 -1px 0 var(--border);overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-bar.fade-r{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent)}
+.tab-bar.fade-l{-webkit-mask-image:linear-gradient(to left,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(to left,#000 calc(100% - 28px),transparent)}
+.tab-bar.fade-l.fade-r{-webkit-mask-image:linear-gradient(to right,transparent,#000 28px,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(to right,transparent,#000 28px,#000 calc(100% - 28px),transparent)}
+.tab{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;padding:8px 18px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border-radius:var(--r) var(--r) 0 0;border:1px solid transparent;border-bottom:none;background:none;transition:color .15s,background .15s;position:relative;white-space:nowrap}
 .tab:hover{color:var(--text);background:var(--surface)}
 .tab.on{color:var(--accent);background:var(--surface);border-color:var(--border);border-bottom-color:var(--surface)}
 .cnt{font-size:11px;background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:1px 7px;color:var(--text3);font-weight:400;transition:background .15s,color .15s}
@@ -105,6 +109,17 @@ tbody tr:last-child{border-bottom:none}
 tbody tr:hover{background:var(--surface)}
 td{padding:10px 13px;vertical-align:middle}
 .nm{font-weight:500;line-height:1.3}
+.nm-td,.nm-th{position:sticky;left:0;z-index:1;background:var(--bg);box-shadow:1px 0 0 var(--border)}
+thead th.nm-th{z-index:3;background:var(--surface)}
+tbody tr:hover .nm-td{background:var(--surface)}
+.cmp-th,.cmp-td{position:sticky;left:0;z-index:1;background:var(--bg)}
+thead th.cmp-th{z-index:3;background:var(--surface)}
+tbody tr:hover .cmp-td{background:var(--surface)}
+table.cmp-on .nm-td,table.cmp-on .nm-th{left:40px}
+tr.hl,tr.hl .nm-td,tr.hl .cmp-td{background:var(--bluebg)}
+tr.hl-out,tr.hl-out .nm-td,tr.hl-out .cmp-td{transition:background .8s}
+.btn-link{padding:4px 7px}
+@media(prefers-reduced-motion:reduce){tr.hl-out,tr.hl-out .nm-td,tr.hl-out .cmp-td{transition:none}}
 .sub{font-size:11px;color:var(--text3);margin-top:1px}
 
 /* ── Badges ── */
@@ -156,7 +171,7 @@ td{padding:10px 13px;vertical-align:middle}
 .empty i{font-size:1.8rem;display:block;margin-bottom:.5rem;opacity:.3}
 
 /* ── Compare mode ── */
-.cmp-th,.cmp-td{display:none;width:34px}
+.cmp-th,.cmp-td{display:none;width:40px;min-width:40px;max-width:40px;padding-left:0;padding-right:0}
 table.cmp-on .cmp-th,table.cmp-on .cmp-td{display:table-cell}
 .cmp-td{text-align:center}
 .cmp-chk{width:16px;height:16px;cursor:pointer;accent-color:var(--accent)}
@@ -275,7 +290,10 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
   .toolbar input{width:100%}
   .hdr-right,.logo-sub{display:none}
   td,th{padding:8px 10px}
-  .tab{padding:8px 12px;font-size:12px}
+  .nm-td{min-width:132px;max-width:164px;font-size:12.5px}
+  .nm-td .sub{gap:3px !important}
+  .nm-td .tag{font-size:9.5px;padding:1px 5px;line-height:1.35}
+  .tab{padding:8px 11px;font-size:12px;gap:4px}
 }
 </style>
 </head>
@@ -353,7 +371,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
     <table id="tbl-cables">
      <thead><tr>
       <th class="cmp-th"></th>
-      <th onclick="srt('cables','name')" data-sort-key="name">Cable <span class="sa">↕</span></th>
+      <th class="nm-th" onclick="srt('cables','name')" data-sort-key="name">Cable <span class="sa">↕</span></th>
       <th onclick="srt('cables','conn')" data-sort-key="conn">Type <span class="sa">↕</span></th>
       <th onclick="srt('cables','len')" data-sort-key="len">Length <span class="sa">↕</span></th>
       <th onclick="srt('cables','res')" data-sort-key="res">Resistance <span class="sa">↕</span></th>
@@ -430,7 +448,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
     <table id="tbl-chargers">
      <thead><tr>
       <th class="cmp-th"></th>
-      <th onclick="srt('chargers','name')" data-sort-key="name">Charger <span class="sa">↕</span></th>
+      <th class="nm-th" onclick="srt('chargers','name')" data-sort-key="name">Charger <span class="sa">↕</span></th>
       <th>Ports</th>
       <th onclick="srt('chargers','pwr')" data-sort-key="pwr">Power <span class="sa">↕</span></th>
       <th onclick="srt('chargers','_effSort')" data-sort-key="_effSort">Peak Efficiency <span class="sa">↕</span></th>
@@ -496,7 +514,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
     <table id="tbl-powerbanks">
      <thead><tr>
       <th class="cmp-th"></th>
-      <th onclick="srt('powerbanks','name')" data-sort-key="name">Powerbank <span class="sa">↕</span></th>
+      <th class="nm-th" onclick="srt('powerbanks','name')" data-sort-key="name">Powerbank <span class="sa">↕</span></th>
       <th onclick="srt('powerbanks','rated_wh')" data-sort-key="rated_wh">Rated <span class="sa">↕</span></th>
       <th onclick="srt('powerbanks','real')" data-sort-key="real">Efficiency & Capacity <span class="sa">↕</span> <i class="ti ti-info-circle" style="font-size:11px;opacity:.6" title="Rated = manufacturer's claimed spec · Measured = obtained during testing"></i></th>
       <th onclick="srt('powerbanks','maxpwr')" data-sort-key="maxpwr">Output Power <span class="sa">↕</span></th>
@@ -926,10 +944,12 @@ async function initData(){
     const lbl = document.getElementById('lbl-'+n);
     if(cnt) cnt.textContent = DATA[n].length;
     if(lbl) lbl.textContent = `${DATA[n].length} items`;
-    render(n, S[n].sorted);
   });
+  assignSlugs();
+  ['cables','chargers','powerbanks'].forEach(n=>render(n, S[n].sorted));
 
-  restoreLastTab();
+  if(!applyHash()) restoreLastTab();
+  updateTabFade();
 }
 
 // ══════════════════════════════════════════════
@@ -1044,10 +1064,11 @@ function priceCell(price,value){
     ${valueTag(value)}
   </div>`;
 }
-function lnks(yt,buy){
+function lnks(yt,buy,extra){
   return `<div class="btns">
     ${buy&&buy!='#'?`<a class="btn" href="${safeUrl(buy)}" target="_blank" rel="nofollow sponsored"><i class="ti ti-shopping-cart" style="font-size:12px"></i> Buy</a>`:''}
     ${reviewBtn(yt)}
+    ${extra||''}
   </div>`;
 }
 function tc(v){return v>=75?'vr':v>=60?'vo':'vg'}
@@ -1445,7 +1466,7 @@ function renderCables(rows){
     const exceeds=isNum(r.spd)&&isNum(r.adv_spd)&&r.spd>r.adv_spd;
     return `<tr>
     <td class="cmp-td"><input type="checkbox" class="cmp-chk" ${CMP.cables.sel.has(r.name)?'checked':''} ${(!CMP.cables.sel.has(r.name)&&CMP.cables.sel.size>=CMP_MAX)?'disabled':''}></td>
-    <td>
+    <td class="nm-td">
       <div class="nm">${proofSpan('cables',r.name,'exterior',r.photos_exterior,r.name+' — Exterior',escAttr(r.name))}</div>
       <div class="sub" style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap;align-items:center">
         ${escAttr(r.brand)}
@@ -1474,6 +1495,7 @@ function renderCables(rows){
       <div class="btns">
         ${buyBtn(r.buy_am,r.buy_ali)}
         ${reviewBtn(r.yt)}
+        ${linkBtn('cables',r)}
       </div>
     </td>
   </tr>`;}).join('');
@@ -1485,7 +1507,7 @@ function renderChargers(rows){
   if(!rows.length){b.innerHTML=emptyRow('chargers',12);return;}
   b.innerHTML=rows.map(r=>`<tr>
     <td class="cmp-td"><input type="checkbox" class="cmp-chk" ${CMP.chargers.sel.has(r.name)?'checked':''} ${(!CMP.chargers.sel.has(r.name)&&CMP.chargers.sel.size>=CMP_MAX)?'disabled':''}></td>
-    <td>
+    <td class="nm-td">
       <div class="nm">${proofSpan('chargers',r.name,'exterior',r.photos_exterior,r.name+' — Exterior',escAttr(r.name))}</div>
       <div class="sub" style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap;align-items:center">
         <span class="tag">${escAttr(r.pd)}</span>
@@ -1516,6 +1538,7 @@ function renderChargers(rows){
       <div class="btns">
         ${buyBtn(r.buy_am,r.buy_ali)}
         ${reviewBtn(r.yt)}
+        ${linkBtn('chargers',r)}
       </div>
     </td>
   </tr>`).join('');
@@ -1527,7 +1550,7 @@ function renderPowerbanks(rows){
   if(!rows.length){b.innerHTML=emptyRow('powerbanks',13);return;}
   b.innerHTML=rows.map(r=>`<tr>
     <td class="cmp-td"><input type="checkbox" class="cmp-chk" ${CMP.powerbanks.sel.has(r.name)?'checked':''} ${(!CMP.powerbanks.sel.has(r.name)&&CMP.powerbanks.sel.size>=CMP_MAX)?'disabled':''}></td>
-    <td>
+    <td class="nm-td">
       <div class="nm">${escAttr(r.name)}</div>
       <div class="sub" style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap;align-items:center">
         <span class="tag">${escAttr(r.pd)}</span>
@@ -1560,7 +1583,7 @@ function renderPowerbanks(rows){
     <td>${yn(r.pt==='Yes'?true:r.pt==='Limited'?r.pt:false)}</td>
     <td>${badge(r.v)}</td>
     <td>${priceCell(r.price,r.value)}</td>
-    <td>${lnks(r.yt,r.buy)}</td>
+    <td>${lnks(r.yt,r.buy,linkBtn('powerbanks',r))}</td>
   </tr>`).join('');
   wireCmpCheckboxes('powerbanks',b,rows);
 }
@@ -1576,6 +1599,8 @@ function render(name,rows){
   if(name==='cables')     renderCables(rows);
   if(name==='chargers')   renderChargers(rows);
   if(name==='powerbanks') renderPowerbanks(rows);
+  const trs=document.getElementById('body-'+name).rows;
+  if(trs.length===rows.length) rows.forEach((r,i)=>{ if(r._slug) trs[i].dataset.slug=r._slug; });
 }
 
 // ══════════════════════════════════════════════
@@ -1699,7 +1724,7 @@ function doSort(name,arr){
 // ══════════════════════════════════════════════
 //  TABS
 // ══════════════════════════════════════════════
-function sw(name,btn){
+function sw(name,btn,silent){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
   btn.classList.add('on');
@@ -1709,13 +1734,117 @@ function sw(name,btn){
   if(CMP[name]){ activeTab=name; updateCmpBar(); }
   else { document.getElementById('cmp-bar').classList.remove('show'); }
   try{ localStorage.setItem('wt-last-tab', name); }catch(e){}
+  if(!silent){
+    try{ history.replaceState(null,'',location.pathname+location.search+'#'+name); }catch(e){}
+  }
+  revealTab(btn);
 }
+const reduceMotion=()=>window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+function tabBtn(name){ return document.querySelector(`.tab[onclick*="sw('${name}'"]`); }
+function updateTabFade(){
+  const bar=document.querySelector('.tab-bar'); if(!bar) return;
+  const max=bar.scrollWidth-bar.clientWidth;
+  bar.classList.toggle('fade-r', max>2 && bar.scrollLeft<max-2);
+  bar.classList.toggle('fade-l', max>2 && bar.scrollLeft>2);
+}
+function revealTab(btn){
+  const bar=btn&&btn.parentElement; if(!bar) return;
+  const b=btn.getBoundingClientRect(), p=bar.getBoundingClientRect(), pad=32;
+  let dx=0;
+  if(b.left<p.left+pad) dx=b.left-p.left-pad;
+  else if(b.right>p.right-pad) dx=b.right-p.right+pad;
+  if(dx) bar.scrollTo({left:bar.scrollLeft+dx,behavior:reduceMotion()?'auto':'smooth'});
+  updateTabFade();
+}
+
+// ── Direct links: #chargers/anker-737-120w ──
+const TABS=['cables','chargers','powerbanks','gear','support'];
+const SLUG={cables:new Map(),chargers:new Map(),powerbanks:new Map()};
+let hlTimer=0;
+function assignSlugs(){
+  Object.keys(SLUG).forEach(n=>{
+    const m=SLUG[n]=new Map();
+    DATA[n].forEach(r=>{
+      const base=slug(r.name)||'item'; let k=base,i=2;
+      while(m.has(k)) k=base+'-'+(i++);
+      r._slug=k; m.set(k,r);
+    });
+  });
+}
+function deviceUrl(type,s){ return location.href.split('#')[0]+'#'+type+'/'+s; }
+function linkBtn(type,r){
+  if(!r._slug) return '';
+  return `<button type="button" class="btn btn-link" data-lnk="${type}/${r._slug}" title="Copy link to this device" aria-label="Copy link to ${escAttr(r.name)}"><i class="ti ti-link" style="font-size:13px"></i></button>`;
+}
+function copyText(t){
+  if(navigator.clipboard&&window.isSecureContext) return navigator.clipboard.writeText(t);
+  return new Promise((res,rej)=>{
+    const ta=document.createElement('textarea');
+    ta.value=t; ta.setAttribute('readonly',''); ta.style.cssText='position:fixed;opacity:0;top:0;left:0';
+    document.body.appendChild(ta); ta.select();
+    let ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+    ta.remove(); ok?res():rej();
+  });
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest&&e.target.closest('[data-lnk]'); if(!b) return;
+  const [type,s]=b.dataset.lnk.split('/');
+  const url=deviceUrl(type,s), ic=b.querySelector('i');
+  const done=()=>{ if(!ic) return; ic.className='ti ti-check'; b.style.color='var(--green)'; setTimeout(()=>{ ic.className='ti ti-link'; b.style.color=''; },1500); };
+  copyText(url).then(done).catch(()=>{ window.prompt('Copy this link:',url); });
+});
+function resetFilters(name){
+  const p=document.getElementById('panel-'+name); if(!p) return;
+  p.querySelectorAll('.toolbar select').forEach(s=>{ s.value=''; });
+  const q=document.getElementById('s-'+name); if(q) q.value='';
+  applyF(name);
+}
+function findDeviceRow(tab,s){
+  return [...document.getElementById('body-'+tab).rows].find(tr=>tr.dataset.slug===s)||null;
+}
+function clearHl(){
+  clearTimeout(hlTimer);
+  document.querySelectorAll('tr.hl,tr.hl-out').forEach(x=>x.classList.remove('hl','hl-out'));
+}
+function focusDevice(tab,s){
+  if(!SLUG[tab]||!SLUG[tab].has(s)) return false;
+  let tr=findDeviceRow(tab,s);
+  if(!tr){ resetFilters(tab); tr=findDeviceRow(tab,s); }
+  if(!tr) return false;
+  clearHl();
+  tr.classList.add('hl');
+  tr.scrollIntoView({block:'center',behavior:reduceMotion()?'auto':'smooth'});
+  clearTimeout(hlTimer);
+  hlTimer=setTimeout(()=>{
+    tr.classList.add('hl-out'); tr.classList.remove('hl');
+    setTimeout(()=>tr.classList.remove('hl-out'),900);
+  },4500);
+  return true;
+}
+function applyHash(){
+  let h=''; try{ h=decodeURIComponent(location.hash.replace(/^#\/?/,'')); }catch(e){ return false; }
+  const [tab,dev]=h.trim().toLowerCase().split('/');
+  if(!TABS.includes(tab)) return false;
+  const btn=tabBtn(tab); if(!btn) return false;
+  sw(tab,btn,true);
+  clearHl();
+  if(dev) focusDevice(tab,slug(dev));
+  return true;
+}
+window.addEventListener('hashchange',applyHash);
+(function(){
+  const bar=document.querySelector('.tab-bar'); if(!bar) return;
+  bar.addEventListener('scroll',updateTabFade,{passive:true});
+  window.addEventListener('resize',updateTabFade);
+  window.addEventListener('load',()=>{ updateTabFade(); revealTab(document.querySelector('.tab.on')); });
+  updateTabFade();
+})();
 function restoreLastTab(){
   let last;
   try{ last = localStorage.getItem('wt-last-tab'); }catch(e){ return; }
   if(!last) return;
   const btn = document.querySelector(`[onclick*="sw('${last}'"]`);
-  if(btn) sw(last, btn);
+  if(btn) sw(last, btn, true);
 }
 
 // ══════════════════════════════════════════════
