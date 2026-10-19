@@ -264,7 +264,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
 .info-icon{font-size:11px;color:var(--text3);cursor:pointer;opacity:.7;margin-left:3px}
 .info-icon:hover{opacity:1}
 
-.info-popover{position:fixed;display:none;background:var(--surface2);border:1px solid var(--borders);border-radius:var(--r);padding:9px 13px;font-size:12px;color:var(--text2);max-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:150;line-height:1.55}
+.info-popover{position:fixed;display:none;background:var(--surface2);border:1px solid var(--borders);border-radius:var(--r);padding:9px 13px;font-size:12px;color:var(--text2);max-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:400;line-height:1.55}
 .info-popover.show{display:block}
 .card-link{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;color:var(--accent);border:1px solid var(--blueb);border-radius:var(--r);padding:5px 10px;background:var(--bluebg);transition:opacity .15s}
 .card-link:hover{opacity:.8}
@@ -475,6 +475,13 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
      <option value="10-20">10 000–20 000 mAh</option>
      <option value="20+">20 000+ mAh</option>
     </select>
+    <select id="f-powerbanks-ports" onchange="applyF('powerbanks')">
+     <option value="">All port configs</option>
+     <option value="1">1 port</option>
+     <option value="2">2 ports</option>
+     <option value="3">3 ports</option>
+     <option value="4">4+ ports</option>
+    </select>
     <select id="f-powerbanks-pd" onchange="applyF('powerbanks')">
      <option value="">All PD standards</option>
      <option value="PD 3.0">PD 3.0 (up to 20V)</option>
@@ -490,6 +497,11 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
      <option value="">Display: Any</option>
      <option value="yes">Display: Yes</option>
      <option value="no">Display: No</option>
+    </select>
+    <select id="f-powerbanks-app" onchange="applyF('powerbanks')">
+     <option value="">App control: Any</option>
+     <option value="yes">App control: Yes</option>
+     <option value="no">App control: No</option>
     </select>
     <select id="f-powerbanks-pt" onchange="applyF('powerbanks')">
      <option value="">Pass-through: Any</option>
@@ -515,16 +527,17 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
      <thead><tr>
       <th class="cmp-th"></th>
       <th class="nm-th" onclick="srt('powerbanks','name')" data-sort-key="name">Powerbank <span class="sa">↕</span></th>
-      <th onclick="srt('powerbanks','rated_wh')" data-sort-key="rated_wh">Rated <span class="sa">↕</span></th>
-      <th onclick="srt('powerbanks','real')" data-sort-key="real">Efficiency & Capacity <span class="sa">↕</span> <i class="ti ti-info-circle" style="font-size:11px;opacity:.6" title="Rated = manufacturer's claimed spec · Measured = obtained during testing"></i></th>
-      <th onclick="srt('powerbanks','maxpwr')" data-sort-key="maxpwr">Output Power <span class="sa">↕</span></th>
+      <th>Ports</th>
+      <th onclick="srt('powerbanks','_ratedWh')" data-sort-key="_ratedWh">Rated <span class="sa">↕</span></th>
+      <th onclick="srt('powerbanks','real')" data-sort-key="real">Efficiency & Capacity <span class="sa">↕</span> <i class="ti ti-info-circle info-icon" data-info="Efficiency = energy the powerbank delivered ÷ its capacity. “of rated” compares it with the capacity the manufacturer claims; “of measured” compares it with the capacity I actually measured in the test. Both are shown at 5V and at maximum power." onclick="event.stopPropagation();showInfoPopover(this)"></i></th>
+      <th onclick="srt('powerbanks','pwr')" data-sort-key="pwr">Output Power <span class="sa">↕</span></th>
       <th onclick="srt('powerbanks','_rippleSort')" data-sort-key="_rippleSort">Ripple (peak) <span class="sa">↕</span></th>
       <th>Charging Input</th>
-      <th onclick="srt('powerbanks','case_temp_total_c')" data-sort-key="case_temp_total_c">Stress Test <span class="sa">↕</span></th>
-      <th>Wireless (Qi)</th>
+      <th onclick="srt('powerbanks','case_temp_single_c')" data-sort-key="case_temp_single_c">Stress Test <span class="sa">↕</span></th>
       <th>Pass-through</th>
       <th onclick="srt('powerbanks','v')" data-sort-key="v">Verdict <span class="sa">↕</span></th>
       <th onclick="srt('powerbanks','price')" data-sort-key="price">Price <span class="sa">↕</span></th>
+      <th>Nuances</th>
       <th>Links</th>
      </tr></thead>
      <tbody id="body-powerbanks"></tbody>
@@ -846,15 +859,13 @@ const TYPES = {
                 display:'bool', cable_in:'bool', xiaomi_tc:'bool', ports_reboot:'bool',
                 throttle_single_pass:'bool', throttle_total_pass:'bool',
                 ac_outlet:'bool', corded:'bool', app_control:'bool' },
-  powerbanks: { rated:'num', rated_wh:'num', real:'num', eff5v:'num', eff_max:'num', price:'num',
-                maxpwr:'num', total_pwr:'num', max_charge_pwr:'num',
+  powerbanks: { ports_n:'num', rated:'num', rated_wh:'num', real:'num', wh5v:'num', wh_max:'num', price:'num',
+                pwr:'num', total_pwr:'num', max_charge_pwr:'num',
                 case_temp_single_c:'num', case_temp_total_c:'num',
-                throttle_single_drop:'num', throttle_total_drop:'num',
-                throttle_5v_drop:'num', ripple:'num', wh5v:'num', wh_max:'num',
+                throttle_5v_drop:'num', throttle_single_drop:'num', throttle_total_drop:'num',
                 qi_pwr:'num', qi_real_wh:'num', qi_eff:'num', qi_throttle_drop:'num',
-                cable:'bool', display:'bool', wireless_qi:'bool', xiaomi_tc:'bool',
-                throttle_single_pass:'bool', throttle_total_pass:'bool', qi_throttle_pass:'bool',
-                throttle_5v_pass:'bool' }
+                cable_in:'bool', display:'bool', wireless_qi:'bool', xiaomi_tc:'bool', app_control:'bool',
+                throttle_5v_pass:'bool', throttle_single_pass:'bool', throttle_total_pass:'bool', qi_throttle_pass:'bool' }
 };
 
 function castRow(row, types){
@@ -920,6 +931,30 @@ function loadSheet(name){
   });
 }
 
+// Powerbank efficiency: the sheet may hold one number ("84.4") or two ("84.4/81.19": vs rated Wh / vs measured Wh).
+// Empty cells are computed from delivered Wh when possible.
+const PB_EFF_INFO="Efficiency = energy the powerbank delivered ÷ its capacity. “of rated” compares it with the capacity the manufacturer claims; “of measured” compares it with the capacity I actually measured in the test. Both are shown at 5V and at maximum power.";
+function round1(v){ return Math.round(v*10)/10; }
+function effNums(raw){
+  return String(raw??'').split(/[\/;|]/).map(s=>parseFloat(s)).filter(n=>Number.isFinite(n));
+}
+function normalizePB(r){
+  r._ratedWh = isNum(r.rated_wh) ? r.rated_wh : (isNum(r.rated) ? round1(r.rated*3.7/1000) : null);
+  r._ratedWhCalc = !isNum(r.rated_wh) && isNum(r._ratedWh);
+  const calc=(wh,den)=> (isNum(wh)&&isNum(den)&&den>0) ? round1(wh/den*100) : null;
+  const e5=effNums(r.eff5v), em=effNums(r.eff_max);
+  r._eff5v  = e5.length ? e5[0] : calc(r.wh5v,  r._ratedWh);
+  r._effMax = em.length ? em[0] : calc(r.wh_max, r._ratedWh);
+  // second value ("a/b") = efficiency relative to the capacity measured in the test
+  r._eff5vReal  = e5.length>1 ? e5[1] : calc(r.wh5v,  r.real);
+  r._effMaxReal = em.length>1 ? em[1] : calc(r.wh_max, r.real);
+}
+function effPairHtml(r){
+  const f=v=>effPctStr(isNum(v)?round1(v):null);
+  const line=(lbl,a,b)=>`<div class="sub">${lbl} ${f(a)} @5V · ${f(b)} @max</div>`;
+  return line('of rated',r._eff5v,r._effMax)+(isNum(r._eff5vReal)||isNum(r._effMaxReal)?line('of measured',r._eff5vReal,r._effMaxReal):'');
+}
+
 async function initData(){
   const [c, ch, pb] = await Promise.all(
     ['cables','chargers','powerbanks'].map(loadSheet)
@@ -934,7 +969,8 @@ async function initData(){
   });
   DATA.powerbanks.forEach(r=>{
     const ripPts = parseRippleCurve(r.ripple_curve);
-    r._rippleSort = ripPts.length ? Math.max(...ripPts.map(p=>p.mv)) : (r.ripple||0);
+    r._rippleSort = ripPts.length ? Math.max(...ripPts.map(p=>p.mv)) : null;
+    normalizePB(r);
   });
 
   ['cables','chargers','powerbanks'].forEach(n=>{
@@ -1064,13 +1100,6 @@ function priceCell(price,value){
     ${valueTag(value)}
   </div>`;
 }
-function lnks(yt,buy,extra){
-  return `<div class="btns">
-    ${buy&&buy!='#'?`<a class="btn" href="${safeUrl(buy)}" target="_blank" rel="nofollow sponsored"><i class="ti ti-shopping-cart" style="font-size:12px"></i> Buy</a>`:''}
-    ${reviewBtn(yt)}
-    ${extra||''}
-  </div>`;
-}
 function tc(v){return v>=75?'vr':v>=60?'vo':'vg'}
 function toF(c){return Math.round(c*9/5+32)}
 function mToFt(m){return (m*3.28084).toFixed(1)}
@@ -1110,8 +1139,9 @@ function toggleBuy(e,btn){
   document.querySelectorAll('.buy-menu.show').forEach(m=>m.classList.remove('show'));
   if(!wasOpen) menu.classList.add('show');
 }
-function qiBtn(hasQi,standard,pwr,realWh,eff,pass,drop){
+function qiBtn(hasQi,standard,pwr,realWh,eff,pass,drop,ctx){
   if(!hasQi) return '';
+  const qiPh=ctx?proofLink(ctx.type,ctx.name,'qi',ctx.photos,ctx.name+' — Wireless charging test','Qi test photos'):'';
   return `<div class="proto-drop">
     <button class="tag proto-btn" onclick="toggleDrop(event,this,'proto-menu')">📶 Qi wireless</button>
     <div class="proto-menu">
@@ -1119,6 +1149,7 @@ function qiBtn(hasQi,standard,pwr,realWh,eff,pass,drop){
       <div class="proto-item">Rated: ${isNum(pwr)?pwr+' W':'—'}</div>
       <div class="proto-item">Measured: ${isNum(realWh)?realWh+' Wh delivered':'—'}${isNum(eff)?` (${eff}% eff.)`:''}</div>
       <div class="proto-item">${pass?`<span class="b bg"><i class="ti ti-check" style="font-size:11px"></i> No throttling</span>`:`<span class="b br"><i class="ti ti-flame" style="font-size:11px"></i> Throttles → ${isNum(drop)?drop+' W':'unknown'}</span>`}</div>
+      ${qiPh?`<div class="proof-item">${qiPh}</div>`:''}
     </div>
   </div>`;
 }
@@ -1272,67 +1303,98 @@ function stressCellChargers(r){
   return chargerTestBlock('Single port',r.throttle_single_pass,r.throttle_single_drop,r.pwr,r.port_temp_single_c,r.case_temp_single_c,true)
        + chargerTestBlock('Total load', r.throttle_total_pass, r.throttle_total_drop, r.total_pwr,r.port_temp_total_c,r.case_temp_total_c,false);
 }
-function stressCellPowerbanks(r){
-  return `<div class="sub" style="font-weight:600">5V discharge</div>
-    <div>${r.throttle_5v_pass?'<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Passed</span>':`<span class="b br"><i class="ti ti-flame" style="font-size:12px"></i> → ${isNum(r.throttle_5v_drop)?r.throttle_5v_drop+' W':'unknown'}</span>`}</div>
-    ${isNum(r.wh5v)?`<div class="sub">${r.wh5v} Wh delivered</div>`:''}
-    <div class="sub" style="font-weight:600;margin-top:6px">Single port${isNum(r.maxpwr)?` (${r.maxpwr}W)`:''}</div>
-    <div>${r.throttle_single_pass?'<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Passed</span>':`<span class="b br"><i class="ti ti-flame" style="font-size:12px"></i> → ${isNum(r.throttle_single_drop)?r.throttle_single_drop+' W':'unknown'}</span>`}</div>
-    ${isNum(r.wh_max)?`<div class="sub">${r.wh_max} Wh delivered</div>`:''}
-    <div class="sub">Case: ${tSpan(r.case_temp_single_c)}</div>
-    <div class="sub" style="font-weight:600;margin-top:6px">Total load${isNum(r.total_pwr)?` (${r.total_pwr}W)`:''}</div>
-    <div>${r.throttle_total_pass?'<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Passed</span>':`<span class="b br"><i class="ti ti-flame" style="font-size:12px"></i> → ${isNum(r.throttle_total_drop)?r.throttle_total_drop+' W':'unknown'}</span>`}</div>
-    <div class="sub">Case: ${tSpan(r.case_temp_total_c)}</div>`;
+function pbBlock(label,pass,drop,pwr,portTemp,caseTemp,whDelivered,first){
+  const temps=[tempLine('Port',portTemp),tempLine('Case',caseTemp)].filter(Boolean).join(' · ');
+  return `<div class="sub" style="font-weight:600${first?'':';margin-top:6px'}">${label}${isNum(pwr)?` (${pwr}W)`:''}</div>
+    <div>${pass?'<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Passed</span>':`<span class="b br"><i class="ti ti-flame" style="font-size:12px"></i> → ${isNum(drop)?drop+' W':'unknown'}</span>`}</div>
+    ${isNum(whDelivered)?`<div class="sub">${round1(whDelivered)} Wh delivered</div>`:''}
+    ${temps?`<div class="sub">${temps}</div>`:''}`;
 }
+function stressCellPowerbanks(r){
+  const has=v=>v===true||v===false;
+  const single=has(r.throttle_single_pass), total=has(r.throttle_total_pass);
+  const merge=single&&total&&isNum(r.pwr)&&isNum(r.total_pwr)&&r.pwr>=r.total_pwr;
+  const parts=[];
+  if(has(r.throttle_5v_pass)) parts.push(['5V discharge',r.throttle_5v_pass,r.throttle_5v_drop,null,null,null,r.wh5v]);
+  if(single) parts.push([merge?'Max output':'Single port',r.throttle_single_pass,r.throttle_single_drop,r.pwr,r.port_temp_single_c,r.case_temp_single_c,r.wh_max]);
+  if(total&&!merge) parts.push(['Total load',r.throttle_total_pass,r.throttle_total_drop,r.total_pwr,r.port_temp_total_c,r.case_temp_total_c,null]);
+  if(!parts.length) return DASH;
+  return parts.map((p,i)=>pbBlock(...p,i===0)).join('');
+}
+function ptCell(r){
+  if(!r.pt) return DASH;
+  return yn(r.pt==='Yes'?true:r.pt==='Limited'?r.pt:false);
+}
+
+// Photo trigger inside the compare table: same files/categories as the main table.
+function ph(type,r,cat,label,html,block){
+  return proofSpan(type,r.name,cat,r['photos_'+cat],r.name+' — '+label,html,block);
+}
+function phLinks(type,r){
+  const a=proofLink(type,r.name,'protocols',r.photos_protocols,r.name+' — Protocol tests','Protocol test photos');
+  const b=r.xiaomi_tc?proofLink(type,r.name,'xiaomi',r.photos_xiaomi,r.name+' — Xiaomi Turbo Charge test','Xiaomi test photos'):'';
+  return [a,b].filter(Boolean).map(x=>`<div style="margin-top:5px">${x}</div>`).join('');
+}
+function protoTags(r){
+  return `<span class="tag">${escAttr(r.pd)}</span> ${(r.protocols_extra||'').split(',').map(s=>s.trim()).filter(Boolean).map(s=>`<span class="tag">${escAttr(s)}</span>`).join(' ')}${r.xiaomi_tc?'<span class="tag">Xiaomi Turbo Charge</span>':''}`;
+}
+const minBy=(rows,k)=>{const c=rows.filter(r=>isNum(r[k])); return c.length?c.reduce((a,b)=>b[k]<a[k]?b:a).name:null;};
+const maxBy=(rows,k)=>{const c=rows.filter(r=>isNum(r[k])); return c.length?c.reduce((a,b)=>b[k]>a[k]?b:a).name:null;};
+const priceField={label:'Price',get:r=>r.price?`$${r.price} @ review ${valueTag(r.value)}`:'—', win:rows=>minBy(rows,'price')};
+const linksField=r=>`<div class="btns">${buyBtn(r.buy_am,r.buy_ali)}${reviewBtn(r.yt)}</div>`;
+const powerCell=(T,r)=>ph(T,r,'power','Power output',`<div>${isNum(r.pwr)?r.pwr+' W':DASH} <span style="font-size:10px;color:var(--text3)">/ port</span></div><div class="sub">${isNum(r.total_pwr)?r.total_pwr+' W total':''}</div>${isNum(r.pwr)&&isNum(r.total_pwr)&&r.pwr>=r.total_pwr?'<div style="font-size:10px;font-weight:600;color:var(--green)">★ full power solo</div>':''}`,true);
 
 const CMP_FIELDS={
   cables:[
     {label:'Connector',      get:r=>`<span class="chip">${escAttr(r.conn)}</span>`},
     {label:'Length',         get:r=>`<span class="num">${lenStr(r.len)}</span>`},
-    {label:'Resistance',     get:r=>resStr(r.res), win:rows=>{const c=rows.filter(r=>isNum(r.res)); return c.length?c.reduce((a,b)=>b.res<a.res?b:a).name:null;}},
-    {label:'Max Power',      get:r=>`<span class="num">${isNum(r.pwr)?r.pwr+' W':DASH}</span>`, win:rows=>{const c=rows.filter(r=>isNum(r.pwr)); return c.length?c.reduce((a,b)=>b.pwr>a.pwr?b:a).name:null;}},
-    {label:'Speed',          get:r=>`${escAttr(r.spd_lbl)}${isNum(r.spd)&&isNum(r.adv_spd)&&r.spd>r.adv_spd?`<div style="font-size:11px;font-weight:600;color:var(--green)">↑ real: ${escAttr(r.real_spd)}</div>`:''}`, win:rows=>{const c=rows.filter(r=>isNum(r.spd)); return c.length?c.reduce((a,b)=>b.spd>a.spd?b:a).name:null;}},
-    {label:'E-Marker',       get:r=>yn(r.emark)},
+    {label:'Resistance',     get:r=>ph('cables',r,'res','Resistance',resStr(r.res)), win:rows=>minBy(rows,'res')},
+    {label:'Max Power',      get:r=>`<span class="num">${isNum(r.pwr)?r.pwr+' W':DASH}</span>`, win:rows=>maxBy(rows,'pwr')},
+    {label:'Speed',          get:r=>ph('cables',r,'speed','Speed',`${escAttr(r.spd_lbl)}${isNum(r.spd)&&isNum(r.adv_spd)&&r.spd>r.adv_spd?`<div style="font-size:11px;font-weight:600;color:var(--green)">↑ real: ${escAttr(r.real_spd)}</div>`:''}`,true), win:rows=>maxBy(rows,'spd')},
+    {label:'E-Marker',       get:r=>ph('cables',r,'emark','E-Marker',yn(r.emark))},
     {label:'Display',        get:r=>yn(r.display)},
-    {label:'Stress Test',    get:stressCellCables},
-    {label:'Price',          get:r=>r.price?`$${r.price} @ review ${valueTag(r.value)}`:'—', win:rows=>rows.filter(r=>r.price).length?rows.filter(r=>r.price).reduce((a,b)=>b.price<a.price?b:a).name:null},
+    {label:'Stress Test',    get:r=>ph('cables',r,'stress','Stress test',stressCellCables(r),true)},
+    priceField,
     {label:'Verdict',        get:r=>badge(r.v)},
     {label:'Notes',          get:r=>r.extra?escAttr(r.extra):'—'},
-    {label:'Links',          get:r=>`<div class="btns">${buyBtn(r.buy_am,r.buy_ali)}${reviewBtn(r.yt)}</div>`},
+    {label:'Links',          get:linksField},
   ],
   chargers:[
-    {label:'Ports',          get:r=>`<span class="chip">${escAttr(r.ports)}</span>`},
-    {label:'Power',          get:r=>`<div>${isNum(r.pwr)?r.pwr+' W':DASH} <span style="font-size:10px;color:var(--text3)">/ port</span></div><div class="sub">${isNum(r.total_pwr)?r.total_pwr+' W total':''}</div>${isNum(r.pwr)&&isNum(r.total_pwr)&&r.pwr>=r.total_pwr?'<div style="font-size:10px;font-weight:600;color:var(--green)">★ full power solo</div>':''}`, win:rows=>{const c=rows.filter(r=>isNum(r.total_pwr)); return c.length?c.reduce((a,b)=>b.total_pwr>a.total_pwr?b:a).name:null;}},
+    {label:'Ports',          get:r=>ph('chargers',r,'ports','Ports',`<span class="chip">${escAttr(r.ports)}</span>`)},
+    {label:'Power',          get:r=>powerCell('chargers',r), win:rows=>maxBy(rows,'total_pwr')},
     {label:'Peak Efficiency',get:r=>effList(r.eff_curve,r.eff), win:rows=>rows.reduce((a,b)=>(b._effSort??0)>(a._effSort??0)?b:a).name},
-    {label:'Ripple (peak)',  get:r=>rippleList(r.ripple_curve,r.ripple), win:rows=>rows.reduce((a,b)=>(b._rippleSort??Infinity)<(a._rippleSort??Infinity)?b:a).name},
+    {label:'Ripple (peak)',  get:r=>ph('chargers',r,'ripple','Ripple',rippleList(r.ripple_curve,r.ripple),true), win:rows=>rows.reduce((a,b)=>(b._rippleSort??Infinity)<(a._rippleSort??Infinity)?b:a).name},
     {label:'Port Reset',     get:r=>r.ports_reboot?'<span class="b bo"><i class="ti ti-alert-triangle" style="font-size:12px"></i> Resets ports</span>':'<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Stable</span>'},
-    {label:'Protocols',      get:r=>`<span class="tag">${escAttr(r.pd)}</span> ${(r.protocols_extra||'').split(',').map(s=>s.trim()).filter(Boolean).map(s=>`<span class="tag">${escAttr(s)}</span>`).join(' ')}${r.xiaomi_tc?'<span class="tag">Xiaomi Turbo Charge</span>':''}`},
-    {label:'Display',        get:r=>yn(r.display)},
+    {label:'Protocols',      get:r=>protoTags(r)+phLinks('chargers',r)},
+    {label:'Display',        get:r=>r.display?ph('chargers',r,'display','Display',yn(r.display)):yn(r.display)},
     {label:'Built-in Cable', get:r=>yn(r.cable_in)},
     {label:'AC Outlet',      get:r=>yn(r.ac_outlet)},
     {label:'Form',           get:r=>r.corded?'Corded':'Wall plug'},
-    {label:'App Control',    get:r=>r.app_control?(r.app_detail?escAttr(r.app_detail):'Yes'):'No'},
-    {label:'Stress Test',    get:stressCellChargers},
-    {label:'Price',          get:r=>r.price?`$${r.price} @ review ${valueTag(r.value)}`:'—', win:rows=>rows.filter(r=>r.price).length?rows.filter(r=>r.price).reduce((a,b)=>b.price<a.price?b:a).name:null},
+    {label:'App Control',    get:r=>r.app_control?ph('chargers',r,'app','App control',r.app_detail?escAttr(r.app_detail):'Yes'):'No'},
+    {label:'Stress Test',    get:r=>ph('chargers',r,'stress','Stress test',stressCellChargers(r),true)},
+    priceField,
     {label:'Verdict',        get:r=>badge(r.v)},
     {label:'Notes',          get:r=>r.extra?escAttr(r.extra):'—'},
-    {label:'Links',          get:r=>`<div class="btns">${buyBtn(r.buy_am,r.buy_ali)}${reviewBtn(r.yt)}</div>`},
+    {label:'Links',          get:linksField},
   ],
   powerbanks:[
-    {label:'Rated Capacity', get:r=>`${isNum(r.rated)?r.rated.toLocaleString()+' mAh':DASH}<div class="sub">${isNum(r.rated_wh)?r.rated_wh+' Wh rated':''}</div>`, win:rows=>{const c=rows.filter(r=>isNum(r.rated_wh)); return c.length?c.reduce((a,b)=>b.rated_wh>a.rated_wh?b:a).name:null;}},
-    {label:'Measured',       get:r=>`${isNum(r.real)?r.real+' Wh':DASH} <span style="font-size:10px;color:var(--text3)">measured</span><div class="sub">${effPctStr(r.eff5v)} @5V · ${effPctStr(r.eff_max)} @max</div>`, win:rows=>{const c=rows.filter(r=>isNum(r.real)); return c.length?c.reduce((a,b)=>b.real>a.real?b:a).name:null;}},
-    {label:'Output Power',   get:r=>`<div>${isNum(r.maxpwr)?r.maxpwr+' W':DASH} <span style="font-size:10px;color:var(--text3)">/ port</span></div><div class="sub">${isNum(r.total_pwr)?r.total_pwr+' W total':''}</div>${isNum(r.maxpwr)&&isNum(r.total_pwr)&&r.maxpwr>=r.total_pwr?'<div style="font-size:10px;font-weight:600;color:var(--green)">★ full power solo</div>':''}`, win:rows=>{const c=rows.filter(r=>isNum(r.total_pwr)); return c.length?c.reduce((a,b)=>b.total_pwr>a.total_pwr?b:a).name:null;}},
-    {label:'Ripple (peak)',  get:r=>rippleList(r.ripple_curve,r.ripple), win:rows=>rows.filter(r=>r._rippleSort!=null).length?rows.filter(r=>r._rippleSort!=null).reduce((a,b)=>b._rippleSort<a._rippleSort?b:a).name:null},
-    {label:'Charging Input', get:r=>`${isNum(r.max_charge_pwr)?r.max_charge_pwr+' W input':DASH}<div class="sub">${r.recharge||''}</div>`, win:rows=>{const c=rows.filter(r=>isNum(r.max_charge_pwr)); return c.length?c.reduce((a,b)=>b.max_charge_pwr>a.max_charge_pwr?b:a).name:null;}},
-    {label:'Stress Test',    get:stressCellPowerbanks},
-    {label:'Wireless (Qi)',  get:r=>r.wireless_qi?`${r.qi_standard?escAttr(r.qi_standard):'Qi'}<div class="sub">${isNum(r.qi_pwr)?r.qi_pwr+' W rated':'—'} · ${isNum(r.qi_real_wh)?r.qi_real_wh+' Wh':'—'}${isNum(r.qi_eff)?` @ ${r.qi_eff}%`:''}</div>`:yn(false)},
-    {label:'Pass-through',   get:r=>yn(r.pt==='Yes'?true:r.pt==='Limited'?r.pt:false)},
-    {label:'Protocols',      get:r=>`<span class="tag">${escAttr(r.pd)}</span> ${(r.protocols_extra||'').split(',').map(s=>s.trim()).filter(Boolean).map(s=>`<span class="tag">${escAttr(s)}</span>`).join(' ')}${r.xiaomi_tc?'<span class="tag">Xiaomi Turbo Charge</span>':''}`},
-    {label:'Display',        get:r=>yn(r.display)},
-    {label:'Built-in Cable', get:r=>yn(r.cable)},
-    {label:'Price',          get:r=>r.price?`$${r.price} @ review ${valueTag(r.value)}`:'—', win:rows=>rows.filter(r=>r.price).length?rows.filter(r=>r.price).reduce((a,b)=>b.price<a.price?b:a).name:null},
+    {label:'Ports',          get:r=>ph('powerbanks',r,'ports','Ports',r.ports?`<span class="chip">${escAttr(r.ports)}</span>`:DASH)},
+    {label:'Rated Capacity', get:r=>`${isNum(r.rated)?r.rated.toLocaleString()+' mAh':DASH}<div class="sub">${isNum(r._ratedWh)?(r._ratedWhCalc?'≈ ':'')+r._ratedWh+' Wh rated':''}</div>`, win:rows=>maxBy(rows,'_ratedWh')},
+    {label:'Measured',       info:PB_EFF_INFO, get:r=>ph('powerbanks',r,'capacity','Capacity test',`${isNum(r.real)?round1(r.real)+' Wh':DASH} <span style="font-size:10px;color:var(--text3)">measured</span>${effPairHtml(r)}`,true), win:rows=>maxBy(rows,'real')},
+    {label:'Output Power',   get:r=>powerCell('powerbanks',r), win:rows=>maxBy(rows,'total_pwr')},
+    {label:'Ripple (peak)',  get:r=>ph('powerbanks',r,'ripple','Ripple',rippleList(r.ripple_curve,null),true), win:rows=>minBy(rows,'_rippleSort')},
+    {label:'Charging Input', get:r=>`${isNum(r.max_charge_pwr)?r.max_charge_pwr+' W input':DASH}<div class="sub">${r.recharge||''}</div>`, win:rows=>maxBy(rows,'max_charge_pwr')},
+    {label:'Stress Test',    get:r=>ph('powerbanks',r,'stress','Stress test',stressCellPowerbanks(r),true)},
+    {label:'Wireless (Qi)',  get:r=>r.wireless_qi?ph('powerbanks',r,'qi','Wireless charging test',`${r.qi_standard?escAttr(r.qi_standard):'Qi'}<div class="sub">${isNum(r.qi_pwr)?r.qi_pwr+' W rated':'—'} · ${isNum(r.qi_real_wh)?r.qi_real_wh+' Wh':'—'}${isNum(r.qi_eff)?` @ ${r.qi_eff}%`:''}</div>`,true):yn(false)},
+    {label:'Pass-through',   get:r=>ph('powerbanks',r,'passthrough','Pass-through',ptCell(r))},
+    {label:'Protocols',      get:r=>protoTags(r)+phLinks('powerbanks',r)},
+    {label:'Display',        get:r=>r.display?ph('powerbanks',r,'display','Display',yn(r.display)):yn(r.display)},
+    {label:'Built-in Cable', get:r=>yn(r.cable_in)},
+    {label:'App Control',    get:r=>r.app_control?ph('powerbanks',r,'app','App control',r.app_detail&&!/^(true|false)$/i.test(r.app_detail)?escAttr(r.app_detail):'Yes'):'No'},
+    priceField,
     {label:'Verdict',        get:r=>badge(r.v)},
-    {label:'Links',          get:r=>lnks(r.yt,r.buy)},
+    {label:'Notes',          get:r=>r.extra?escAttr(r.extra):'—'},
+    {label:'Links',          get:linksField},
   ],
 };
 
@@ -1344,11 +1406,11 @@ function openCompareModal(){
   const fields=CMP_FIELDS[name];
   document.getElementById('cmp-modal-title').textContent=`Comparing ${rows.length} ${name}`;
   let html=`<table class="cmp-table"><thead><tr><th class="cmp-field"></th>`;
-  html+=rows.map(r=>`<th class="cmp-model-hdr"><div class="cmp-model-name">${escAttr(r.name)}</div><div class="cmp-model-brand">${escAttr(r.brand)}</div></th>`).join('');
+  html+=rows.map(r=>`<th class="cmp-model-hdr"><div class="cmp-model-name">${ph(name,r,'exterior','Exterior',escAttr(r.name))}</div><div class="cmp-model-brand">${escAttr(r.brand)}</div></th>`).join('');
   html+=`</tr></thead><tbody>`;
   fields.forEach(f=>{
     const winner=f.win?f.win(rows):null;
-    html+=`<tr><td class="cmp-field">${f.label}</td>`;
+    html+=`<tr><td class="cmp-field">${f.label}${f.info?` <i class="ti ti-info-circle info-icon" data-info="${escAttr(f.info)}" onclick="event.stopPropagation();showInfoPopover(this)"></i>`:''}</td>`;
     html+=rows.map(r=>`<td class="${winner&&winner===r.name?'cmp-win':''}">${f.get(r)}</td>`).join('');
     html+=`</tr>`;
   });
@@ -1360,7 +1422,9 @@ function closeCompareModal(){
   document.getElementById('cmp-overlay').classList.remove('show');
 }
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape') closeCompareModal();
+  if(e.key!=='Escape') return;
+  if(document.getElementById('gal-overlay').classList.contains('show')) return;
+  closeCompareModal();
 });
 
 // ══════════════════════════════════════════════
@@ -1547,43 +1611,53 @@ function renderChargers(rows){
 
 function renderPowerbanks(rows){
   const b=document.getElementById('body-powerbanks');
-  if(!rows.length){b.innerHTML=emptyRow('powerbanks',13);return;}
+  if(!rows.length){b.innerHTML=emptyRow('powerbanks',14);return;}
+  const T='powerbanks';
   b.innerHTML=rows.map(r=>`<tr>
     <td class="cmp-td"><input type="checkbox" class="cmp-chk" ${CMP.powerbanks.sel.has(r.name)?'checked':''} ${(!CMP.powerbanks.sel.has(r.name)&&CMP.powerbanks.sel.size>=CMP_MAX)?'disabled':''}></td>
     <td class="nm-td">
-      <div class="nm">${escAttr(r.name)}</div>
+      <div class="nm">${proofSpan(T,r.name,'exterior',r.photos_exterior,r.name+' — Exterior',escAttr(r.name))}</div>
       <div class="sub" style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap;align-items:center">
         <span class="tag">${escAttr(r.pd)}</span>
-        ${r.display     ? '<span class="tag">📺 Display</span>'       : ''}
-        ${r.cable       ? '<span class="tag">🔌 Built-in cable</span>': ''}
-        ${qiBtn(r.wireless_qi,r.qi_standard,r.qi_pwr,r.qi_real_wh,r.qi_eff,r.qi_throttle_pass,r.qi_throttle_drop)}
-        ${protoBtn(r.protocols_extra,r.xiaomi_tc)}
+        ${r.display     ? proofSpan(T,r.name,'display',r.photos_display,r.name+' — Display','<span class="tag">📺 Display</span>') : ''}
+        ${r.cable_in    ? '<span class="tag">🔌 Built-in cable</span>' : ''}
+        ${r.app_control ? proofSpan(T,r.name,'app',r.photos_app,r.name+' — App','<span class="tag">📱 App control</span>') : ''}
+        ${qiBtn(r.wireless_qi,r.qi_standard,r.qi_pwr,r.qi_real_wh,r.qi_eff,r.qi_throttle_pass,r.qi_throttle_drop,{type:T,name:r.name,photos:r.photos_qi})}
+        ${protoBtn(r.protocols_extra,r.xiaomi_tc,{type:T,name:r.name,protocols:r.photos_protocols,xiaomi:r.photos_xiaomi})}
       </div>
     </td>
+    <td>${proofSpan(T,r.name,'ports',r.photos_ports,r.name+' — Ports',r.ports?`<span class="chip">${escAttr(r.ports)}</span>`:DASH)}</td>
     <td class="num" style="line-height:1.6">
       ${isNum(r.rated)?r.rated.toLocaleString()+' mAh':DASH}<br>
-      <span style="font-size:11px;color:var(--text3)">${isNum(r.rated_wh)?r.rated_wh+' Wh':DASH} <em style="font-style:normal;color:var(--text3)">rated</em></span>
+      <span style="font-size:11px;color:var(--text3)">${isNum(r._ratedWh)?(r._ratedWhCalc?'≈ ':'')+r._ratedWh+' Wh':DASH} <em style="font-style:normal;color:var(--text3)">rated</em></span>
     </td>
     <td class="num" style="line-height:1.6">
-      <div>${isNum(r.real)?r.real+' Wh':DASH} <span style="font-size:10px;font-weight:400;color:var(--text3)">measured</span></div>
-      <div class="sub">${effPctStr(r.eff5v)} @5V · ${effPctStr(r.eff_max)} @max</div>
-      <div style="font-size:10px;color:var(--text3)">efficiency, measured</div>
+      ${proofSpan(T,r.name,'capacity',r.photos_capacity,r.name+' — Capacity test',`<div>${isNum(r.real)?round1(r.real)+' Wh':DASH} <span style="font-size:10px;font-weight:400;color:var(--text3)">measured</span></div>
+      ${effPairHtml(r)}
+      <div style="font-size:10px;color:var(--text3)">efficiency</div>`,true)}
     </td>
     <td class="num" style="line-height:1.6">
-      <div>${isNum(r.maxpwr)?r.maxpwr+' W':DASH} <span style="font-size:10px;font-weight:400;color:var(--text3)">/ port</span></div>
+      ${proofSpan(T,r.name,'power',r.photos_power,r.name+' — Power output',`<div>${isNum(r.pwr)?r.pwr+' W':DASH} <span style="font-size:10px;font-weight:400;color:var(--text3)">/ port</span></div>
       <div class="sub">${isNum(r.total_pwr)?r.total_pwr+' W total':''}</div>
-      ${isNum(r.maxpwr)&&isNum(r.total_pwr)&&r.maxpwr>=r.total_pwr?`<div style="font-size:10px;font-weight:600;color:var(--green)">★ full power solo</div>`:''}
+      ${isNum(r.pwr)&&isNum(r.total_pwr)&&r.pwr>=r.total_pwr?`<div style="font-size:10px;font-weight:600;color:var(--green)">★ full power solo</div>`:''}`,true)}
     </td>
-    <td>${rippleList(r.ripple_curve,r.ripple)}</td>
+    <td>${proofSpan(T,r.name,'ripple',r.photos_ripple,r.name+' — Ripple',rippleList(r.ripple_curve,null),true)}</td>
     <td style="font-size:12px;color:var(--text2);line-height:1.6">
       <div class="num" style="font-size:13px">${isNum(r.max_charge_pwr)?r.max_charge_pwr+' W':DASH} <span style="font-size:10px;font-weight:400;color:var(--text3)">input</span></div>
       <div class="sub">${r.recharge?escAttr(r.recharge):''}</div>
     </td>
-    <td>${stressCellPowerbanks(r)}</td>
-    <td>${yn(r.pt==='Yes'?true:r.pt==='Limited'?r.pt:false)}</td>
+    <td>${proofSpan(T,r.name,'stress',r.photos_stress,r.name+' — Stress test',stressCellPowerbanks(r),true)}</td>
+    <td>${proofSpan(T,r.name,'passthrough',r.photos_passthrough,r.name+' — Pass-through',ptCell(r))}</td>
     <td>${badge(r.v)}</td>
     <td>${priceCell(r.price,r.value)}</td>
-    <td>${lnks(r.yt,r.buy,linkBtn('powerbanks',r))}</td>
+    <td style="font-size:11px;color:var(--text2);max-width:180px;line-height:1.5">${r.extra?escAttr(r.extra):'—'}</td>
+    <td>
+      <div class="btns">
+        ${buyBtn(r.buy_am,r.buy_ali)}
+        ${reviewBtn(r.yt)}
+        ${linkBtn('powerbanks',r)}
+      </div>
+    </td>
   </tr>`).join('');
   wireCmpCheckboxes('powerbanks',b,rows);
 }
@@ -1625,6 +1699,8 @@ function applyF(name){
   const cap      = name==='powerbanks' ? document.getElementById('f-powerbanks-cap')?.value||''    : '';
   const pb_pd    = name==='powerbanks' ? document.getElementById('f-powerbanks-pd')?.value||''     : '';
   const pb_cable = name==='powerbanks' ? document.getElementById('f-powerbanks-cable')?.value||''  : '';
+  const pb_ports = name==='powerbanks' ? document.getElementById('f-powerbanks-ports')?.value||''  : '';
+  const pb_app   = name==='powerbanks' ? document.getElementById('f-powerbanks-app')?.value||''    : '';
   const pb_disp  = name==='powerbanks' ? document.getElementById('f-powerbanks-display')?.value||'': '';
   const pb_pt    = name==='powerbanks' ? document.getElementById('f-powerbanks-pt')?.value||''     : '';
   const pb_qi    = name==='powerbanks' ? document.getElementById('f-powerbanks-qi')?.value||''     : '';
@@ -1672,8 +1748,14 @@ function applyF(name){
       if(cap==='20+'  &&!(r.rated>20000))                return false;
     }
     if(pb_pd    &&!pdMatches(r.pd,pb_pd))      return false;
-    if(pb_cable==='yes'&&!r.cable)   return false;
-    if(pb_cable==='no' && r.cable)   return false;
+    if(pb_cable==='yes'&&!r.cable_in) return false;
+    if(pb_cable==='no' && r.cable_in) return false;
+    if(pb_ports){
+      if(!isNum(r.ports_n)) return false;
+      if(pb_ports==='4' ? r.ports_n<4 : r.ports_n!==Number(pb_ports)) return false;
+    }
+    if(pb_app==='yes'&&!r.app_control) return false;
+    if(pb_app==='no' && r.app_control) return false;
     if(pb_disp ==='yes'&&!r.display) return false;
     if(pb_disp ==='no' && r.display) return false;
     if(pb_pt&&r.pt!==pb_pt)          return false;
@@ -1774,7 +1856,7 @@ function assignSlugs(){
 function deviceUrl(type,s){ return location.href.split('#')[0]+'#'+type+'/'+s; }
 function linkBtn(type,r){
   if(!r._slug) return '';
-  return `<button type="button" class="btn btn-link" data-lnk="${type}/${r._slug}" title="Copy link to this device" aria-label="Copy link to ${escAttr(r.name)}"><i class="ti ti-link" style="font-size:13px"></i></button>`;
+  return `<button type="button" class="btn btn-link" data-lnk="${type}/${r._slug}" title="Copy a direct link to this device" aria-label="Copy link to ${escAttr(r.name)}"><i class="ti ti-share-2" style="font-size:13px"></i></button>`;
 }
 function copyText(t){
   if(navigator.clipboard&&window.isSecureContext) return navigator.clipboard.writeText(t);
@@ -1790,7 +1872,7 @@ document.addEventListener('click',e=>{
   const b=e.target.closest&&e.target.closest('[data-lnk]'); if(!b) return;
   const [type,s]=b.dataset.lnk.split('/');
   const url=deviceUrl(type,s), ic=b.querySelector('i');
-  const done=()=>{ if(!ic) return; ic.className='ti ti-check'; b.style.color='var(--green)'; setTimeout(()=>{ ic.className='ti ti-link'; b.style.color=''; },1500); };
+  const done=()=>{ if(!ic) return; ic.className='ti ti-check'; b.style.color='var(--green)'; setTimeout(()=>{ ic.className='ti ti-share-2'; b.style.color=''; },1500); };
   copyText(url).then(done).catch(()=>{ window.prompt('Copy this link:',url); });
 });
 function resetFilters(name){
