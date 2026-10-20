@@ -932,28 +932,27 @@ function loadSheet(name){
   });
 }
 
-// Powerbank efficiency: the sheet may hold one number ("84.4") or two ("84.4/81.19": vs rated Wh / vs measured Wh).
-// Empty cells are computed from delivered Wh when possible.
+// Powerbank efficiency is shown exactly as typed in the sheet: "84.4" or "84.4/81.19"
+// (first = relative to rated capacity, second = relative to capacity measured in the test). Nothing is calculated.
 const PB_EFF_INFO="Efficiency = energy the powerbank delivered ÷ its capacity. “of rated” compares it with the capacity the manufacturer claims; “of measured” compares it with the capacity I actually measured in the test. Both are shown at 5V and at maximum power.";
 function round1(v){ return Math.round(v*10)/10; }
 function effNums(raw){
   return String(raw??'').split(/[\/;|]/).map(s=>parseFloat(s)).filter(n=>Number.isFinite(n));
 }
 function normalizePB(r){
-  r._ratedWh = isNum(r.rated_wh) ? r.rated_wh : (isNum(r.rated) ? round1(r.rated*3.7/1000) : null);
-  r._ratedWhCalc = !isNum(r.rated_wh) && isNum(r._ratedWh);
-  const calc=(wh,den)=> (isNum(wh)&&isNum(den)&&den>0) ? round1(wh/den*100) : null;
+  r._ratedWh = isNum(r.rated_wh) ? r.rated_wh : null;
   const e5=effNums(r.eff5v), em=effNums(r.eff_max);
-  r._eff5v  = e5.length ? e5[0] : calc(r.wh5v,  r._ratedWh);
-  r._effMax = em.length ? em[0] : calc(r.wh_max, r._ratedWh);
-  // second value ("a/b") = efficiency relative to the capacity measured in the test
-  r._eff5vReal  = e5.length>1 ? e5[1] : calc(r.wh5v,  r.real);
-  r._effMaxReal = em.length>1 ? em[1] : calc(r.wh_max, r.real);
+  r._eff5v      = e5.length>0 ? e5[0] : null;
+  r._effMax     = em.length>0 ? em[0] : null;
+  r._eff5vReal  = e5.length>1 ? e5[1] : null;
+  r._effMaxReal = em.length>1 ? em[1] : null;
 }
 function effPairHtml(r){
-  const f=v=>effPctStr(isNum(v)?round1(v):null);
+  const f=v=>effPctStr(isNum(v)?v:null);
   const line=(lbl,a,b)=>`<div class="sub">${lbl} ${f(a)} @5V · ${f(b)} @max</div>`;
-  return line('of rated',r._eff5v,r._effMax)+(isNum(r._eff5vReal)||isNum(r._effMaxReal)?line('of measured',r._eff5vReal,r._effMaxReal):'');
+  const has=(a,b)=>isNum(a)||isNum(b);
+  const out=(has(r._eff5v,r._effMax)?line('of rated',r._eff5v,r._effMax):'')+(has(r._eff5vReal,r._effMaxReal)?line('of measured',r._eff5vReal,r._effMaxReal):'');
+  return out||`<div class="sub">${DASH}</div>`;
 }
 
 async function initData(){
@@ -1380,7 +1379,7 @@ const CMP_FIELDS={
   ],
   powerbanks:[
     {label:'Ports',          get:r=>ph('powerbanks',r,'ports','Ports',r.ports?`<span class="chip">${escAttr(r.ports)}</span>`:DASH)},
-    {label:'Rated Capacity', get:r=>`${isNum(r.rated)?r.rated.toLocaleString()+' mAh':DASH}<div class="sub">${isNum(r._ratedWh)?(r._ratedWhCalc?'≈ ':'')+r._ratedWh+' Wh rated':''}</div>`, win:rows=>maxBy(rows,'_ratedWh')},
+    {label:'Rated Capacity', get:r=>`${isNum(r.rated)?r.rated.toLocaleString()+' mAh':DASH}<div class="sub">${isNum(r._ratedWh)?r._ratedWh+' Wh rated':''}</div>`, win:rows=>maxBy(rows,'_ratedWh')},
     {label:'Measured',       info:PB_EFF_INFO, get:r=>ph('powerbanks',r,'capacity','Capacity test',`${isNum(r.real)?round1(r.real)+' Wh':DASH} <span style="font-size:10px;color:var(--text3)">measured</span>${effPairHtml(r)}`,true), win:rows=>maxBy(rows,'real')},
     {label:'Output Power',   get:r=>powerCell('powerbanks',r), win:rows=>maxBy(rows,'total_pwr')},
     {label:'Ripple (peak)',  get:r=>ph('powerbanks',r,'ripple','Ripple',rippleList(r.ripple_curve,null),true), win:rows=>minBy(rows,'_rippleSort')},
@@ -1630,7 +1629,7 @@ function renderPowerbanks(rows){
     <td>${proofSpan(T,r.name,'ports',r.photos_ports,r.name+' — Ports',r.ports?`<span class="chip">${escAttr(r.ports)}</span>`:DASH)}</td>
     <td class="num" style="line-height:1.6">
       ${isNum(r.rated)?r.rated.toLocaleString()+' mAh':DASH}<br>
-      <span style="font-size:11px;color:var(--text3)">${isNum(r._ratedWh)?(r._ratedWhCalc?'≈ ':'')+r._ratedWh+' Wh':DASH} <em style="font-style:normal;color:var(--text3)">rated</em></span>
+      <span style="font-size:11px;color:var(--text3)">${isNum(r._ratedWh)?r._ratedWh+' Wh':DASH} <em style="font-style:normal;color:var(--text3)">rated</em></span>
     </td>
     <td class="num" style="line-height:1.6">
       ${proofSpan(T,r.name,'capacity',r.photos_capacity,r.name+' — Capacity test',`<div>${isNum(r.real)?round1(r.real)+' Wh':DASH} <span style="font-size:10px;font-weight:400;color:var(--text3)">measured</span></div>
