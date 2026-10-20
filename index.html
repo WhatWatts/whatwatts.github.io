@@ -26,13 +26,15 @@
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="android-chrome-192x192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="android-chrome-512x512.png">
+<link rel="preconnect" href="https://docs.google.com">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.29.0/dist/tabler-icons.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <style>
 :root{
   --bg:#0d1117;--surface:#161b22;--surface2:#21262d;
   --border:rgba(255,255,255,0.08);--borders:rgba(255,255,255,0.15);
-  --text:#e6edf3;--text2:#8b949e;--text3:#6e7681;
+  --text:#e6edf3;--text2:#8b949e;--text3:#7d8590;
   --accent:#58a6ff;
   --green:#3fb950;--gbg:rgba(63,185,80,.13);--gb:rgba(63,185,80,.28);
   --orange:#d29922;--obg:rgba(210,153,34,.13);--ob:rgba(210,153,34,.28);
@@ -43,7 +45,7 @@
 [data-theme="light"]{
   --bg:#ffffff;--surface:#f6f8fa;--surface2:#eaeef2;
   --border:rgba(27,31,36,0.08);--borders:rgba(27,31,36,0.15);
-  --text:#1f2328;--text2:#59636e;--text3:#818b98;
+  --text:#1f2328;--text2:#59636e;--text3:#6e7781;
   --accent:#0969da;
   --green:#1a7f37;--gbg:rgba(26,127,55,.1);--gb:rgba(26,127,55,.25);
   --orange:#9a6700;--obg:rgba(154,103,0,.1);--ob:rgba(154,103,0,.25);
@@ -56,6 +58,10 @@ body{transition:background .2s,color .2s}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5}
 a{color:inherit;text-decoration:none}
 .wrap{max-width:1280px;margin:0 auto;padding:0 1.5rem}
+@media(min-width:1400px){.wrap{max-width:min(1760px,100%)}}
+.nuances{font-size:11px;color:var(--text2);max-width:180px;line-height:1.5}
+@media(min-width:1700px){.nuances{max-width:260px}}
+@media(min-width:1500px){.cmp-modal{max-width:1400px}}
 
 /* ── Header ── */
 header{border-bottom:1px solid var(--border);padding:1.25rem 0}
@@ -296,6 +302,27 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
   .nm-td .tag{font-size:9.5px;padding:1px 5px;line-height:1.35}
   .tab{padding:8px 11px;font-size:12px;gap:4px}
 }
+
+/* ── Polish: numbers, focus, skeleton, motion ── */
+table{font-variant-numeric:tabular-nums}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+thead th:focus-visible{outline-offset:-2px}
+.info-icon:focus-visible,.price-info:focus-visible{border-radius:50%}
+.sk-row td{padding:15px 13px}
+.sk-bar{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);background-size:200% 100%;animation:skShimmer 1.3s linear infinite}
+@keyframes skShimmer{to{background-position:-200% 0}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes modalIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.panel.on{animation:fadeIn .16s ease}
+tbody.fade-in{animation:fadeIn .18s ease}
+.cmp-overlay.show{animation:fadeIn .16s ease}
+.cmp-overlay.show .cmp-modal{animation:modalIn .2s ease}
+.gal-overlay.show{animation:fadeIn .16s ease}
+.gal-img.gal-fade{animation:fadeIn .2s ease}
+@media(max-width:600px){@keyframes modalIn{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important}
+}
 </style>
 </head>
 <body>
@@ -530,7 +557,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
       <th class="nm-th" onclick="srt('powerbanks','name')" data-sort-key="name">Powerbank <span class="sa">↕</span></th>
       <th>Ports</th>
       <th onclick="srt('powerbanks','_ratedWh')" data-sort-key="_ratedWh">Rated <span class="sa">↕</span></th>
-      <th onclick="srt('powerbanks','real')" data-sort-key="real">Efficiency & Capacity <span class="sa">↕</span> <i class="ti ti-info-circle info-icon" data-info="Efficiency = energy the powerbank delivered ÷ its capacity. “of rated” compares it with the capacity the manufacturer claims; “of measured” compares it with the capacity I actually measured in the test. Both are shown at 5V and at maximum power." onclick="event.stopPropagation();showInfoPopover(this)"></i></th>
+      <th onclick="srt('powerbanks','real')" data-sort-key="real">Efficiency & Capacity <span class="sa">↕</span> <i class="ti ti-info-circle info-icon" tabindex="0" role="button" aria-label="About the efficiency values" data-info="Efficiency = energy the powerbank delivered ÷ its capacity. “of rated” compares it with the capacity the manufacturer claims; “of measured” compares it with the capacity I actually measured in the test. Both are shown at 5V and at maximum power." onclick="event.stopPropagation();showInfoPopover(this)"></i></th>
       <th onclick="srt('powerbanks','pwr')" data-sort-key="pwr">Output Power <span class="sa">↕</span></th>
       <th onclick="srt('powerbanks','_rippleSort')" data-sort-key="_rippleSort">Ripple (peak) <span class="sa">↕</span></th>
       <th>Charging Input</th>
@@ -789,7 +816,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
  <button class="cmp-bar-go" id="cmp-bar-go" onclick="openCompareModal()" disabled>Compare →</button>
 </div>
 
-<div class="cmp-overlay" id="cmp-overlay" onclick="if(event.target===this)closeCompareModal()">
+<div class="cmp-overlay" id="cmp-overlay" role="dialog" aria-modal="true" aria-label="Comparison" onclick="if(event.target===this)closeCompareModal()">
  <div class="cmp-modal">
   <div class="cmp-modal-hdr">
    <div class="cmp-modal-title" id="cmp-modal-title">Compare</div>
@@ -799,7 +826,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
  </div>
 </div>
 
-<div class="gal-overlay" id="gal-overlay" onclick="if(event.target===this)closeGallery()">
+<div class="gal-overlay" id="gal-overlay" role="dialog" aria-modal="true" aria-label="Photos" onclick="if(event.target===this)closeGallery()">
  <div class="gal-box" onclick="event.stopPropagation()">
   <div class="gal-hdr">
    <div class="gal-title"><span id="gal-title">—</span><span class="gal-count" id="gal-count"></span></div>
@@ -822,7 +849,7 @@ document.getElementById('cur-year').textContent = new Date().getFullYear();
 //  THEME — light/dark switch, remembers choice
 // ══════════════════════════════════════════════
 (function(){
-  const saved=localStorage.getItem('wt-theme');
+  let saved=null; try{ saved=localStorage.getItem('wt-theme'); }catch(e){}
   const system=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
   applyTheme(saved||system);
 })();
@@ -836,7 +863,7 @@ function toggleTheme(){
   const isLight=document.documentElement.getAttribute('data-theme')==='light';
   const next=isLight?'dark':'light';
   applyTheme(next);
-  localStorage.setItem('wt-theme',next);
+  try{ localStorage.setItem('wt-theme',next); }catch(e){}
 }
 
 // ══════════════════════════════════════════════
@@ -908,27 +935,46 @@ function pdMatches(cellValue, filterValue){
 
 let LOAD_ERROR = { cables:false, chargers:false, powerbanks:false };
 
-function loadSheet(name){
-  return new Promise(resolve=>{
-    if(!URLS[name] || URLS[name].startsWith('PASTE_URL')){
-      console.warn(`URL for "${name}" is not set — sheet will be empty`);
-      LOAD_ERROR[name]=true;
-      resolve([]);
-      return;
-    }
-    Papa.parse(URLS[name], {
-      download:true, header:true, skipEmptyLines:true,
-      complete: res => {
-        if((!res.data || !res.data.length) && res.errors && res.errors.length){
-          console.error(`Failed to load "${name}":`, res.errors);
-          LOAD_ERROR[name]=true;
-          resolve([]);
-          return;
-        }
-        resolve(res.data.map(r=>castRow(r, TYPES[name])));
-      },
-      error: err => { console.error(`Failed to load "${name}":`, err); LOAD_ERROR[name]=true; resolve([]); }
-    });
+// Sheets are cached in the browser (raw CSV text). A repeat visit renders instantly from the cache,
+// then the fresh sheet is fetched in the background and the tables are refreshed only if something changed.
+const CACHE_PREFIX='wt-sheet-v1-';
+function cacheGet(name){
+  try{ const j=JSON.parse(localStorage.getItem(CACHE_PREFIX+name)); return j&&typeof j.text==='string'?j.text:null; }catch(e){ return null; }
+}
+function cacheSet(name,text){
+  try{ localStorage.setItem(CACHE_PREFIX+name,JSON.stringify({t:Date.now(),text})); }catch(e){}
+}
+function parseSheet(name,text){
+  try{
+    const res=Papa.parse(text,{header:true,skipEmptyLines:true});
+    if(!res.meta||!res.meta.fields||!res.meta.fields.includes('name')) return null;
+    return res.data.map(r=>castRow(r,TYPES[name]));
+  }catch(e){ return null; }
+}
+async function loadFresh(name){
+  if(!URLS[name] || URLS[name].startsWith('PASTE_URL')){
+    console.warn(`URL for "${name}" is not set — sheet will be empty`);
+    return null;
+  }
+  try{
+    const r=await fetch(URLS[name],{cache:'no-cache'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const text=await r.text();
+    const rows=parseSheet(name,text);
+    if(!rows) throw new Error('unexpected sheet format');
+    return {text,rows};
+  }catch(err){
+    console.error(`Failed to load "${name}":`, err);
+    return null;
+  }
+}
+function showSkeletons(){
+  ['cables','chargers','powerbanks'].forEach(n=>{
+    const b=document.getElementById('body-'+n); if(!b) return;
+    const cols=document.querySelectorAll(`#tbl-${n} thead th`).length||10;
+    b.innerHTML=[78,64,86,58,72,66].map(w=>`<tr class="sk-row"><td colspan="${cols}"><div class="sk-bar" style="width:${w}%"></div></td></tr>`).join('');
+    b.setAttribute('aria-busy','true');
+    const l=document.getElementById('lbl-'+n); if(l) l.textContent='Loading…';
   });
 }
 
@@ -955,11 +1001,8 @@ function effPairHtml(r){
   return out||`<div class="sub">${DASH}</div>`;
 }
 
-async function initData(){
-  const [c, ch, pb] = await Promise.all(
-    ['cables','chargers','powerbanks'].map(loadSheet)
-  );
-  DATA.cables = c; DATA.chargers = ch; DATA.powerbanks = pb;
+function applyData(rowsBy,initial){
+  DATA.cables=rowsBy.cables; DATA.chargers=rowsBy.chargers; DATA.powerbanks=rowsBy.powerbanks;
 
   DATA.chargers.forEach(r=>{
     const effPts = parseEffCurve(r.eff_curve);
@@ -976,16 +1019,58 @@ async function initData(){
   ['cables','chargers','powerbanks'].forEach(n=>{
     DATA[n].sort((a,b)=>(a.name||'').localeCompare(b.name||''));
     S[n].sorted = [...DATA[n]];
-    const cnt = document.getElementById('cnt-'+n);
-    const lbl = document.getElementById('lbl-'+n);
-    if(cnt) cnt.textContent = DATA[n].length;
-    if(lbl) lbl.textContent = `${DATA[n].length} items`;
+    const b=document.getElementById('body-'+n); if(b) b.removeAttribute('aria-busy');
   });
   assignSlugs();
-  ['cables','chargers','powerbanks'].forEach(n=>render(n, S[n].sorted));
 
-  if(!applyHash()) restoreLastTab();
-  updateTabFade();
+  if(initial){
+    ['cables','chargers','powerbanks'].forEach(n=>{
+      const cnt = document.getElementById('cnt-'+n);
+      const lbl = document.getElementById('lbl-'+n);
+      if(cnt) cnt.textContent = DATA[n].length;
+      if(lbl) lbl.textContent = `${DATA[n].length} items`;
+      render(n, S[n].sorted);
+    });
+    if(!applyHash()) restoreLastTab();
+    updateTabFade();
+  } else {
+    // background refresh: keep the visitor's filters and sorting
+    ['cables','chargers','powerbanks'].forEach(n=>applyF(n));
+  }
+}
+
+async function initData(){
+  const names=['cables','chargers','powerbanks'];
+  const cached={};
+  names.forEach(n=>{
+    const text=cacheGet(n);
+    const rows=text?parseSheet(n,text):null;
+    cached[n]=rows?{text,rows}:null;
+  });
+  const haveAll=names.every(n=>cached[n]);
+
+  if(haveAll){
+    const first={}; names.forEach(n=>first[n]=cached[n].rows);
+    applyData(first,true);
+  } else {
+    showSkeletons();
+  }
+
+  const fresh=await Promise.all(names.map(loadFresh));
+  const final={}; let changed=false;
+  names.forEach((n,i)=>{
+    const f=fresh[i];
+    if(f){
+      final[n]=f.rows; LOAD_ERROR[n]=false;
+      if(!cached[n]||cached[n].text!==f.text){ cacheSet(n,f.text); changed=true; }
+    } else if(cached[n]){
+      final[n]=cached[n].rows; LOAD_ERROR[n]=false;        // network failed, cached copy is fine
+    } else {
+      final[n]=[]; LOAD_ERROR[n]=true;
+    }
+  });
+  if(!haveAll) applyData(final,true);
+  else if(changed) applyData(final,false);
 }
 
 // ══════════════════════════════════════════════
@@ -1096,7 +1181,7 @@ function valueTag(v){
 function priceCell(price,value){
   if(!price) return `<span class="sub">—</span>`;
   return `<div class="price-cell">
-    <div class="price-val">$${price}<i class="ti ti-info-circle price-info" data-info="Price at time of review — check the Buy link for the current price" onclick="showInfoPopover(this)"></i></div>
+    <div class="price-val">$${price}<i class="ti ti-info-circle price-info" tabindex="0" role="button" aria-label="Price info" data-info="Price at time of review — check the Buy link for the current price" onclick="showInfoPopover(this)"></i></div>
     ${valueTag(value)}
   </div>`;
 }
@@ -1410,16 +1495,21 @@ function openCompareModal(){
   html+=`</tr></thead><tbody>`;
   fields.forEach(f=>{
     const winner=f.win?f.win(rows):null;
-    html+=`<tr><td class="cmp-field">${f.label}${f.info?` <i class="ti ti-info-circle info-icon" data-info="${escAttr(f.info)}" onclick="event.stopPropagation();showInfoPopover(this)"></i>`:''}</td>`;
+    html+=`<tr><td class="cmp-field">${f.label}${f.info?` <i class="ti ti-info-circle info-icon" tabindex="0" role="button" aria-label="More info" data-info="${escAttr(f.info)}" onclick="event.stopPropagation();showInfoPopover(this)"></i>`:''}</td>`;
     html+=rows.map(r=>`<td class="${winner&&winner===r.name?'cmp-win':''}">${f.get(r)}</td>`).join('');
     html+=`</tr>`;
   });
   html+=`</tbody></table>`;
   document.getElementById('cmp-modal-body').innerHTML=html;
+  rememberFocus();
   document.getElementById('cmp-overlay').classList.add('show');
+  const cb=document.querySelector('#cmp-overlay .cmp-modal-close'); if(cb) cb.focus({preventScroll:true});
 }
 function closeCompareModal(){
-  document.getElementById('cmp-overlay').classList.remove('show');
+  const ov=document.getElementById('cmp-overlay');
+  const was=ov.classList.contains('show');
+  ov.classList.remove('show');
+  if(was) restoreFocus();
 }
 document.addEventListener('keydown',e=>{
   if(e.key!=='Escape') return;
@@ -1472,10 +1562,15 @@ function openGallery(type,name,category,raw,label){
   GAL.i=0;
   document.getElementById('gal-title').textContent=label;
   galRender();
+  rememberFocus();
   document.getElementById('gal-overlay').classList.add('show');
+  const gb=document.querySelector('#gal-overlay .gal-close'); if(gb) gb.focus({preventScroll:true});
 }
 function closeGallery(){
-  document.getElementById('gal-overlay').classList.remove('show');
+  const ov=document.getElementById('gal-overlay');
+  const was=ov.classList.contains('show');
+  ov.classList.remove('show');
+  if(was) restoreFocus();
 }
 function galStep(d){
   GAL.i=(GAL.i+d+GAL.photos.length)%GAL.photos.length;
@@ -1488,6 +1583,8 @@ function galRender(){
   img.onerror=()=>{ cap.textContent='File not found: '+decodeURIComponent(p.src); };
   img.alt=p.cap;
   img.src=p.src;
+  img.classList.remove('gal-fade'); void img.offsetWidth; img.classList.add('gal-fade');
+  [1,-1].forEach(d=>{ if(GAL.photos.length>1){ const q=GAL.photos[(GAL.i+d+GAL.photos.length)%GAL.photos.length]; new Image().src=q.src; } });
   cap.textContent=p.cap;
   document.getElementById('gal-count').textContent=` ${GAL.i+1} / ${GAL.photos.length}`;
   document.getElementById('gal-thumbs').innerHTML=GAL.photos.map((q,i)=>
@@ -1554,7 +1651,7 @@ function renderCables(rows){
     </td>
     <td>${badge(r.v)}</td>
     <td>${priceCell(r.price,r.value)}</td>
-    <td style="font-size:11px;color:var(--text2);max-width:180px;line-height:1.5">${r.extra?escAttr(r.extra):'—'}</td>
+    <td class="nuances">${r.extra?escAttr(r.extra):'—'}</td>
     <td>
       <div class="btns">
         ${buyBtn(r.buy_am,r.buy_ali)}
@@ -1597,7 +1694,7 @@ function renderChargers(rows){
     </td>
     <td>${badge(r.v)}</td>
     <td>${priceCell(r.price,r.value)}</td>
-    <td style="font-size:11px;color:var(--text2);max-width:180px;line-height:1.5">${r.extra?escAttr(r.extra):'—'}</td>
+    <td class="nuances">${r.extra?escAttr(r.extra):'—'}</td>
     <td>
       <div class="btns">
         ${buyBtn(r.buy_am,r.buy_ali)}
@@ -1650,7 +1747,7 @@ function renderPowerbanks(rows){
     <td>${proofSpan(T,r.name,'passthrough',r.photos_passthrough,r.name+' — Pass-through',ptCell(r))}</td>
     <td>${badge(r.v)}</td>
     <td>${priceCell(r.price,r.value)}</td>
-    <td style="font-size:11px;color:var(--text2);max-width:180px;line-height:1.5">${r.extra?escAttr(r.extra):'—'}</td>
+    <td class="nuances">${r.extra?escAttr(r.extra):'—'}</td>
     <td>
       <div class="btns">
         ${buyBtn(r.buy_am,r.buy_ali)}
@@ -1768,6 +1865,11 @@ function applyF(name){
   document.getElementById('lbl-'+name).textContent=out.length===DATA[name].length?`${out.length} items`:`${out.length} of ${DATA[name].length}`;
   document.getElementById('cnt-'+name).textContent=out.length;
   render(name,out);
+  if(document.activeElement&&document.activeElement.tagName==='SELECT') fadeBody(name);
+}
+function fadeBody(name){
+  const b=document.getElementById('body-'+name); if(!b) return;
+  b.classList.remove('fade-in'); void b.offsetWidth; b.classList.add('fade-in');
 }
 
 // ══════════════════════════════════════════════
@@ -1780,12 +1882,14 @@ function srt(name,key){
   document.querySelectorAll(`#tbl-${name} thead th`).forEach(th=>{
     const on=th.dataset.sortKey===key;
     th.classList.toggle('on',on);
+    if(th.dataset.sortKey) th.setAttribute('aria-sort',on?(s.asc?'ascending':'descending'):'none');
     const a=th.querySelector('.sa');
     if(a)a.textContent=on?(s.asc?'↑':'↓'):'↕';
   });
   const rows=S[name].sorted||DATA[name];
   S[name].sorted=doSort(name,rows);
   render(name,S[name].sorted);
+  fadeBody(name);
 }
 
 function doSort(name,arr){
@@ -1806,10 +1910,12 @@ function doSort(name,arr){
 // ══════════════════════════════════════════════
 //  TABS
 // ══════════════════════════════════════════════
+const BASE_TITLE=document.title;
 function sw(name,btn,silent){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.title=BASE_TITLE;
+  document.querySelectorAll('.tab').forEach(t=>{ t.classList.remove('on'); t.removeAttribute('aria-current'); });
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
-  btn.classList.add('on');
+  btn.classList.add('on'); btn.setAttribute('aria-current','true');
   document.getElementById('panel-'+name).classList.add('on');
   const notice=document.querySelector('.affiliate-note');
   if(notice) notice.style.display=(name==='gear'||name==='support')?'none':'flex';
@@ -1908,6 +2014,7 @@ function focusDevice(tab,s){
   if(!tr){ resetFilters(tab); tr=findDeviceRow(tab,s); }
   if(!tr) return false;
   clearHl();
+  document.title=SLUG[tab].get(s).name+' — '+BASE_TITLE;
   tr.classList.add('hl');
   tr.scrollIntoView({block:'center',behavior:reduceMotion()?'auto':'smooth'});
   clearTimeout(hlTimer);
@@ -1946,6 +2053,46 @@ function restoreLastTab(){
 // ══════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════
+// ══════════════════════════════════════════════
+//  ACCESSIBILITY + TOUCH
+// ══════════════════════════════════════════════
+const FOCUS_STACK=[];
+function rememberFocus(){ FOCUS_STACK.push(document.activeElement); }
+function restoreFocus(){
+  const el=FOCUS_STACK.pop();
+  if(el&&el.focus&&document.contains(el)) { try{ el.focus({preventScroll:true}); }catch(e){} }
+}
+document.addEventListener('keydown',e=>{
+  // sortable column headers and info icons are keyboard-operable
+  const t=e.target;
+  if((e.key==='Enter'||e.key===' ')&&t&&t.matches&&(t.matches('thead th[onclick]')||t.matches('[role="button"][data-info]'))){
+    e.preventDefault(); t.click(); return;
+  }
+  // keep Tab inside an open dialog
+  if(e.key==='Tab'){
+    const ov=document.querySelector('#gal-overlay.show')||document.querySelector('#cmp-overlay.show');
+    if(!ov) return;
+    const f=[...ov.querySelectorAll('button,a[href],input,select,[tabindex="0"]')].filter(el=>!el.disabled&&el.offsetParent!==null);
+    if(!f.length) return;
+    const first=f[0], last=f[f.length-1];
+    if(!ov.contains(document.activeElement)){ e.preventDefault(); first.focus(); }
+    else if(e.shiftKey&&document.activeElement===first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey&&document.activeElement===last){ e.preventDefault(); first.focus(); }
+  }
+});
+document.querySelectorAll('thead th[onclick]').forEach(th=>{ th.tabIndex=0; });
+(function(){
+  // swipe left/right in the photo viewer
+  const ov=document.getElementById('gal-overlay'); if(!ov) return;
+  let x0=0,y0=0,multi=false;
+  ov.addEventListener('touchstart',e=>{ multi=e.touches.length>1; x0=e.touches[0].clientX; y0=e.touches[0].clientY; },{passive:true});
+  ov.addEventListener('touchend',e=>{
+    if(multi||!GAL.photos||GAL.photos.length<2) return;
+    const t=e.changedTouches[0], dx=t.clientX-x0, dy=t.clientY-y0;
+    if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5) galStep(dx<0?1:-1);
+  },{passive:true});
+})();
+
 initData();
 </script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "00320e9ea32942e3a3115cb698965612"}'></script><!-- End Cloudflare Web Analytics -->
