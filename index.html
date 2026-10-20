@@ -118,7 +118,8 @@ tbody tr:hover .cmp-td{background:var(--surface)}
 table.cmp-on .nm-td,table.cmp-on .nm-th{left:40px}
 tr.hl,tr.hl .nm-td,tr.hl .cmp-td{background:var(--bluebg)}
 tr.hl-out,tr.hl-out .nm-td,tr.hl-out .cmp-td{transition:background .8s}
-.btn-link{padding:4px 7px}
+.btn-link{padding:4px 7px;display:none !important}
+.share-on .btn-link{display:inline-flex !important}
 @media(prefers-reduced-motion:reduce){tr.hl-out,tr.hl-out .nm-td,tr.hl-out .cmp-td{transition:none}}
 .sub{font-size:11px;color:var(--text3);margin-top:1px}
 
@@ -1838,6 +1839,20 @@ function revealTab(btn){
   if(dx) bar.scrollTo({left:bar.scrollLeft+dx,behavior:reduceMotion()?'auto':'smooth'});
   updateTabFade();
 }
+
+// Owner-only "copy direct link" buttons: open the site once with ?share to show them, ?share=off to hide again.
+(function(){
+  try{
+    const q=new URLSearchParams(location.search);
+    if(q.has('share')){
+      if(q.get('share')==='off') localStorage.removeItem('wt-share'); else localStorage.setItem('wt-share','1');
+      q.delete('share');
+      const s=q.toString();
+      history.replaceState(null,'',location.pathname+(s?'?'+s:'')+location.hash);
+    }
+    if(localStorage.getItem('wt-share')) document.documentElement.classList.add('share-on');
+  }catch(e){}
+})();
 
 // ── Direct links: #chargers/anker-737-120w ──
 const TABS=['cables','chargers','powerbanks','gear','support'];
