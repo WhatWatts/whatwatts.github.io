@@ -13,12 +13,21 @@
 <meta property="og:title" content="WhatWatts — USB Testing Database">
 <meta property="og:description" content="Real-world USB cable, charger and powerbank tests. Actual measurements, not marketing specs.">
 <meta property="og:url" content="https://whatwatts.github.io/">
-<meta property="og:image" content="https://whatwatts.github.io/android-chrome-512x512.png">
+<meta property="og:image" content="https://whatwatts.github.io/social-preview.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta property="og:image:alt" content="WhatWatts — real-world USB cable, charger and power bank testing">
 <!-- Twitter/X Card -->
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="WhatWatts — USB Testing Database">
 <meta name="twitter:description" content="Real-world USB cable, charger and powerbank tests. Actual measurements, not marketing specs.">
-<meta name="twitter:image" content="https://whatwatts.github.io/android-chrome-512x512.png">
+<meta name="twitter:image" content="https://whatwatts.github.io/social-preview.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="WhatWatts">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -370,6 +379,35 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
   .cards{grid-template-columns:1fr 1fr}
   .dev-card:has(details[open]){grid-column:1/-1}
 }
+
+/* ── Compare charts ── */
+.cmp-charts{margin-top:1.6rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.4rem}
+.ch-box h3{margin:0 0 2px;font-size:13px;font-weight:600}
+.ch-box .ch-hint{font-size:11px;color:var(--text3);margin-bottom:6px}
+.ch-box svg{display:block;max-width:100%;overflow:visible}
+.ch-grid{stroke:var(--border);stroke-width:1}
+.ch-ax{fill:var(--text3);font-size:10.5px}
+.ch-legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:12px;color:var(--text2)}
+.ch-legend span{display:inline-flex;align-items:center;gap:6px}
+.ch-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.ch-miss{font-size:11px;color:var(--text3);margin-top:4px}
+
+/* ── Help me choose ── */
+.fnd-modal{max-width:580px}
+.fnd-body{padding:1rem 1.4rem 1.4rem}
+.fnd-q{border:0;padding:0;margin:0 0 1.1rem}
+.fnd-q legend{font-size:13px;font-weight:600;margin-bottom:8px;padding:0}
+.fnd-q .fh{font-weight:400;color:var(--text3);font-size:12px}
+.fnd-opts{display:flex;flex-wrap:wrap;gap:8px}
+.fchip{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--borders);background:var(--surface);color:var(--text2);font-size:13px;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.fchip:hover{color:var(--text)}
+.fchip[aria-pressed="true"]{background:var(--bluebg);border-color:var(--accent);color:var(--accent);font-weight:600}
+.fnd-foot{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:.4rem;flex-wrap:wrap}
+.fnd-go{min-height:44px;padding:0 20px;border-radius:var(--r);border:1px solid var(--accent);background:var(--accent);color:#fff;font-size:14px;font-weight:600;cursor:pointer}
+.fnd-go:disabled{opacity:.45;cursor:not-allowed}
+.fnd-note{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:-.4rem 0 1rem;padding:8px 12px;border:1px solid var(--accent);background:var(--bluebg);border-radius:var(--r);font-size:13px;color:var(--text2)}
+.fnd-note[hidden]{display:none}
+.fnd-note .t{flex:1;min-width:160px}
 </style>
 </head>
 <body>
@@ -863,6 +901,12 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
  <button class="cmp-bar-go" id="cmp-bar-go" onclick="openCompareModal()" disabled>Compare →</button>
 </div>
 
+<div class="cmp-overlay" id="fnd-overlay" role="dialog" aria-modal="true" aria-labelledby="fnd-title" onclick="if(event.target===this)closeFinder()">
+ <div class="cmp-modal fnd-modal">
+  <div class="cmp-modal-hdr"><div class="cmp-modal-title" id="fnd-title">Help me choose</div><button type="button" class="cmp-modal-close" onclick="closeFinder()" aria-label="Close">✕</button></div>
+  <div class="fnd-body" id="fnd-body"></div>
+ </div>
+</div>
 <div class="cmp-overlay" id="cmp-overlay" role="dialog" aria-modal="true" aria-label="Comparison" onclick="if(event.target===this)closeCompareModal()">
  <div class="cmp-modal">
   <div class="cmp-modal-hdr">
@@ -1126,9 +1170,9 @@ async function initData(){
 //  STATE
 // ══════════════════════════════════════════════
 const S={
-  cables:    {sorted:null,col:null,asc:true},
-  chargers:  {sorted:null,col:null,asc:true},
-  powerbanks:{sorted:null,col:null,asc:true},
+  cables:    {sorted:null,col:null,asc:true,extra:null},
+  chargers:  {sorted:null,col:null,asc:true,extra:null},
+  powerbanks:{sorted:null,col:null,asc:true,extra:null},
 };
 
 // ══════════════════════════════════════════════
@@ -1535,6 +1579,110 @@ const CMP_FIELDS={
   ],
 };
 
+
+// ══════════════════════════════════════════════
+//  COMPARE CHARTS (inline SVG, no libraries)
+// ══════════════════════════════════════════════
+const CH_COLORS=['#2f81f7','#e3902b','#2da44e','#a371f7'];
+const CH_SHAPES=['circle','square','triangle','diamond'];
+function chMark(shape,x,y,col,r){
+  r=r||4.2; x=+x; y=+y;
+  if(shape==='square') return `<rect x="${x-r}" y="${y-r}" width="${2*r}" height="${2*r}" fill="${col}"/>`;
+  if(shape==='triangle') return `<polygon points="${x},${y-r-1} ${x+r+1},${y+r} ${x-r-1},${y+r}" fill="${col}"/>`;
+  if(shape==='diamond') return `<polygon points="${x},${y-r-1} ${x+r+1},${y} ${x},${y+r+1} ${x-r-1},${y}" fill="${col}"/>`;
+  return `<circle cx="${x}" cy="${y}" r="${r}" fill="${col}"/>`;
+}
+function chLegendMark(i){ return `<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">${chMark(CH_SHAPES[i],7,7,CH_COLORS[i],4.4)}</svg>`; }
+function chCatKey(l){
+  const v=l.match(/([\d.]+)\s*v/i), a=l.match(/([\d.]+)\s*a/i);
+  return [v?parseFloat(v[1]):999, a?parseFloat(a[1]):0];
+}
+function chCats(series){
+  const set=new Set(); series.forEach(s=>s.pts.forEach(p=>set.add(p.label)));
+  return [...set].sort((a,b)=>{ const A=chCatKey(a),B=chCatKey(b); return A[0]-B[0]||A[1]-B[1]; });
+}
+function chNice(v){
+  if(v<=0) return 1;
+  const p=Math.pow(10,Math.floor(Math.log10(v))), f=v/p;
+  return (f<=1?1:f<=2?2:f<=5?5:10)*p;
+}
+function chSvg(kind,series,cats,width,unit,yMin,yMax){
+  const H=230, L=42, R=10, T=10, B=cats.length*Math.max(38,0)>width-L-R?58:34;
+  const W=Math.max(280,width), iw=W-L-R, ih=H-T-B, slot=iw/cats.length;
+  const y=v=>T+ih-(v-yMin)/(yMax-yMin)*ih;
+  const ticks=4, step=(yMax-yMin)/ticks;
+  let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${kind==='line'?'Line':'Bar'} chart">`;
+  for(let i=0;i<=ticks;i++){
+    const v=yMin+step*i, yy=y(v);
+    s+=`<line class="ch-grid" x1="${L}" x2="${W-R}" y1="${yy}" y2="${yy}"/><text class="ch-ax" x="${L-6}" y="${yy+3.5}" text-anchor="end">${Math.round(v*10)/10}${unit}</text>`;
+  }
+  const rotate=B>40;
+  cats.forEach((cat,i)=>{
+    const x=L+slot*(i+.5);
+    s+=`<text class="ch-ax" x="${x}" y="${T+ih+14}" text-anchor="${rotate?'end':'middle'}" ${rotate?`transform="rotate(-35 ${x} ${T+ih+14})"`:''}>${escAttr(cat)}</text>`;
+  });
+  if(kind==='line'){
+    series.forEach(sr=>{
+      const pts=cats.map((cat,i)=>{ const p=sr.pts.find(q=>q.label===cat); return p?{x:L+slot*(i+.5),y:y(p.v),p}:null; });
+      let d='',pen=false;
+      pts.forEach(q=>{ if(!q){pen=false;return;} d+=(pen?'L':'M')+q.x.toFixed(1)+' '+q.y.toFixed(1)+' '; pen=true; });
+      s+=`<path d="${d}" fill="none" stroke="${sr.color}" stroke-width="2" stroke-linejoin="round"/>`;
+      pts.forEach(q=>{ if(q) s+=`<g>${chMark(sr.shape,q.x.toFixed(1),q.y.toFixed(1),sr.color)}<title>${escAttr(sr.name)} — ${escAttr(q.p.label)}: ${q.p.v}${unit}</title></g>`; });
+    });
+  } else {
+    const n=series.length, bw=Math.min(26,slot*0.78/n);
+    cats.forEach((cat,i)=>{
+      series.forEach((sr,k)=>{
+        const p=sr.pts.find(q=>q.label===cat); if(!p) return;
+        const x=L+slot*(i+.5)-(n*bw)/2+k*bw, top=y(p.v);
+        s+=`<rect x="${x.toFixed(1)}" y="${top.toFixed(1)}" width="${(bw-1.5).toFixed(1)}" height="${Math.max(1,T+ih-top).toFixed(1)}" rx="2" fill="${sr.color}"><title>${escAttr(sr.name)} — ${escAttr(cat)}: ${p.v}${unit}</title></rect>`;
+      });
+    });
+  }
+  return s+`</svg>`;
+}
+function chBox(title,hint,kind,series,unit,missing){
+  const cats=chCats(series);
+  let yMin=0,yMax=1;
+  const vals=series.flatMap(s=>s.pts.map(p=>p.v));
+  if(kind==='line'){ const lo=Math.min(...vals), hi=Math.max(...vals); yMin=Math.max(0,Math.floor((lo-4)/5)*5); yMax=Math.min(100,Math.ceil((hi+1)/5)*5); if(yMax-yMin<10) yMin=yMax-10; }
+  else { yMax=chNice(Math.max(...vals)*1.1); }
+  return {title,hint,kind,series,unit,cats,yMin,yMax,missing};
+}
+function renderCompareCharts(){
+  const host=document.getElementById('cmp-charts'); if(!host||!host._boxes) return;
+  host.querySelectorAll('.ch-box').forEach((el,i)=>{
+    const b=host._boxes[i], w=Math.floor(el.clientWidth||320);
+    el.querySelector('.ch-svg').innerHTML=chSvg(b.kind,b.series,b.cats,w,b.unit,b.yMin,b.yMax);
+  });
+}
+function buildCompareCharts(name,rows){
+  if(name==='cables') return null;
+  const mk=(parse,field,valKey)=>rows.map((r,i)=>({name:r.name,color:CH_COLORS[i%4],shape:CH_SHAPES[i%4],idx:i,
+    pts:parse(r[field]).map(p=>({label:p.label,v:p[valKey]}))}));
+  const boxes=[];
+  if(name==='chargers'){
+    const eff=mk(parseEffCurve,'eff_curve','val'), have=eff.filter(s=>s.pts.length);
+    if(have.length) boxes.push(chBox('Efficiency by load','Higher is better','line',have,'%',eff.filter(s=>!s.pts.length).map(s=>s.name)));
+  }
+  const rip=mk(parseRippleCurve,'ripple_curve','mv'), haveR=rip.filter(s=>s.pts.length);
+  if(haveR.length) boxes.push(chBox('Ripple (peak) by voltage','Lower is better','bar',haveR,' mV',rip.filter(s=>!s.pts.length).map(s=>s.name)));
+  return boxes.length?boxes:null;
+}
+function showCompareCharts(name,rows){
+  const host=document.getElementById('cmp-charts'); if(!host) return;
+  const boxes=buildCompareCharts(name,rows);
+  host._boxes=boxes;
+  if(!boxes){ host.innerHTML=''; host.hidden=true; return; }
+  host.hidden=false;
+  host.innerHTML=boxes.map(b=>`<div class="ch-box"><h3>${b.title}</h3><div class="ch-hint">${b.hint}</div><div class="ch-svg"></div>
+    <div class="ch-legend">${b.series.map(s=>`<span>${chLegendMark(s.idx)}${escAttr(s.name)}</span>`).join('')}</div>
+    ${b.missing.length?`<div class="ch-miss">No data yet: ${b.missing.map(escAttr).join(', ')}</div>`:''}</div>`).join('');
+  renderCompareCharts();
+}
+let chResizeT=0;
+window.addEventListener('resize',()=>{ clearTimeout(chResizeT); chResizeT=setTimeout(()=>{ if(document.getElementById('cmp-overlay').classList.contains('show')) renderCompareCharts(); },150); });
+
 function openCompareModal(){
   const name=activeTab;
   const c=CMP[name];
@@ -1543,7 +1691,7 @@ function openCompareModal(){
   const fields=CMP_FIELDS[name];
   document.getElementById('cmp-modal-title').textContent=`Comparing ${rows.length} ${name}`;
   let html=`<table class="cmp-table"><thead><tr><th class="cmp-field"></th>`;
-  html+=rows.map(r=>`<th class="cmp-model-hdr"><div class="cmp-model-name">${ph(name,r,'exterior','Exterior',escAttr(r.name))}</div><div class="cmp-model-brand">${escAttr(r.brand)}</div></th>`).join('');
+  html+=rows.map((r,i)=>`<th class="cmp-model-hdr"><div class="cmp-model-name">${name!=='cables'?`<span class="ch-dot" style="background:${CH_COLORS[i%4]}"></span>`:''}${ph(name,r,'exterior','Exterior',escAttr(r.name))}</div><div class="cmp-model-brand">${escAttr(r.brand)}</div></th>`).join('');
   html+=`</tr></thead><tbody>`;
   fields.forEach(f=>{
     const winner=f.win?f.win(rows):null;
@@ -1551,10 +1699,11 @@ function openCompareModal(){
     html+=rows.map(r=>`<td class="${winner&&winner===r.name?'cmp-win':''}">${f.get(r)}</td>`).join('');
     html+=`</tr>`;
   });
-  html+=`</tbody></table>`;
+  html+=`</tbody></table><div class="cmp-charts" id="cmp-charts" hidden></div>`;
   document.getElementById('cmp-modal-body').innerHTML=html;
   rememberFocus();
   document.getElementById('cmp-overlay').classList.add('show');
+  showCompareCharts(name,rows);
   const cb=document.querySelector('#cmp-overlay .cmp-modal-close'); if(cb) cb.focus({preventScroll:true});
 }
 function closeCompareModal(){
@@ -1566,6 +1715,7 @@ function closeCompareModal(){
 document.addEventListener('keydown',e=>{
   if(e.key!=='Escape') return;
   if(document.getElementById('gal-overlay').classList.contains('show')) return;
+  if(document.getElementById('fnd-overlay').classList.contains('show')){ closeFinder(); return; }
   closeCompareModal();
 });
 
@@ -1902,6 +2052,172 @@ const SORT_OPTS={
   chargers:[['Name A–Z','name',1],['Price: low → high','price',1],['Price: high → low','price',0],['Total power: high → low','total_pwr',0],['Efficiency: high → low','_effSort',0],['Ripple: low → high','_rippleSort',1]],
   powerbanks:[['Name A–Z','name',1],['Price: low → high','price',1],['Price: high → low','price',0],['Power per port: high → low','pwr',0],['Measured Wh: high → low','real',0],['Rated Wh: high → low','_ratedWh',0],['Ripple: low → high','_rippleSort',1]]
 };
+
+// ══════════════════════════════════════════════
+//  HELP ME CHOOSE — a few questions -> filters + sorting
+// ══════════════════════════════════════════════
+const num=v=>isNum(v)?v:null;
+const FINDER={
+  chargers:{
+    title:'Find a charger',
+    qs:[
+      {id:'use',label:'What will you charge most?',type:'single',opts:[
+        ['Phone or earbuds',r=>(num(r.total_pwr)??num(r.pwr)??0)>=20],
+        ['Tablet or small laptop (65 W+)',r=>(num(r.total_pwr)??num(r.pwr)??0)>=65],
+        ['Laptop (100 W+)',r=>(num(r.total_pwr)??num(r.pwr)??0)>=100],
+        ['Big laptop or many devices (140 W+)',r=>(num(r.total_pwr)??num(r.pwr)??0)>=140]]},
+      {id:'feat',label:'Must have',hint:'optional',type:'multi',opts:[
+        ['Display',r=>!!r.display],['Built-in cable',r=>!!r.cable_in],['AC outlet',r=>!!r.ac_outlet],
+        ['App control',r=>!!r.app_control],['3+ ports',r=>(r.ports_n||0)>=3],['Wall plug (no cord)',r=>!r.corded]]},
+      {id:'prio',label:'What matters most?',type:'single',opts:[
+        ['Lowest price',null,['price',1]],
+        ['Lowest ripple',r=>r._rippleSort>0,['_rippleSort',1]],
+        ['Highest efficiency',r=>r._effSort>0,['_effSort',0]],
+        ['Highest power',null,['total_pwr',0]]]}
+    ]},
+  powerbanks:{
+    title:'Find a power bank',
+    qs:[
+      {id:'cap',label:'How long should it last?',type:'single',opts:[
+        ['Day trip (any size)',null],
+        ['A weekend or tablet (10 000 mAh+)',r=>(r.rated||0)>=10000],
+        ['Laptop or long trips (20 000 mAh+)',r=>(r.rated||0)>=20000]]},
+      {id:'lap',label:'Charging a laptop?',type:'single',opts:[
+        ['No',null],['Yes, 65 W+',r=>(r.pwr||0)>=65],['Yes, 100 W+',r=>(r.pwr||0)>=100]]},
+      {id:'feat',label:'Must have',hint:'optional',type:'multi',opts:[
+        ['Built-in cable',r=>!!r.cable_in],['Display',r=>!!r.display],['Pass-through',r=>r.pt==='Yes'],
+        ['App control',r=>!!r.app_control],['Wireless (Qi)',r=>!!r.wireless_qi]]},
+      {id:'prio',label:'What matters most?',type:'single',opts:[
+        ['Lowest price',null,['price',1]],
+        ['Most real capacity',null,['real',0]],
+        ['Highest power',null,['pwr',0]],
+        ['Lowest ripple',r=>r._rippleSort!=null&&r._rippleSort>0,['_rippleSort',1]]]}
+    ]},
+  cables:{
+    title:'Find a cable',
+    qs:[
+      {id:'use',label:'What will you charge?',type:'single',opts:[
+        ['Phone or earbuds (60 W+)',r=>(r.pwr||0)>=60],
+        ['Laptop (100 W+)',r=>(r.pwr||0)>=100],
+        ['Big laptop or dock (240 W)',r=>(r.pwr||0)>=240]]},
+      {id:'data',label:'Data or video too?',type:'single',opts:[
+        ['Charging only',null],
+        ['Fast file transfer (10 Gbps+)',r=>(num(r.spd)??num(r.adv_spd)??0)>=10],
+        ['External SSD or 4K monitor (20 Gbps+)',r=>(num(r.spd)??num(r.adv_spd)??0)>=20],
+        ['Thunderbolt / USB4 (40 Gbps+)',r=>(num(r.spd)??num(r.adv_spd)??0)>=40]]},
+      {id:'feat',label:'Must have',hint:'optional',type:'multi',opts:[
+        ['E-Marker',r=>!!r.emark],['Display',r=>!!r.display],['1 m or longer',r=>(r.len||0)>=1],['2 m or longer',r=>(r.len||0)>=2]]},
+      {id:'prio',label:'What matters most?',type:'single',opts:[
+        ['Lowest price',null,['price',1]],
+        ['Lowest resistance',null,['res',1]],
+        ['Highest power',null,['pwr',0]],
+        ['Fastest data',null,['spd',0]]]}
+    ]}
+};
+let FND={name:null,pick:{}};   // pick: {questionId: Set(optionIndex)}
+function finderPred(name,pick){
+  const preds=[];
+  FINDER[name].qs.forEach(q=>(pick[q.id]||[]).forEach(i=>{ const f=q.opts[i][1]; if(f) preds.push(f); }));
+  return preds.length?(r=>preds.every(f=>f(r))):null;
+}
+function finderSort(name,pick){
+  let s=null;
+  FINDER[name].qs.forEach(q=>(pick[q.id]||[]).forEach(i=>{ if(q.opts[i][2]) s=q.opts[i][2]; }));
+  return s;
+}
+function finderCount(){
+  const pred=finderPred(FND.name,FND.pick);
+  return DATA[FND.name].filter(r=>!pred||pred(r)).length;
+}
+function renderFinder(){
+  const f=FINDER[FND.name];
+  const body=document.getElementById('fnd-body');
+  body.innerHTML=f.qs.map(q=>`<fieldset class="fnd-q"><legend>${q.label}${q.hint?` <span class="fh">(${q.hint})</span>`:''}</legend>
+    <div class="fnd-opts">${q.opts.map((o,i)=>`<button type="button" class="fchip" aria-pressed="${(FND.pick[q.id]||[]).includes(i)}" data-q="${q.id}" data-i="${i}">${o[0]}</button>`).join('')}</div></fieldset>`).join('')
+    +`<div class="fnd-foot"><button type="button" class="cmp-btn" id="fnd-reset">Start over</button><button type="button" class="fnd-go" id="fnd-go"></button></div>`;
+  updateFinderGo();
+}
+function updateFinderGo(){
+  const n=finderCount(), b=document.getElementById('fnd-go');
+  if(!b) return;
+  b.disabled=n===0;
+  b.textContent=n===0?'No matches — loosen a choice':`Show ${n} match${n===1?'':'es'}`;
+}
+function openFinder(name){
+  FND={name,pick:{}};
+  document.getElementById('fnd-title').textContent=FINDER[name].title;
+  renderFinder();
+  rememberFocus();
+  document.getElementById('fnd-overlay').classList.add('show');
+  const first=document.querySelector('#fnd-body .fchip'); if(first) first.focus({preventScroll:true});
+}
+function closeFinder(){
+  const ov=document.getElementById('fnd-overlay');
+  const was=ov.classList.contains('show');
+  ov.classList.remove('show');
+  if(was) restoreFocus();
+}
+function applyFinder(){
+  const name=FND.name, pred=finderPred(name,FND.pick), srt_=finderSort(name,FND.pick);
+  resetFilters(name);
+  const note=document.getElementById('fnd-note-'+name); if(note) note.dataset.on='1';
+  S[name].extra=pred;
+  const s=S[name];
+  if(srt_){
+    s.col=srt_[0]; s.asc=!!srt_[1]; markSort(name);
+    const so=document.getElementById('sort-'+name);
+    if(so){ const v=s.col+'|'+(s.asc?1:0); if([...so.options].some(o=>o.value===v)) so.value=v; }
+  }
+  applyF(name);
+  fadeBody(name);
+  closeFinder();
+  const tb=document.querySelector(`#panel-${name} .toolbar`);
+  if(tb) tb.scrollIntoView({block:'start',behavior:reduceMotion()?'auto':'smooth'});
+}
+function updateFinderNote(name,count){
+  const note=document.getElementById('fnd-note-'+name); if(!note) return;
+  const on=!!S[name].extra && note.dataset.on==='1';
+  note.hidden=!on;
+  if(!on) return;
+  const n=isNum(count)?count:document.querySelectorAll(`#cards-${name} .dev-card`).length||DATA[name].filter(S[name].extra).length;
+  note.querySelector('.t').textContent=n?`Showing ${n} match${n===1?'':'es'} for your answers.`:'No matches for these answers.';
+}
+function clearFinder(name){
+  const note=document.getElementById('fnd-note-'+name); if(note) note.dataset.on='';
+  S[name].col=null; S[name].asc=true;
+  const so=document.getElementById('sort-'+name); if(so) so.value='name|1';
+  markSort(name);
+  resetFilters(name);
+}
+document.addEventListener('click',e=>{
+  const chip=e.target.closest&&e.target.closest('#fnd-body .fchip');
+  if(chip){
+    const q=FINDER[FND.name].qs.find(x=>x.id===chip.dataset.q), i=+chip.dataset.i;
+    const cur=new Set(FND.pick[q.id]||[]);
+    if(q.type==='single'){ if(cur.has(i)) cur.clear(); else { cur.clear(); cur.add(i); } }
+    else { cur.has(i)?cur.delete(i):cur.add(i); }
+    FND.pick[q.id]=[...cur];
+    chip.parentNode.querySelectorAll('.fchip').forEach(b=>b.setAttribute('aria-pressed',String(cur.has(+b.dataset.i))));
+    updateFinderGo(); return;
+  }
+  if(e.target.id==='fnd-go'){ applyFinder(); return; }
+  if(e.target.id==='fnd-reset'){ FND.pick={}; renderFinder(); }
+});
+function setupFinder(){
+  ['cables','chargers','powerbanks'].forEach(n=>{
+    const tb=document.querySelector(`#panel-${n} .toolbar`); if(!tb) return;
+    const cmp=tb.querySelector('.cmp-btn:not(.filters-btn)');
+    const b=document.createElement('button'); b.type='button'; b.className='cmp-btn finder-btn';
+    b.innerHTML='<i class="ti ti-wand"></i> Help me choose';
+    b.addEventListener('click',()=>openFinder(n));
+    if(cmp) cmp.before(b); else tb.appendChild(b);
+    const note=document.createElement('div'); note.className='fnd-note'; note.id='fnd-note-'+n; note.hidden=true;
+    note.innerHTML=`<span class="t"></span><button type="button" class="cmp-btn">Clear</button>`;
+    note.querySelector('button').addEventListener('click',()=>clearFinder(n));
+    tb.after(note);
+  });
+}
+
 function setupMobileUI(){
   ['cables','chargers','powerbanks'].forEach(n=>{
     const tb=document.querySelector(`#panel-${n} .toolbar`), search=document.getElementById('s-'+n);
@@ -1956,6 +2272,7 @@ function applyF(name){
   const pb_qi    = name==='powerbanks' ? document.getElementById('f-powerbanks-qi')?.value||''     : '';
 
   let out=DATA[name].filter(r=>{
+    if(S[name].extra&&!S[name].extra(r)) return false;
     const txt=Object.values(r).join(' ').toLowerCase();
     if(qWords.length&&!qWords.every(w=>txt.includes(w)))return false;
     if(v&&r.v!==v)return false;
@@ -2019,6 +2336,7 @@ function applyF(name){
   document.getElementById('cnt-'+name).textContent=out.length;
   render(name,out);
   updateFilterBadge(name);
+  updateFinderNote(name,out.length);
   if(document.activeElement&&document.activeElement.tagName==='SELECT') fadeBody(name);
 }
 function fadeBody(name){
@@ -2045,6 +2363,8 @@ function setSort(name,key,asc){
   const s=S[name];
   s.col=key; s.asc=asc;
   markSort(name);
+  const so=document.getElementById('sort-'+name);
+  if(so){ const v=key+'|'+(asc?1:0); if([...so.options].some(o=>o.value===v)) so.value=v; }
   s.sorted=doSort(name,s.sorted||DATA[name]);
   render(name,s.sorted);
   fadeBody(name);
@@ -2167,6 +2487,7 @@ function resetFilters(name){
   const p=document.getElementById('panel-'+name); if(!p) return;
   p.querySelectorAll('.toolbar select:not(.sort-sel)').forEach(s=>{ s.value=''; });
   const q=document.getElementById('s-'+name); if(q) q.value='';
+  S[name].extra=null;
   applyF(name);
 }
 function findDeviceRow(tab,s){
@@ -2241,7 +2562,7 @@ document.addEventListener('keydown',e=>{
   }
   // keep Tab inside an open dialog
   if(e.key==='Tab'){
-    const ov=document.querySelector('#gal-overlay.show')||document.querySelector('#cmp-overlay.show');
+    const ov=document.querySelector('#gal-overlay.show')||document.querySelector('#fnd-overlay.show')||document.querySelector('#cmp-overlay.show');
     if(!ov) return;
     const f=[...ov.querySelectorAll('button,a[href],input,select,[tabindex="0"]')].filter(el=>!el.disabled&&el.offsetParent!==null);
     if(!f.length) return;
@@ -2265,8 +2586,9 @@ document.querySelectorAll('thead th[onclick]').forEach(th=>{ th.tabIndex=0; });
 })();
 
 setupMobileUI();
+setupFinder();
 initData();
 </script>
-<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "00320e9ea32942e3a3115cb698965612"}'></script><!-- End Cloudflare Web Analytics -->
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "00320e9ea32942e3a3115cb698965612"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
