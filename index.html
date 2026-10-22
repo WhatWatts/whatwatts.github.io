@@ -1037,7 +1037,7 @@ function cacheSet(name,text){
 }
 function parseSheet(name,text){
   try{
-    const res=Papa.parse(text,{header:true,skipEmptyLines:true});
+    const res=Papa.parse(text,{header:true,skipEmptyLines:true,transformHeader:h=>String(h).replace(/^\uFEFF/,'').trim()});
     if(!res.meta||!res.meta.fields||!res.meta.fields.includes('name')) return null;
     return res.data.map(r=>castRow(r,TYPES[name]));
   }catch(e){ return null; }
@@ -1097,17 +1097,17 @@ function effPairHtml(r){
 function applyData(rowsBy,initial){
   DATA.cables=rowsBy.cables; DATA.chargers=rowsBy.chargers; DATA.powerbanks=rowsBy.powerbanks;
 
-  DATA.chargers.forEach(r=>{
+  DATA.chargers.forEach(r=>{ try{
     const effPts = parseEffCurve(r.eff_curve);
     r._effSort = effPts.length ? Math.max(...effPts.map(p=>p.val)) : (r.eff||0);
     const ripPts = parseRippleCurve(r.ripple_curve);
     r._rippleSort = ripPts.length ? Math.max(...ripPts.map(p=>p.mv)) : (r.ripple||0);
-  });
-  DATA.powerbanks.forEach(r=>{
+  }catch(e){ console.error('Bad data in charger "'+r.name+'":',e); } });
+  DATA.powerbanks.forEach(r=>{ try{
     const ripPts = parseRippleCurve(r.ripple_curve);
     r._rippleSort = ripPts.length ? Math.max(...ripPts.map(p=>p.mv)) : null;
     normalizePB(r);
-  });
+  }catch(e){ console.error('Bad data in power bank "'+r.name+'":',e); } });
 
   ['cables','chargers','powerbanks'].forEach(n=>{
     DATA[n].sort((a,b)=>(a.name||'').localeCompare(b.name||''));
@@ -1484,8 +1484,12 @@ function stressCellChargers(r){
   return chargerTestBlock('Single port',r.throttle_single_pass,r.throttle_single_drop,r.pwr,r.port_temp_single_c,r.case_temp_single_c,true)
        + chargerTestBlock('Total load', r.throttle_total_pass, r.throttle_total_drop, r.total_pwr,r.port_temp_total_c,r.case_temp_total_c,false);
 }
-function pbBlock(label,pass,drop,pwr,portTemp,caseTemp,whDelivered,first){
+function pbBlock(label,pass,drop,pwr,portTemp,caseTemp,whDelivered,first,cat,r){
   const temps=[tempLine('Port',portTemp),tempLine('Case',caseTemp)].filter(Boolean).join(' · ');
+  const html=pbBlockInner(label,pass,drop,pwr,temps,whDelivered,first);
+  return cat?proofSpan('powerbanks',r.name,cat,r['photos_'+cat],r.name+' — Stress test ('+(cat==='stress_5v'?'5V discharge':'max power')+')',html,true):html;
+}
+function pbBlockInner(label,pass,drop,pwr,temps,whDelivered,first){
   return `<div class="sub" style="font-weight:600${first?'':';margin-top:6px'}">${label}${isNum(pwr)?` (${pwr}W)`:''}</div>
     <div>${pass?'<span class="b bg"><i class="ti ti-check" style="font-size:12px"></i> Passed</span>':`<span class="b br"><i class="ti ti-flame" style="font-size:12px"></i> → ${isNum(drop)?drop+' W':'unknown'}</span>`}</div>
     ${isNum(whDelivered)?`<div class="sub">${round1(whDelivered)} Wh delivered</div>`:''}
@@ -1496,11 +1500,11 @@ function stressCellPowerbanks(r){
   const single=has(r.throttle_single_pass), total=has(r.throttle_total_pass);
   const merge=single&&total&&isNum(r.pwr)&&isNum(r.total_pwr)&&r.pwr>=r.total_pwr;
   const parts=[];
-  if(has(r.throttle_5v_pass)) parts.push(['5V discharge',r.throttle_5v_pass,r.throttle_5v_drop,null,null,null,r.wh5v]);
-  if(single) parts.push([merge?'Max output':'Single port',r.throttle_single_pass,r.throttle_single_drop,r.pwr,r.port_temp_single_c,r.case_temp_single_c,r.wh_max]);
-  if(total&&!merge) parts.push(['Total load',r.throttle_total_pass,r.throttle_total_drop,r.total_pwr,r.port_temp_total_c,r.case_temp_total_c,null]);
+  if(has(r.throttle_5v_pass)) parts.push(['5V discharge',r.throttle_5v_pass,r.throttle_5v_drop,null,null,null,r.wh5v,'stress_5v']);
+  if(single) parts.push([merge?'Max output':'Single port',r.throttle_single_pass,r.throttle_single_drop,r.pwr,r.port_temp_single_c,r.case_temp_single_c,r.wh_max,'stress_max']);
+  if(total&&!merge) parts.push(['Total load',r.throttle_total_pass,r.throttle_total_drop,r.total_pwr,r.port_temp_total_c,r.case_temp_total_c,null,'stress_max']);
   if(!parts.length) return DASH;
-  return parts.map((p,i)=>pbBlock(...p,i===0)).join('');
+  return parts.map((p,i)=>pbBlock(p[0],p[1],p[2],p[3],p[4],p[5],p[6],i===0,p[7],r)).join('');
 }
 function ptCell(r){
   if(!r.pt) return DASH;
@@ -1560,12 +1564,12 @@ const CMP_FIELDS={
   ],
   powerbanks:[
     {label:'Ports',          get:r=>ph('powerbanks',r,'ports','Ports',r.ports?`<span class="chip">${escAttr(r.ports)}</span>`:DASH)},
-    {label:'Rated Capacity', get:r=>`${isNum(r.rated)?r.rated.toLocaleString()+' mAh':DASH}<div class="sub">${isNum(r._ratedWh)?r._ratedWh+' Wh rated':''}</div>`, win:rows=>maxBy(rows,'_ratedWh')},
+    {label:'Rated Capacity', get:r=>ph('powerbanks',r,'rated','Rated capacity',`${isNum(r.rated)?r.rated.toLocaleString()+' mAh':DASH}<div class="sub">${isNum(r._ratedWh)?r._ratedWh+' Wh rated':''}</div>`,true), win:rows=>maxBy(rows,'_ratedWh')},
     {label:'Measured',       info:PB_EFF_INFO, get:r=>ph('powerbanks',r,'capacity','Capacity test',`${isNum(r.real)?round1(r.real)+' Wh':DASH} <span style="font-size:10px;color:var(--text3)">measured</span>${effPairHtml(r)}`,true), win:rows=>maxBy(rows,'real')},
     {label:'Output Power',   get:r=>powerCell('powerbanks',r), win:rows=>maxBy(rows,'total_pwr')},
     {label:'Ripple (peak)',  get:r=>ph('powerbanks',r,'ripple','Ripple',rippleList(r.ripple_curve,null),true), win:rows=>minBy(rows,'_rippleSort')},
-    {label:'Charging Input', get:r=>`${isNum(r.max_charge_pwr)?r.max_charge_pwr+' W input':DASH}<div class="sub">${r.recharge||''}</div>`, win:rows=>maxBy(rows,'max_charge_pwr')},
-    {label:'Stress Test',    get:r=>ph('powerbanks',r,'stress','Stress test',stressCellPowerbanks(r),true)},
+    {label:'Charging Input', get:r=>ph('powerbanks',r,'input','Charging input',`${isNum(r.max_charge_pwr)?r.max_charge_pwr+' W input':DASH}<div class="sub">${r.recharge||''}</div>`,true), win:rows=>maxBy(rows,'max_charge_pwr')},
+    {label:'Stress Test',    get:r=>stressCellPowerbanks(r)},
     {label:'Wireless (Qi)',  get:r=>r.wireless_qi?ph('powerbanks',r,'qi','Wireless charging test',`${r.qi_standard?escAttr(r.qi_standard):'Qi'}<div class="sub">${isNum(r.qi_pwr)?r.qi_pwr+' W rated':'—'} · ${isNum(r.qi_real_wh)?r.qi_real_wh+' Wh':'—'}${isNum(r.qi_eff)?` @ ${r.qi_eff}%`:''}</div>`,true):yn(false)},
     {label:'Pass-through',   get:r=>ph('powerbanks',r,'passthrough','Pass-through',ptCell(r))},
     {label:'Protocols',      get:r=>protoTags(r)+phLinks('powerbanks',r)},
@@ -1927,8 +1931,8 @@ function renderPowerbanks(rows){
     </td>
     <td>${proofSpan(T,r.name,'ports',r.photos_ports,r.name+' — Ports',r.ports?`<span class="chip">${escAttr(r.ports)}</span>`:DASH)}</td>
     <td class="num" style="line-height:1.6">
-      ${isNum(r.rated)?r.rated.toLocaleString()+' mAh':DASH}<br>
-      <span style="font-size:11px;color:var(--text3)">${isNum(r._ratedWh)?r._ratedWh+' Wh':DASH} <em style="font-style:normal;color:var(--text3)">rated</em></span>
+      ${proofSpan(T,r.name,'rated',r.photos_rated,r.name+' — Rated capacity',`${isNum(r.rated)?r.rated.toLocaleString()+' mAh':DASH}<br>
+      <span style="font-size:11px;color:var(--text3)">${isNum(r._ratedWh)?r._ratedWh+' Wh':DASH} <em style="font-style:normal;color:var(--text3)">rated</em></span>`,true)}
     </td>
     <td class="num" style="line-height:1.6">
       ${proofSpan(T,r.name,'capacity',r.photos_capacity,r.name+' — Capacity test',`<div>${isNum(r.real)?round1(r.real)+' Wh':DASH} <span style="font-size:10px;font-weight:400;color:var(--text3)">measured</span></div>
@@ -1942,10 +1946,10 @@ function renderPowerbanks(rows){
     </td>
     <td>${proofSpan(T,r.name,'ripple',r.photos_ripple,r.name+' — Ripple',rippleList(r.ripple_curve,null),true)}</td>
     <td style="font-size:12px;color:var(--text2);line-height:1.6">
-      <div class="num" style="font-size:13px">${isNum(r.max_charge_pwr)?r.max_charge_pwr+' W':DASH} <span style="font-size:10px;font-weight:400;color:var(--text3)">input</span></div>
-      <div class="sub">${r.recharge?escAttr(r.recharge):''}</div>
+      ${proofSpan(T,r.name,'input',r.photos_input,r.name+' — Charging input',`<div class="num" style="font-size:13px">${isNum(r.max_charge_pwr)?r.max_charge_pwr+' W':DASH} <span style="font-size:10px;font-weight:400;color:var(--text3)">input</span></div>
+      <div class="sub">${r.recharge?escAttr(r.recharge):''}</div>`,true)}
     </td>
-    <td>${proofSpan(T,r.name,'stress',r.photos_stress,r.name+' — Stress test',stressCellPowerbanks(r),true)}</td>
+    <td>${stressCellPowerbanks(r)}</td>
     <td>${proofSpan(T,r.name,'passthrough',r.photos_passthrough,r.name+' — Pass-through',ptCell(r))}</td>
     <td>${badge(r.v)}</td>
     <td>${priceCell(r.price,r.value)}</td>
@@ -1969,12 +1973,24 @@ function emptyRow(name,colspan){
 }
 
 function render(name,rows){
-  if(name==='cables')     renderCables(rows);
-  if(name==='chargers')   renderChargers(rows);
-  if(name==='powerbanks') renderPowerbanks(rows);
-  const trs=document.getElementById('body-'+name).rows;
+  const fn={cables:renderCables,chargers:renderChargers,powerbanks:renderPowerbanks}[name];
+  let bad=[];
+  try{ fn(rows); }
+  catch(e){
+    // One broken row must never blank the whole list: find it, skip it, tell the reader.
+    console.error('Render failed for "'+name+'", isolating the bad rows:',e);
+    const good=rows.filter(r=>{ try{ fn([r]); return true; }catch(err){ console.error('Device "'+r.name+'" cannot be displayed:',err); bad.push(r); return false; } });
+    fn(good); rows=good;
+  }
+  const body=document.getElementById('body-'+name), trs=body.rows;
   if(trs.length===rows.length) rows.forEach((r,i)=>{ if(r._slug) trs[i].dataset.slug=r._slug; });
-  renderCards(name,rows);
+  const cardBad=renderCards(name,rows);
+  const all=[...new Set([...bad,...cardBad].map(r=>r.name))];
+  if(all.length){
+    const msg='⚠ '+all.length+' device'+(all.length===1?'':'s')+' could not be displayed ('+all.map(escAttr).join(', ')+'). Please check their data in the sheet.';
+    body.insertAdjacentHTML('beforeend','<tr class="row-err"><td colspan="30" style="color:var(--text3);font-size:12px">'+msg+'</td></tr>');
+    const cw=document.getElementById('cards-'+name); if(cw) cw.insertAdjacentHTML('beforeend','<div class="cards-empty" style="grid-column:1/-1;padding:1rem">'+msg+'</div>');
+  }
 }
 
 // ══════════════════════════════════════════════
@@ -2036,16 +2052,18 @@ function cardHtml(name,r){
   </article>`;
 }
 function renderCards(name,rows){
-  const el=document.getElementById('cards-'+name); if(!el) return;
+  const el=document.getElementById('cards-'+name); if(!el) return [];
   el.classList.remove('sk-wrap');
   if(!rows.length){
     el.innerHTML=LOAD_ERROR[name]
       ?`<div class="cards-empty"><i class="ti ti-alert-triangle"></i> Couldn't load data — check your connection and <a href="#" onclick="location.reload();return false;" style="color:var(--accent)">try again</a></div>`
       :`<div class="cards-empty"><i class="ti ti-search"></i> No results found</div>`;
-    return;
+    return [];
   }
-  el.innerHTML=rows.map(r=>cardHtml(name,r)).join('');
-  el.querySelectorAll('.cmp-chk-c').forEach((cb,i)=>cb.addEventListener('change',()=>toggleCmp(name,rows[i].name,cb)));
+  const ok=[], failed=[];
+  el.innerHTML=rows.map(r=>{ try{ const h=cardHtml(name,r); ok.push(r); return h; }catch(e){ console.error('Card for "'+r.name+'" failed:',e); failed.push(r); return ''; } }).join('');
+  el.querySelectorAll('.cmp-chk-c').forEach((cb,i)=>cb.addEventListener('change',()=>toggleCmp(name,ok[i].name,cb)));
+  return failed;
 }
 const SORT_OPTS={
   cables:[['Name A–Z','name',1],['Price: low → high','price',1],['Price: high → low','price',0],['Max power: high → low','pwr',0],['Speed: fast → slow','spd',0],['Resistance: low → high','res',1]],
@@ -2271,7 +2289,7 @@ function applyF(name){
   const pb_pt    = name==='powerbanks' ? document.getElementById('f-powerbanks-pt')?.value||''     : '';
   const pb_qi    = name==='powerbanks' ? document.getElementById('f-powerbanks-qi')?.value||''     : '';
 
-  let out=DATA[name].filter(r=>{
+  const testRow=r=>{
     if(S[name].extra&&!S[name].extra(r)) return false;
     const txt=Object.values(r).join(' ').toLowerCase();
     if(qWords.length&&!qWords.every(w=>txt.includes(w)))return false;
@@ -2329,7 +2347,8 @@ function applyF(name){
     if(pb_qi==='none'&&r.wireless_qi)                 return false;
     if(pb_qi&&pb_qi!=='none'&&r.qi_standard!==pb_qi)  return false;
     return true;
-  });
+  };
+  let out=DATA[name].filter(r=>{ try{ return testRow(r); }catch(e){ console.error('Filter skipped "'+r.name+'":',e); return false; } });
   if(S[name].col)out=doSort(name,out);
   S[name].sorted=out;
   document.getElementById('lbl-'+name).textContent=out.length===DATA[name].length?`${out.length} items`:`${out.length} of ${DATA[name].length}`;
@@ -2587,7 +2606,10 @@ document.querySelectorAll('thead th[onclick]').forEach(th=>{ th.tabIndex=0; });
 
 setupMobileUI();
 setupFinder();
-initData();
+initData().catch(err=>{
+  console.error('Loading failed:',err);
+  ['cables','chargers','powerbanks'].forEach(n=>{ LOAD_ERROR[n]=true; try{ document.getElementById('body-'+n).removeAttribute('aria-busy'); render(n,[]); }catch(e){} });
+});
 </script>
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "00320e9ea32942e3a3115cb698965612"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
