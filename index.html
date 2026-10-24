@@ -408,6 +408,12 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
 .fnd-note{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:-.4rem 0 1rem;padding:8px 12px;border:1px solid var(--accent);background:var(--bluebg);border-radius:var(--r);font-size:13px;color:var(--text2)}
 .fnd-note[hidden]{display:none}
 .fnd-note .t{flex:1;min-width:160px}
+
+/* power bank efficiency grid */
+.eff-grid{display:inline-grid;gap:1px 12px;font-size:12px;line-height:1.55;margin-top:4px;font-variant-numeric:tabular-nums;align-items:baseline}
+.eff-grid .eh{font-size:10px;color:var(--text3);text-align:right;white-space:nowrap}
+.eff-grid .el{font-size:11px;color:var(--text3);font-weight:600}
+.eff-grid .ev{text-align:right;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -642,7 +648,7 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
       <th class="nm-th" onclick="srt('powerbanks','name')" data-sort-key="name">Powerbank <span class="sa">↕</span></th>
       <th>Ports</th>
       <th onclick="srt('powerbanks','_ratedWh')" data-sort-key="_ratedWh">Rated <span class="sa">↕</span></th>
-      <th onclick="srt('powerbanks','real')" data-sort-key="real">Efficiency & Capacity <span class="sa">↕</span> <i class="ti ti-info-circle info-icon" tabindex="0" role="button" aria-label="About the efficiency values" data-info="Efficiency = energy the powerbank delivered ÷ its capacity. “of rated” compares it with the capacity the manufacturer claims; “of measured” compares it with the capacity I actually measured in the test. Both are shown at 5V and at maximum power." onclick="event.stopPropagation();showInfoPopover(this)"></i></th>
+      <th onclick="srt('powerbanks','real')" data-sort-key="real">Efficiency & Capacity <span class="sa">↕</span> <i class="ti ti-info-circle info-icon" tabindex="0" role="button" aria-label="About the efficiency values" data-info="Efficiency = energy the power bank delivered ÷ its capacity. Rows: 5V = discharge at 5V, Max = discharge at maximum power. Columns: “vs rated” uses the capacity the manufacturer claims, “vs measured” uses the capacity I measured in the test (the Wh shown above). Green above 85%, yellow 75–85%, red below 75%." onclick="event.stopPropagation();showInfoPopover(this)"></i></th>
       <th onclick="srt('powerbanks','pwr')" data-sort-key="pwr">Output Power <span class="sa">↕</span></th>
       <th onclick="srt('powerbanks','_rippleSort')" data-sort-key="_rippleSort">Ripple (peak) <span class="sa">↕</span></th>
       <th>Charging Input</th>
@@ -1073,7 +1079,7 @@ function showSkeletons(){
 
 // Powerbank efficiency is shown exactly as typed in the sheet: "84.4" or "84.4/81.19"
 // (first = relative to rated capacity, second = relative to capacity measured in the test). Nothing is calculated.
-const PB_EFF_INFO="Efficiency = energy the powerbank delivered ÷ its capacity. “of rated” compares it with the capacity the manufacturer claims; “of measured” compares it with the capacity I actually measured in the test. Both are shown at 5V and at maximum power.";
+const PB_EFF_INFO="Efficiency = energy the power bank delivered ÷ its capacity. Rows: 5V = discharge at 5V, Max = discharge at maximum power. Columns: “vs rated” uses the capacity the manufacturer claims, “vs measured” uses the capacity I measured in the test (the Wh shown above). Green above 85%, yellow 75–85%, red below 75%.";
 function round1(v){ return Math.round(v*10)/10; }
 function effNums(raw){
   return String(raw??'').split(/[\/;|]/).map(s=>parseFloat(s)).filter(n=>Number.isFinite(n));
@@ -1087,11 +1093,16 @@ function normalizePB(r){
   r._effMaxReal = em.length>1 ? em[1] : null;
 }
 function effPairHtml(r){
-  const f=v=>effPctStr(isNum(v)?v:null);
-  const line=(lbl,a,b)=>`<div class="sub">${lbl} ${f(a)} @5V · ${f(b)} @max</div>`;
   const has=(a,b)=>isNum(a)||isNum(b);
-  const out=(has(r._eff5v,r._effMax)?line('of rated',r._eff5v,r._effMax):'')+(has(r._eff5vReal,r._effMaxReal)?line('of measured',r._eff5vReal,r._effMaxReal):'');
-  return out||`<div class="sub">${DASH}</div>`;
+  const cols=[];
+  if(has(r._eff5v,r._effMax)) cols.push(['vs rated',r._eff5v,r._effMax]);
+  if(has(r._eff5vReal,r._effMaxReal)) cols.push(['vs measured',r._eff5vReal,r._effMaxReal]);
+  if(!cols.length) return `<div class="sub">${DASH}</div>`;
+  return `<div class="eff-grid" style="grid-template-columns:auto repeat(${cols.length},auto)">
+    <span></span>${cols.map(c=>`<span class="eh">${c[0]}</span>`).join('')}
+    <span class="el">5V</span>${cols.map(c=>`<span class="ev">${effPctStr(c[1])}</span>`).join('')}
+    <span class="el">Max</span>${cols.map(c=>`<span class="ev">${effPctStr(c[2])}</span>`).join('')}
+  </div>`;
 }
 
 function applyData(rowsBy,initial){
@@ -1193,7 +1204,9 @@ function yn(v){
 function rc(v){return v<100?'vg':v<200?'vo':'vr'}
 function ec(v){return v>=88?'vg':v>=80?'vo':'vr'}
 function resStr(v){ return isNum(v) ? `<span class="${rc(v)}">${v} mΩ</span>` : DASH; }
-function effPctStr(v){ return isNum(v) ? `<span class="${ec(v)}">${v}%</span>` : DASH; }
+// Power bank efficiency colours: below 75% red, 75-85% yellow, above 85% green
+function pbEffCls(v){ return v>85?'vg':v>=75?'vo':'vr'; }
+function effPctStr(v){ return isNum(v) ? `<span class="${pbEffCls(v)}">${v}%</span>` : DASH; }
 
 function parseEffCurve(curve){
   if(!curve) return [];
@@ -1936,8 +1949,7 @@ function renderPowerbanks(rows){
     </td>
     <td class="num" style="line-height:1.6">
       ${proofSpan(T,r.name,'capacity',r.photos_capacity,r.name+' — Capacity test',`<div>${isNum(r.real)?round1(r.real)+' Wh':DASH} <span style="font-size:10px;font-weight:400;color:var(--text3)">measured</span></div>
-      ${effPairHtml(r)}
-      <div style="font-size:10px;color:var(--text3)">efficiency</div>`,true)}
+      ${effPairHtml(r)}`,true)}
     </td>
     <td class="num" style="line-height:1.6">
       ${proofSpan(T,r.name,'power',r.photos_power,r.name+' — Power output',`<div>${isNum(r.pwr)?r.pwr+' W':DASH} <span style="font-size:10px;font-weight:400;color:var(--text3)">/ port</span></div>
@@ -2018,7 +2030,7 @@ const CARD_DEF={
     met:r=>[
       [isNum(r.pwr)?r.pwr+' W':DASH,'per port'],
       [isNum(r.real)?round1(r.real)+' Wh':DASH,'measured'],
-      [isNum(r._effMax)?r._effMax+'%':DASH,'eff. @max']]
+      [isNum(r._effMax)?`<span class="${pbEffCls(r._effMax)}">${r._effMax}%</span>`:DASH,'eff. @max']]
   }
 };
 function cardHtml(name,r){
