@@ -1310,16 +1310,18 @@ function stressTier(pwr){
   return '60W test (20V/3A)';
 }
 let buyId=0;
-function buyBtn(am,ali){
-  const hasAm=am&&am!=='#', hasAli=ali&&ali!=='#';
-  if(!hasAm&&!hasAli) return '';
-  if(hasAm&&!hasAli) return `<a class="btn" href="${safeUrl(am)}" target="_blank" rel="nofollow sponsored"><i class="ti ti-shopping-cart" style="font-size:12px"></i> Buy</a>`;
-  if(!hasAm&&hasAli) return `<a class="btn" href="${safeUrl(ali)}" target="_blank" rel="nofollow sponsored"><i class="ti ti-shopping-cart" style="font-size:12px"></i> Buy</a>`;
+function buyBtn(am,ali,off){
+  const ok=v=>v&&v!=='#';
+  const shops=[];
+  if(ok(am)) shops.push({u:am,icon:'ti-brand-amazon',label:'Amazon'});
+  if(ok(ali)) shops.push({u:ali,icon:'ti-shopping-bag',label:'AliExpress'});
+  if(ok(off)) shops.push({u:off,icon:'ti-building-store',label:'Official store'});
+  if(!shops.length) return '';
+  if(shops.length===1) return `<a class="btn" href="${safeUrl(shops[0].u)}" target="_blank" rel="nofollow sponsored"><i class="ti ti-shopping-cart" style="font-size:12px"></i> Buy</a>`;
   return `<div class="buy-drop">
     <button class="btn" onclick="toggleBuy(event,this)"><i class="ti ti-shopping-cart" style="font-size:12px"></i> Buy <i class="ti ti-chevron-down" style="font-size:9px"></i></button>
     <div class="buy-menu">
-      <a href="${safeUrl(am)}" target="_blank" rel="nofollow sponsored"><i class="ti ti-brand-amazon" style="font-size:13px"></i> Amazon</a>
-      <a href="${safeUrl(ali)}" target="_blank" rel="nofollow sponsored"><i class="ti ti-shopping-bag" style="font-size:13px"></i> AliExpress</a>
+      ${shops.map(x=>`<a href="${safeUrl(x.u)}" target="_blank" rel="nofollow sponsored"><i class="ti ${x.icon}" style="font-size:13px"></i> ${x.label}</a>`).join('\n      ')}
     </div>
   </div>`;
 }
@@ -1539,7 +1541,7 @@ function protoTags(r){
 const minBy=(rows,k)=>{const c=rows.filter(r=>isNum(r[k])); return c.length?c.reduce((a,b)=>b[k]<a[k]?b:a).name:null;};
 const maxBy=(rows,k)=>{const c=rows.filter(r=>isNum(r[k])); return c.length?c.reduce((a,b)=>b[k]>a[k]?b:a).name:null;};
 const priceField={label:'Price',get:r=>r.price?`$${r.price} @ review ${valueTag(r.value)}`:'—', win:rows=>minBy(rows,'price')};
-const linksField=r=>`<div class="btns">${buyBtn(r.buy_am,r.buy_ali)}${reviewBtn(r.yt)}</div>`;
+const linksField=r=>`<div class="btns">${buyBtn(r.buy_am,r.buy_ali,r.buy_off)}${reviewBtn(r.yt)}</div>`;
 const powerCell=(T,r)=>ph(T,r,'power','Power output',`<div>${isNum(r.pwr)?r.pwr+' W':DASH} <span style="font-size:10px;color:var(--text3)">/ port</span></div><div class="sub">${isNum(r.total_pwr)?r.total_pwr+' W total':''}</div>${isNum(r.pwr)&&isNum(r.total_pwr)&&r.pwr>=r.total_pwr?'<div style="font-size:10px;font-weight:600;color:var(--green)">★ full power solo</div>':''}`,true);
 
 const CMP_FIELDS={
@@ -1873,7 +1875,7 @@ function renderCables(rows){
     <td class="nuances">${r.extra?escAttr(r.extra):'—'}</td>
     <td>
       <div class="btns">
-        ${buyBtn(r.buy_am,r.buy_ali)}
+        ${buyBtn(r.buy_am,r.buy_ali,r.buy_off)}
         ${reviewBtn(r.yt)}
         ${linkBtn('cables',r)}
       </div>
@@ -1916,7 +1918,7 @@ function renderChargers(rows){
     <td class="nuances">${r.extra?escAttr(r.extra):'—'}</td>
     <td>
       <div class="btns">
-        ${buyBtn(r.buy_am,r.buy_ali)}
+        ${buyBtn(r.buy_am,r.buy_ali,r.buy_off)}
         ${reviewBtn(r.yt)}
         ${linkBtn('chargers',r)}
       </div>
@@ -1968,7 +1970,7 @@ function renderPowerbanks(rows){
     <td class="nuances">${r.extra?escAttr(r.extra):'—'}</td>
     <td>
       <div class="btns">
-        ${buyBtn(r.buy_am,r.buy_ali)}
+        ${buyBtn(r.buy_am,r.buy_ali,r.buy_off)}
         ${reviewBtn(r.yt)}
         ${linkBtn('powerbanks',r)}
       </div>
@@ -2058,7 +2060,7 @@ function cardHtml(name,r){
         <div class="c-grid">${shortCells}</div>
         ${longCells}
         ${r.extra?`<div class="c-note">${escAttr(r.extra)}</div>`:''}
-        <div class="c-acts">${buyBtn(r.buy_am,r.buy_ali)}${reviewBtn(r.yt)}${linkBtn(name,r)}${ext?`<span style="font-size:12px">${ext}</span>`:''}</div>
+        <div class="c-acts">${buyBtn(r.buy_am,r.buy_ali,r.buy_off)}${reviewBtn(r.yt)}${linkBtn(name,r)}${ext?`<span style="font-size:12px">${ext}</span>`:''}</div>
       </div>
     </details>
   </article>`;
