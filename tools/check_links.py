@@ -15,9 +15,11 @@ Notes on accuracy:
   * Amazon and AliExpress block many automated requests. A "blocked" answer
     (403, 429, 503, captcha) is NOT reported as broken, only counted.
     Only clear failures are reported: 404/410, DNS errors, dead hosts.
+  * Redirect loops (HTTP 3xx that cannot be followed) are also counted as "blocked":
+    affiliate short links redirect through trackers and often look like loops to a script.
 """
 import argparse, concurrent.futures as cf, csv, io, json, os, re, sys, time
-import urllib.error, urllib.parse, urllib.request
+import http.cookiejar, urllib.error, urllib.parse, urllib.request
 
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
@@ -32,8 +34,11 @@ def sheet_urls(index_path):
 
 
 def fetch(url, method="GET", read=0):
+    # fresh cookie jar per request: affiliate short links (s.click.aliexpress.com)
+    # bounce back and forth until a cookie is set, which plain urllib never keeps
+    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
     req = urllib.request.Request(url, method=method, headers={"User-Agent": UA, "Accept-Language": "en"})
-    with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+    with opener.open(req, timeout=TIMEOUT) as r:
         body = r.read(read) if read else b""
         return r.status, r.geturl(), body
 
@@ -89,6 +94,9 @@ def check_generic(url, kind):
                 return "dead", "HTTP %d (page not found)" % e.code
             if e.code in (401, 403, 405, 429, 451, 503, 999):
                 return "blocked", "HTTP %d" % e.code
+            if 300 <= e.code < 400:
+                # redirect chain we could not follow (affiliate short links): not proof of a dead link
+                return "blocked", "redirect not followed (HTTP %d)" % e.code
             last = "HTTP %d" % e.code
             if e.code < 500:
                 return "dead", last
