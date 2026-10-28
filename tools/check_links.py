@@ -3,7 +3,7 @@
 WhatWatts weekly link check.
 
 Reads the three Google Sheets listed in index.html (const URLS), collects every
-buy_am / buy_ali / yt link and checks that it still works.
+buy_am / buy_ali / buy_off / yt link and checks that it still works.
 
 Result:
   report.md  - human-readable report (what to fix)
@@ -24,7 +24,7 @@ import http.cookiejar, urllib.error, urllib.parse, urllib.request
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
 TIMEOUT = 25
-KINDS = {"buy_am": "Amazon", "buy_ali": "AliExpress", "yt": "YouTube"}
+KINDS = {"buy_am": "Amazon", "buy_ali": "AliExpress", "buy_off": "Official store", "yt": "YouTube"}
 
 
 def sheet_urls(index_path):
