@@ -230,6 +230,8 @@ table.cmp-on .cmp-th,table.cmp-on .cmp-td{display:table-cell}
 .proof-trigger:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
 .proof-trigger.blk{display:block;position:relative}
 .proof-trigger.blk>.proof-ico{position:absolute;top:1px;right:-14px;margin:0}
+.dev-card .proof-trigger.blk>.proof-ico{position:static;display:block;margin:4px 0 0}
+.dev-card .c-name .proof-ico{font-size:13px;margin-left:6px}
 .proof-link{display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--accent)}
 .proof-link .proof-ico{margin:0;color:var(--accent)}
 .proof-item{padding-top:6px;margin-top:4px;border-top:1px solid var(--border)}
@@ -1310,12 +1312,27 @@ function stressTier(pwr){
   return '60W test (20V/3A)';
 }
 let buyId=0;
-function buyBtn(am,ali,off){
+let _userRegion=null;
+function userRegion(){
+  // no IP lookup: browser time zone is enough. Europe/* -> EU, everything else -> US
+  if(_userRegion) return _userRegion;
+  let tz=''; try{ tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''; }catch(e){}
+  _userRegion=/^Europe\//.test(tz)?'eu':'us';
+  return _userRegion;
+}
+function buyBtn(r){
   const ok=v=>v&&v!=='#';
+  const first=userRegion(), second=first==='eu'?'us':'eu', RN={eu:'EU',us:'US'};
   const shops=[];
-  if(ok(am)) shops.push({u:am,icon:'ti-brand-amazon',label:'Amazon'});
-  if(ok(ali)) shops.push({u:ali,icon:'ti-shopping-bag',label:'AliExpress'});
-  if(ok(off)) shops.push({u:off,icon:'ti-building-store',label:'Official store'});
+  // regional links first (visitor's region on top); the old single column is only a fallback
+  const group=(base,icon,label)=>{
+    const reg=[first,second].filter(k=>ok(r[base+'_'+k]));
+    reg.forEach(k=>shops.push({u:r[base+'_'+k],icon,label:label+' '+RN[k]}));
+    if(!reg.length&&ok(r[base])) shops.push({u:r[base],icon,label});
+  };
+  group('buy_am','ti-brand-amazon','Amazon');
+  if(ok(r.buy_ali)) shops.push({u:r.buy_ali,icon:'ti-shopping-bag',label:'AliExpress'});
+  group('buy_off','ti-building-store','Official store');
   if(!shops.length) return '';
   if(shops.length===1) return `<a class="btn" href="${safeUrl(shops[0].u)}" target="_blank" rel="nofollow sponsored"><i class="ti ti-shopping-cart" style="font-size:12px"></i> Buy</a>`;
   return `<div class="buy-drop">
@@ -1541,7 +1558,7 @@ function protoTags(r){
 const minBy=(rows,k)=>{const c=rows.filter(r=>isNum(r[k])); return c.length?c.reduce((a,b)=>b[k]<a[k]?b:a).name:null;};
 const maxBy=(rows,k)=>{const c=rows.filter(r=>isNum(r[k])); return c.length?c.reduce((a,b)=>b[k]>a[k]?b:a).name:null;};
 const priceField={label:'Price',get:r=>r.price?`$${r.price} @ review ${valueTag(r.value)}`:'—', win:rows=>minBy(rows,'price')};
-const linksField=r=>`<div class="btns">${buyBtn(r.buy_am,r.buy_ali,r.buy_off)}${reviewBtn(r.yt)}</div>`;
+const linksField=r=>`<div class="btns">${buyBtn(r)}${reviewBtn(r.yt)}</div>`;
 const powerCell=(T,r)=>ph(T,r,'power','Power output',`<div>${isNum(r.pwr)?r.pwr+' W':DASH} <span style="font-size:10px;color:var(--text3)">/ port</span></div><div class="sub">${isNum(r.total_pwr)?r.total_pwr+' W total':''}</div>${isNum(r.pwr)&&isNum(r.total_pwr)&&r.pwr>=r.total_pwr?'<div style="font-size:10px;font-weight:600;color:var(--green)">★ full power solo</div>':''}`,true);
 
 const CMP_FIELDS={
@@ -1875,7 +1892,7 @@ function renderCables(rows){
     <td class="nuances">${r.extra?escAttr(r.extra):'—'}</td>
     <td>
       <div class="btns">
-        ${buyBtn(r.buy_am,r.buy_ali,r.buy_off)}
+        ${buyBtn(r)}
         ${reviewBtn(r.yt)}
         ${linkBtn('cables',r)}
       </div>
@@ -1918,7 +1935,7 @@ function renderChargers(rows){
     <td class="nuances">${r.extra?escAttr(r.extra):'—'}</td>
     <td>
       <div class="btns">
-        ${buyBtn(r.buy_am,r.buy_ali,r.buy_off)}
+        ${buyBtn(r)}
         ${reviewBtn(r.yt)}
         ${linkBtn('chargers',r)}
       </div>
@@ -1970,7 +1987,7 @@ function renderPowerbanks(rows){
     <td class="nuances">${r.extra?escAttr(r.extra):'—'}</td>
     <td>
       <div class="btns">
-        ${buyBtn(r.buy_am,r.buy_ali,r.buy_off)}
+        ${buyBtn(r)}
         ${reviewBtn(r.yt)}
         ${linkBtn('powerbanks',r)}
       </div>
@@ -2045,14 +2062,14 @@ function cardHtml(name,r){
   const cell=f=>`<div class="kv"><h4>${f.label}${info(f)}</h4><div>${f.get(r)}</div></div>`;
   const shortCells=fields.filter(f=>CARD_SHORT.has(f.label)).map(cell).join('');
   const longCells=fields.filter(f=>!CARD_SHORT.has(f.label)).map(cell).join('');
-  const ext=proofLink(name,r.name,'exterior',r.photos_exterior,r.name+' — Exterior','Exterior photos');
+  const nameHtml=proofSpan(name,r.name,'exterior',r.photos_exterior,r.name+' — Exterior',escAttr(r.name));
   const checked=CMP[name].sel.has(r.name);
   const dis=!checked&&CMP[name].sel.size>=CMP_MAX;
   return `<article class="dev-card" data-slug="${r._slug||''}">
     <label class="c-cmp"><input type="checkbox" class="cmp-chk-c" ${checked?'checked':''} ${dis?'disabled':''}> Add to comparison</label>
     <details>
       <summary>
-        <div class="c-top"><div><div class="c-name">${escAttr(r.name)}</div><div class="c-tags">${tags}</div></div><div class="c-price">${price}</div></div>
+        <div class="c-top"><div><div class="c-name">${nameHtml}</div><div class="c-tags">${tags}</div></div><div class="c-price">${price}</div></div>
         <div class="c-met">${met}<div>${badge(r.v)}</div></div>
         <i class="ti ti-chevron-down c-chev" aria-hidden="true"></i>
       </summary>
@@ -2060,7 +2077,7 @@ function cardHtml(name,r){
         <div class="c-grid">${shortCells}</div>
         ${longCells}
         ${r.extra?`<div class="c-note">${escAttr(r.extra)}</div>`:''}
-        <div class="c-acts">${buyBtn(r.buy_am,r.buy_ali,r.buy_off)}${reviewBtn(r.yt)}${linkBtn(name,r)}${ext?`<span style="font-size:12px">${ext}</span>`:''}</div>
+        <div class="c-acts">${buyBtn(r)}${reviewBtn(r.yt)}${linkBtn(name,r)}</div>
       </div>
     </details>
   </article>`;
