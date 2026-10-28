@@ -24,7 +24,8 @@ import http.cookiejar, urllib.error, urllib.parse, urllib.request
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
 TIMEOUT = 25
-KINDS = {"buy_am": "Amazon", "buy_ali": "AliExpress", "buy_off": "Official store", "yt": "YouTube"}
+KINDS = {"buy_am": "Amazon", "buy_am_eu": "Amazon EU", "buy_am_us": "Amazon US", "buy_ali": "AliExpress",
+         "buy_off": "Official store", "buy_off_eu": "Official store EU", "buy_off_us": "Official store US", "yt": "YouTube"}
 
 
 def sheet_urls(index_path):
