@@ -14,8 +14,45 @@ Usage:  python tools/build_pages.py [index.html] [out_dir=.]
 import datetime, html, os, re, shutil, sys
 from urllib.parse import quote
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from backup_sheets import sheet_urls, download, parse          # same download + validation as the backup
+import csv, io, time, urllib.request
+
+UA = "Mozilla/5.0 (compatible; WhatWattsPages/1.0)"
+
+
+def sheet_urls(index_path):
+    """Published CSV addresses from `const URLS = {...}` in index.html."""
+    src = open(index_path, encoding="utf-8").read()
+    block = re.search(r"const URLS\s*=\s*\{(.*?)\};", src, re.S).group(1)
+    return dict(re.findall(r"(\w+):\s*'([^']+)'", block))
+
+
+def download(url, tries=3):
+    last = None
+    for i in range(tries):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": UA})
+            with urllib.request.urlopen(req, timeout=40) as r:
+                return r.read().decode("utf-8-sig")
+        except Exception as e:                      # network hiccup: wait and retry
+            last = e
+            time.sleep(3 * (i + 1))
+    raise RuntimeError("download failed: %s" % last)
+
+
+def parse(text):
+    """Return (header, rows); refuse anything that does not look like the real table."""
+    if re.match(r"\s*<(!doctype|html)", text, re.I):
+        raise ValueError("got an HTML page instead of CSV (sheet unpublished or link changed)")
+    rows = list(csv.reader(io.StringIO(text)))
+    if not rows:
+        raise ValueError("empty answer")
+    header = [h.strip() for h in rows[0]]
+    if "name" not in header:
+        raise ValueError("no 'name' column in the first row")
+    data = [r for r in rows[1:] if any(c.strip() for c in r)]
+    if not data:
+        raise ValueError("table has a header but no rows")
+    return header, data
 
 SITE = "https://whatwatts.github.io"
 TYPE_LABEL = {"cables": "cable", "chargers": "charger", "powerbanks": "power bank"}
