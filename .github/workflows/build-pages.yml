@@ -1,0 +1,34 @@
+name: Build device pages
+
+on:
+  schedule:
+    - cron: '30 5 * * 1'     # every Monday at 05:30 UTC, half an hour after the table backup
+  workflow_dispatch:          # by hand: Actions tab -> Build device pages -> Run workflow
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build one page per device and the sitemap
+        run: python tools/build_pages.py
+
+      - name: Commit only if something changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add d best sitemap.xml
+          if git diff --cached --quiet; then
+            echo "Nothing changed since the last build."
+          else
+            git commit -m "Device pages $(date -u +%F)"
+            git push
+          fi
