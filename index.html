@@ -367,6 +367,7 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
 
 /* ── Phone/tablet: cards instead of the wide table (≤900px) ── */
 .cards,.m-only,.cards-empty{display:none}
+.page-panel .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.9rem;align-items:stretch}
 .fcount{margin-left:4px;font-size:10px;padding:0 6px;border-radius:99px;background:var(--bluebg);color:var(--accent);line-height:16px}
 .dev-card{scroll-margin-top:10px;position:relative;background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);transition:border-color .2s,background .2s}
 .dev-card.hl{border-color:var(--accent);background:var(--bluebg)}
@@ -974,7 +975,7 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
     <div>© <span id="cur-year"></span> WhatWatts · Independent USB Testing Database</div>
     <div>As an Amazon Associate I earn from qualifying purchases. All measurements are independently tested with Power-Z, WITRN, FNB58, oscilloscope and thermal camera. Prices reflect the cost at time of testing and may have changed since — check the Buy link for current pricing.</div>
    </div>
-   <div><a href="best/" style="color:var(--text3)">Rankings →</a> &nbsp;·&nbsp; <a href="https://www.youtube.com/@What_Watts" target="_blank" rel="noopener" style="color:var(--text3)">YouTube →</a></div>
+   <div><span id="rank-wrap" hidden><a href="best/" style="color:var(--text3)">Rankings →</a> &nbsp;·&nbsp; </span><a href="https://www.youtube.com/@What_Watts" target="_blank" rel="noopener" style="color:var(--text3)">YouTube →</a></div>
   </div>
  </div>
 </footer>
@@ -2721,6 +2722,8 @@ document.addEventListener('click',e=>{
   try{ history.replaceState(null,'',location.pathname+location.search+'#'+tab+'/'+sl); }catch(err){}
   focusDevice(tab,sl);
 });
+// show the footer link to the rankings only when the generated /best/ folder exists
+fetch('best/',{method:'HEAD'}).then(r=>{ if(r.ok){ const w=document.getElementById('rank-wrap'); if(w) w.hidden=false; } }).catch(()=>{});
 function labelSelects(){
   document.querySelectorAll('select:not([aria-label])').forEach(sel=>{
     const first=sel.options&&sel.options[0]?sel.options[0].textContent.trim():'';
