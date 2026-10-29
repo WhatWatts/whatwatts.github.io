@@ -43,23 +43,23 @@
 :root{
   --bg:#0d1117;--surface:#161b22;--surface2:#21262d;
   --border:rgba(255,255,255,0.08);--borders:rgba(255,255,255,0.15);
-  --text:#e6edf3;--text2:#8b949e;--text3:#7d8590;
+  --text:#e6edf3;--text2:#8b949e;--text3:#858e99;--support:#f87171;
   --accent:#58a6ff;
   --green:#3fb950;--gbg:rgba(63,185,80,.13);--gb:rgba(63,185,80,.28);
   --orange:#d29922;--obg:rgba(210,153,34,.13);--ob:rgba(210,153,34,.28);
-  --red:#f85149;--rbg:rgba(248,81,73,.13);--rb:rgba(248,81,73,.28);
+  --red:#ff5a52;--rbg:rgba(248,81,73,.13);--rb:rgba(248,81,73,.28);
   --bluebg:rgba(88,166,255,.13);--blueb:rgba(88,166,255,.28);
   --r:6px;--rl:10px;
 }
 [data-theme="light"]{
   --bg:#ffffff;--surface:#f6f8fa;--surface2:#eaeef2;
   --border:rgba(27,31,36,0.08);--borders:rgba(27,31,36,0.15);
-  --text:#1f2328;--text2:#59636e;--text3:#6e7781;
-  --accent:#0969da;
-  --green:#1a7f37;--gbg:rgba(26,127,55,.1);--gb:rgba(26,127,55,.25);
-  --orange:#9a6700;--obg:rgba(154,103,0,.1);--ob:rgba(154,103,0,.25);
-  --red:#cf222e;--rbg:rgba(207,34,46,.1);--rb:rgba(207,34,46,.25);
-  --bluebg:rgba(9,105,218,.1);--blueb:rgba(9,105,218,.25);
+  --text:#1f2328;--text2:#59636e;--text3:#5f6872;--support:#c4202b;
+  --accent:#0860ca;
+  --green:#177532;--gbg:rgba(23,117,50,.1);--gb:rgba(23,117,50,.25);
+  --orange:#8a5c00;--obg:rgba(138,92,0,.1);--ob:rgba(138,92,0,.25);
+  --red:#c4202b;--rbg:rgba(196,32,43,.1);--rb:rgba(196,32,43,.25);
+  --bluebg:rgba(8,96,202,.1);--blueb:rgba(8,96,202,.25);
 }
 html{background:var(--bg)}
 body{transition:background .2s,color .2s}
@@ -164,6 +164,10 @@ tr.hl-out,tr.hl-out .nm-td,tr.hl-out .cmp-td{transition:background .8s}
 .proto-btn{cursor:pointer}
 .proto-menu{display:none;position:absolute;top:calc(100% + 6px);left:0;background:var(--surface2);border:1px solid var(--borders);border-radius:var(--r);z-index:20;min-width:220px;padding:6px;box-shadow:0 8px 20px rgba(0,0,0,.4)}
 .proto-menu.show{display:block}
+/* a row/card with an open dropdown rises above the following sticky name cells */
+td.menu-open,.dev-card.menu-open{z-index:3}
+.buy-menu.up,.proto-menu.up{top:auto;bottom:calc(100% + 6px)}
+td.menu-open.nm-td{position:sticky}
 .proto-item{font-size:12px;color:var(--text2);padding:6px 7px;border-radius:4px}
 .proto-item:not(:last-child){border-bottom:1px solid var(--border)}
 .proto-xm{color:var(--accent)}
@@ -179,7 +183,7 @@ tr.hl-out,tr.hl-out .nm-td,tr.hl-out .cmp-td{transition:background .8s}
 .btns{display:flex;flex-direction:row;align-items:flex-start;gap:8px;flex-wrap:wrap}
 .btn{display:inline-flex;align-items:center;gap:3px;padding:4px 9px;border-radius:var(--r);border:1px solid var(--borders);background:var(--surface2);color:var(--text2);font-size:11px;font-weight:500;cursor:pointer;transition:color .12s,border-color .12s,background .12s;white-space:nowrap}
 .btn:hover{color:var(--text);border-color:var(--accent);background:var(--surface)}
-.btn-yt{border-color:rgba(255,80,80,.25);color:#f87171}
+.btn-yt{border-color:rgba(255,80,80,.25);color:var(--support)}
 .btn-yt:hover{border-color:#f87171;background:rgba(248,113,113,.08)}
 
 /* ── States ── */
@@ -260,8 +264,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
 .ftr{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap}
 
 /* ── Support tab accent ── */
-.tab-support{color:#f87171 !important}
-.tab-support.on{color:#f87171 !important;border-color:rgba(248,113,113,.3) !important;border-bottom-color:var(--surface) !important}
+.tab-support{color:var(--support) !important}
+.tab-support.on{color:var(--support) !important;border-color:rgba(248,113,113,.3) !important;border-bottom-color:var(--surface) !important}
 .tab-support:hover{background:rgba(248,113,113,.06) !important}
 
 /* ── Gear & Support panels ── */
@@ -287,6 +291,31 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
 .card-link{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;color:var(--accent);border:1px solid var(--blueb);border-radius:var(--r);padding:5px 10px;background:var(--bluebg);transition:opacity .15s}
 .card-link:hover{opacity:.8}
 
+/* ── Picks (top of each tab) ── */
+.picks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;margin-top:.9rem}
+.picks:empty{display:none}
+.pick{display:flex;flex-direction:column;gap:2px;text-align:left;padding:.7rem .9rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);cursor:pointer;color:inherit;font:inherit;min-width:0;transition:border-color .15s,background .15s}
+.pick:hover{border-color:var(--accent)}
+.pick:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pk-t{font-size:10.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text3)}
+.pk-t i{color:var(--accent);margin-right:4px;font-size:12px}
+.pk-n{font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pk-v{font-size:17px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+.pk-s{font-size:11px;color:var(--text3);min-height:1.2em}
+@media(max-width:900px){
+  .picks{display:flex;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+  .pick{flex:0 0 min(240px,74%);scroll-snap-align:start}
+}
+.how-intro a,.support-note a,footer a{text-decoration:underline}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sr-only:focus,.sr-only:focus-visible{position:static;width:auto;height:auto;overflow:visible;clip:auto}
+/* ── How I test ── */
+.how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:.9rem;align-items:start;margin-bottom:1rem}
+.how-grid .card-sub{margin-bottom:.4rem}
+.how-list{margin:6px 0 0;padding-left:18px;font-size:12.5px;color:var(--text2);line-height:1.6}
+.how-list li{margin-bottom:5px}
+.how-list b{color:var(--text);font-weight:600}
+.how-intro{font-size:13px;color:var(--text2);line-height:1.6;margin:-.2rem 0 1rem;max-width:760px}
 /* ── Support panel ── */
 .support-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.9rem;margin-bottom:2rem}
 .support-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:1.3rem 1.4rem;display:flex;flex-direction:column;gap:.7rem;transition:border-color .15s}
@@ -296,9 +325,10 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
 .support-card .s-desc{font-size:12px;color:var(--text2);line-height:1.6}
 .support-card .s-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:8px 16px;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s;text-align:center}
 .support-card .s-btn:hover{opacity:.85}
-.btn-red{background:#f87171;color:#fff;border:none}
+.btn-red{background:#d02b37;color:#fff;border:none}
 .btn-blue{background:var(--accent);color:#0d1117;border:none}
 .btn-green{background:var(--green);color:#0d1117;border:none}
+[data-theme="light"] .btn-blue,[data-theme="light"] .btn-green{color:#fff}
 .btn-gray{background:var(--surface2);color:var(--text);border:1px solid var(--borders)}
 .btn-red{background:#dc2626;color:#fff;border:1px solid #dc2626}
 .support-note{font-size:12px;color:var(--text3);line-height:1.8;padding:1rem 1.2rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--rl)}
@@ -424,7 +454,7 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
  <div class="wrap">
   <div class="hdr">
    <div>
-    <div class="logo">What<em>Watts</em></div>
+    <h1 class="logo">What<em>Watts</em></h1>
     <div class="logo-sub">Tested · Verified · Benchmarked</div>
    </div>
    <div class="hdr-right">
@@ -440,6 +470,7 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
    <button class="tab on" onclick="sw('cables',this)"><i class="ti ti-plug"></i> Cables <span class="cnt" id="cnt-cables">…</span></button>
    <button class="tab" onclick="sw('chargers',this)"><i class="ti ti-bolt"></i> Chargers <span class="cnt" id="cnt-chargers">…</span></button>
    <button class="tab" onclick="sw('powerbanks',this)"><i class="ti ti-battery-charging"></i> Powerbanks <span class="cnt" id="cnt-powerbanks">…</span></button>
+   <button class="tab" onclick="sw('method',this)"><i class="ti ti-flask"></i> How I test</button>
    <button class="tab" onclick="sw('gear',this)"><i class="ti ti-tool"></i> Test Gear</button>
    <button class="tab tab-support" onclick="sw('support',this)"><i class="ti ti-heart"></i> Support</button>
   </div>
@@ -455,6 +486,7 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
 
   <!-- ══ CABLES ══ -->
   <div class="panel on" id="panel-cables">
+   <div class="picks" id="picks-cables" aria-label="Top results"></div>
    <div class="toolbar" style="margin-top:.9rem">
     <input type="text" id="s-cables" placeholder="🔍 Search cables…" oninput="applyF('cables')">
     <select id="f-cables-conn" onchange="applyF('cables')">
@@ -512,6 +544,7 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
 
   <!-- ══ CHARGERS ══ -->
   <div class="panel" id="panel-chargers">
+   <div class="picks" id="picks-chargers" aria-label="Top results"></div>
    <div class="toolbar" style="margin-top:.9rem">
     <input type="text" id="s-chargers" placeholder="🔍 Search chargers…" oninput="applyF('chargers')">
     <select id="f-chargers-pwr" onchange="applyF('chargers')">
@@ -588,6 +621,7 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
 
   <!-- ══ POWERBANKS ══ -->
   <div class="panel" id="panel-powerbanks">
+   <div class="picks" id="picks-powerbanks" aria-label="Top results"></div>
    <div class="toolbar" style="margin-top:.9rem">
     <input type="text" id="s-powerbanks" placeholder="🔍 Search powerbanks…" oninput="applyF('powerbanks')">
     <select id="f-powerbanks-cap" onchange="applyF('powerbanks')">
@@ -667,6 +701,50 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
   </div>
 
   <!-- ══ TEST GEAR ══ -->
+  <div class="panel" id="panel-method">
+   <div class="page-panel">
+    <div class="section-title">How I test</div>
+    <div class="how-intro">Every device is bought at retail price and goes through the same procedure for its category, so results can be compared fairly. Readings come from the testers listed on the <a href="#" onclick="sw('gear',tabBtn('gear'));return false;" style="color:var(--accent)">Test Gear</a> page; heat is checked with a thermal camera.</div>
+    <div class="how-grid">
+
+     <div class="card">
+      <div class="card-icon">🔌</div>
+      <div class="card-name">Cables</div>
+      <ul class="how-list">
+       <li><b>E-marker.</b> The chip is read with the tester to see what the cable declares: power rating, speed and cable type.</li>
+       <li><b>Data speed.</b> Measured on a real link and compared with the advertised speed. My equipment tops out at 20 Gbps, so faster cables are tested up to that limit.</li>
+       <li><b>Heat under load.</b> A 30-minute run at 60 W, 100 W and 140 W, with the temperature of the cable and its connectors checked afterwards.</li>
+       <li><b>240 W cables.</b> The 140 W step is run at 28 V / 5 A. The current is the same 5 A as at 240 W (48 V), so the heating of the cable is the same.</li>
+      </ul>
+     </div>
+
+     <div class="card">
+      <div class="card-icon">⚡</div>
+      <div class="card-name">Chargers</div>
+      <ul class="how-list">
+       <li><b>Protocols.</b> Checked with the Alientek C2 Pro and the Power-Z KM003C.</li>
+       <li><b>Single-port power.</b> Output measured on one port after 30 minutes of continuous work.</li>
+       <li><b>All ports together.</b> In some tests the total power from all ports is also measured after 30 minutes.</li>
+       <li><b>Heat.</b> After every run the charger is checked with a thermal camera.</li>
+      </ul>
+     </div>
+
+     <div class="card">
+      <div class="card-icon">🔋</div>
+      <div class="card-name">Power banks</div>
+      <ul class="how-list">
+       <li><b>Charging and discharging.</b> Both directions are tested at 5 V / 3 A and at the maximum power of a single port.</li>
+       <li><b>Throttling.</b> I check whether the power drops during the run, for discharging and for charging.</li>
+       <li><b>Graphs and heat.</b> Power-Z graphs are recorded for the runs, together with temperature measurements.</li>
+       <li><b>Protocols.</b> Checked with the Alientek tester and the Power-Z.</li>
+      </ul>
+     </div>
+
+    </div>
+    <div class="support-note">Measurements come from my own test setup and describe the specific unit I bought. Another batch or firmware version can behave differently.</div>
+   </div>
+  </div>
+
   <div class="panel" id="panel-gear">
    <div class="page-panel">
     <div class="section-title">My Testing Equipment</div>
@@ -877,7 +955,7 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
 
     <div class="support-note">
      <strong style="color:var(--text2)">Where does the money go?</strong><br>
-     Every device in this database was purchased at full retail price — no freebies, no sponsorships, no brand relationships.
+     Every device in this database was purchased at full retail price.
      Test equipment, thermal cameras, electronic loads, and the devices themselves all come out of pocket.
      Your support funds the next batch of hardware and keeps every verdict 100% independent.
      <br><br>
@@ -896,7 +974,7 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
     <div>© <span id="cur-year"></span> WhatWatts · Independent USB Testing Database</div>
     <div>As an Amazon Associate I earn from qualifying purchases. All measurements are independently tested with Power-Z, WITRN, FNB58, oscilloscope and thermal camera. Prices reflect the cost at time of testing and may have changed since — check the Buy link for current pricing.</div>
    </div>
-   <div><a href="https://www.youtube.com/@What_Watts" target="_blank" rel="noopener" style="color:var(--text3)">YouTube →</a></div>
+   <div><a href="best/" style="color:var(--text3)">Rankings →</a> &nbsp;·&nbsp; <a href="https://www.youtube.com/@What_Watts" target="_blank" rel="noopener" style="color:var(--text3)">YouTube →</a></div>
   </div>
  </div>
 </footer>
@@ -1128,6 +1206,8 @@ function applyData(rowsBy,initial){
     const b=document.getElementById('body-'+n); if(b) b.removeAttribute('aria-busy');
   });
   assignSlugs();
+  renderPicks();
+  labelSelects();
 
   if(initial){
     ['cables','chargers','powerbanks'].forEach(n=>{
@@ -1299,11 +1379,11 @@ function mToFt(m){return (m*3.28084).toFixed(1)}
 function lenStr(m){
   if(!isNum(m)) return DASH;
   const main = m>=1 ? m+' m' : Math.round(m*100)+' cm';
-  return `${main} <span style="opacity:.6;font-weight:400">(${mToFt(m)} ft)</span>`;
+  return `${main} <span style="color:var(--text2);font-weight:400">(${mToFt(m)} ft)</span>`;
 }
 function tSpan(c){
   if(!isNum(c)) return DASH;
-  return `<span class="${tc(c)}">${c}°C <span style="opacity:.6;font-weight:400">(${toF(c)}°F)</span></span>`;
+  return `<span class="${tc(c)}">${c}°C <span style="font-weight:400">(${toF(c)}°F)</span></span>`;
 }
 function stressTier(pwr){
   if(!isNum(pwr)) return 'Test tier unknown';
@@ -1342,12 +1422,31 @@ function buyBtn(r){
     </div>
   </div>`;
 }
+function syncMenuOpen(){
+  document.querySelectorAll('.menu-open').forEach(el=>el.classList.remove('menu-open'));
+  document.querySelectorAll('.buy-menu.show,.proto-menu.show').forEach(m=>{
+    const h=m.closest('td,.dev-card'); if(h) h.classList.add('menu-open');
+    // inside the scrollable table a menu on the last rows would be cut off: open it upwards instead
+    m.classList.remove('up');
+    const w=m.closest('.tbl-wrap'); if(!w) return;
+    const mr=m.getBoundingClientRect(), wr=w.getBoundingClientRect();
+    if(mr.bottom>wr.bottom-2 && mr.height+8 < m.parentElement.getBoundingClientRect().top-wr.top) m.classList.add('up');
+  });
+}
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape') return;
+  const open=document.querySelector('.buy-menu.show,.proto-menu.show'); if(!open) return;
+  const trigger=open.previousElementSibling;
+  open.classList.remove('show'); syncMenuOpen();
+  if(trigger&&trigger.focus) trigger.focus();
+});
 function toggleBuy(e,btn){
   e.stopPropagation();
   const menu=btn.nextElementSibling;
   const wasOpen=menu.classList.contains('show');
   document.querySelectorAll('.buy-menu.show').forEach(m=>m.classList.remove('show'));
   if(!wasOpen) menu.classList.add('show');
+  syncMenuOpen();
 }
 function qiBtn(hasQi,standard,pwr,realWh,eff,pass,drop,ctx){
   if(!hasQi) return '';
@@ -1383,9 +1482,11 @@ function toggleDrop(e,btn,menuClass){
   const wasOpen=menu.classList.contains('show');
   document.querySelectorAll('.'+menuClass+'.show').forEach(m=>m.classList.remove('show'));
   if(!wasOpen) menu.classList.add('show');
+  syncMenuOpen();
 }
 document.addEventListener('click',()=>{
   document.querySelectorAll('.buy-menu.show,.proto-menu.show').forEach(m=>m.classList.remove('show'));
+  syncMenuOpen();
 });
 
 // ══════════════════════════════════════════════
@@ -1839,6 +1940,7 @@ document.addEventListener('click',e=>{
   e.preventDefault();
   e.stopPropagation();
   document.querySelectorAll('.buy-menu.show,.proto-menu.show').forEach(m=>m.classList.remove('show'));
+  syncMenuOpen();
   proofOpen(t);
 },true);
 document.addEventListener('keydown',e=>{
@@ -2054,7 +2156,8 @@ const CARD_DEF={
 };
 function cardHtml(name,r){
   const d=CARD_DEF[name];
-  const tags=d.tags(r).filter(Boolean).map(t=>`<span class="tag">${t}</span>`).join('');
+  const noFocus=h=>h.replace(/ role="button" tabindex="0"/g,'');            // <summary> is already a button: no controls inside it
+  const tags=noFocus(d.tags(r).filter(Boolean).map(t=>`<span class="tag">${t}</span>`).join(''));
   const met=d.met(r).map(([v,l])=>`<div><b>${v}</b><span class="l">${l}</span></div>`).join('');
   const price=r.price?`<div class="pv">$${r.price}</div>${valueTag(r.value)}`:'';
   const fields=CMP_FIELDS[name].filter(f=>!CARD_SKIP.includes(f.label));
@@ -2062,7 +2165,8 @@ function cardHtml(name,r){
   const cell=f=>`<div class="kv"><h4>${f.label}${info(f)}</h4><div>${f.get(r)}</div></div>`;
   const shortCells=fields.filter(f=>CARD_SHORT.has(f.label)).map(cell).join('');
   const longCells=fields.filter(f=>!CARD_SHORT.has(f.label)).map(cell).join('');
-  const nameHtml=proofSpan(name,r.name,'exterior',r.photos_exterior,r.name+' — Exterior',escAttr(r.name));
+  const nameHtml=noFocus(proofSpan(name,r.name,'exterior',r.photos_exterior,r.name+' — Exterior',escAttr(r.name)));
+  const extKey=proofLink(name,r.name,'exterior',r.photos_exterior,r.name+' — Exterior','Exterior photos').replace('proof-trigger proof-link','proof-trigger proof-link sr-only');
   const checked=CMP[name].sel.has(r.name);
   const dis=!checked&&CMP[name].sel.size>=CMP_MAX;
   return `<article class="dev-card" data-slug="${r._slug||''}">
@@ -2077,7 +2181,7 @@ function cardHtml(name,r){
         <div class="c-grid">${shortCells}</div>
         ${longCells}
         ${r.extra?`<div class="c-note">${escAttr(r.extra)}</div>`:''}
-        <div class="c-acts">${buyBtn(r)}${reviewBtn(r.yt)}${linkBtn(name,r)}</div>
+        <div class="c-acts">${buyBtn(r)}${reviewBtn(r.yt)}${linkBtn(name,r)}${extKey}</div>
       </div>
     </details>
   </article>`;
@@ -2456,7 +2560,7 @@ function sw(name,btn,silent){
   btn.classList.add('on'); btn.setAttribute('aria-current','true');
   document.getElementById('panel-'+name).classList.add('on');
   const notice=document.querySelector('.affiliate-note');
-  if(notice) notice.style.display=(name==='gear'||name==='support')?'none':'flex';
+  if(notice) notice.style.display=(name==='gear'||name==='support'||name==='method')?'none':'flex';
   if(CMP[name]){ activeTab=name; updateCmpBar(); }
   else { document.getElementById('cmp-bar').classList.remove('show'); }
   try{ localStorage.setItem('wt-last-tab', name); }catch(e){}
@@ -2498,7 +2602,7 @@ function revealTab(btn){
 })();
 
 // ── Direct links: #chargers/anker-737-120w ──
-const TABS=['cables','chargers','powerbanks','gear','support'];
+const TABS=['cables','chargers','powerbanks','method','gear','support'];
 const SLUG={cables:new Map(),chargers:new Map(),powerbanks:new Map()};
 let hlTimer=0;
 function assignSlugs(){
@@ -2565,6 +2669,63 @@ function focusDevice(tab,s){
     setTimeout(()=>tr.classList.remove('hl-out'),900);
   },4500);
   return true;
+}
+
+// ══════════════════════════════════════════════
+//  PICKS: top results above each table (computed from the sheet, nothing to maintain)
+// ══════════════════════════════════════════════
+function bestOf(rows,f,dir,tie){
+  const c=rows.map(r=>({r,v:f(r)})).filter(x=>isNum(x.v));
+  if(!c.length) return null;
+  const best=c.reduce((a,b)=>(dir*(b.v-a.v)>0)?b:a).v;
+  let top=c.filter(x=>x.v===best);
+  const n=top.length;
+  if(tie&&n>1) top=[...top].sort((a,b)=>(tie(a.r)??Infinity)-(tie(b.r)??Infinity));
+  return {r:top[0].r,v:best,n};
+}
+const PICK_DEFS={
+  cables:[
+    rows=>{const b=bestOf(rows,r=>isNum(r.res)&&r.res>0?r.res:null,-1); return b&&{icon:'ti-ruler-measure',t:'Lowest resistance',r:b.r,v:b.v+' mΩ',s:isNum(b.r.pwr)?b.r.pwr+' W cable':''};},
+    rows=>{const b=bestOf(rows,r=>isNum(r.spd)&&r.spd>0?r.spd:null,1,r=>isNum(r.res)&&r.res>0?r.res:null);
+      return b&&{icon:'ti-gauge',t:'Fastest data speed',r:b.r,v:b.v+' Gbps',s:(b.n>1?'+'+(b.n-1)+' more · ':'')+(b.v>=20?'my tester limit':'measured')};},
+    rows=>{ // temperatures are only comparable inside the same test tier: use the highest tier that has enough data
+      const tiers=new Map();
+      rows.filter(r=>isNum(r.stress_cable_c)&&r.stress_cable_c>0).forEach(r=>{const k=stressTier(r.pwr); if(!tiers.has(k)) tiers.set(k,{pwr:isNum(r.pwr)?r.pwr:0,rows:[]}); tiers.get(k).rows.push(r);});
+      const t=[...tiers.entries()].filter(([k,g])=>g.rows.length>=2).sort((a,b)=>b[1].pwr-a[1].pwr)[0];
+      if(!t) return null;
+      const b=bestOf(t[1].rows,r=>r.stress_cable_c,-1);
+      return b&&{icon:'ti-temperature',t:'Coolest under load',r:b.r,v:b.v+'°C',s:t[0]};}
+  ],
+  chargers:[
+    rows=>{const b=bestOf(rows,r=>isNum(r._effSort)&&r._effSort>0?r._effSort:null,1); return b&&{icon:'ti-trophy',t:'Best efficiency',r:b.r,v:round1(b.v)+'%',s:'peak efficiency'};},
+    rows=>{const b=bestOf(rows,r=>isNum(r._rippleSort)&&r._rippleSort>0?r._rippleSort:null,-1); return b&&{icon:'ti-wave-sine',t:'Lowest ripple',r:b.r,v:b.v+' mV',s:'peak ripple'};},
+    rows=>{const b=bestOf(rows,r=>isNum(r.case_temp_single_c)&&r.case_temp_single_c>0?r.case_temp_single_c:null,-1); return b&&{icon:'ti-temperature',t:'Coolest under load',r:b.r,v:b.v+'°C',s:isNum(b.r.pwr)?'case, at '+b.r.pwr+' W output':'case temperature'};}
+  ],
+  powerbanks:[
+    rows=>{const b=bestOf(rows,r=>isNum(r._effMax)&&r._effMax>0?r._effMax:null,1); return b&&{icon:'ti-trophy',t:'Best efficiency',r:b.r,v:round1(b.v)+'%',s:'at max power'};},
+    rows=>{const b=bestOf(rows,r=>isNum(r._rippleSort)&&r._rippleSort>0?r._rippleSort:null,-1); return b&&{icon:'ti-wave-sine',t:'Lowest ripple',r:b.r,v:b.v+' mV',s:'peak ripple'};},
+    rows=>{const b=bestOf(rows,r=>isNum(r.real)&&r.real>0?r.real:null,1); return b&&{icon:'ti-battery-4',t:'Highest real capacity',r:b.r,v:round1(b.v)+' Wh',s:isNum(b.r._ratedWh)?'measured · '+b.r._ratedWh+' Wh rated':'measured'};}
+  ]
+};
+function renderPicks(){
+  Object.keys(PICK_DEFS).forEach(n=>{
+    const el=document.getElementById('picks-'+n); if(!el) return;
+    const rows=DATA[n]||[];
+    const picks=rows.length<2?[]:PICK_DEFS[n].map(f=>{try{return f(rows);}catch(e){return null;}}).filter(Boolean);
+    el.innerHTML=picks.map(p=>`<button type="button" class="pick" data-pick="${n}/${escAttr(p.r._slug||'')}" title="Show ${escAttr(p.r.name)} in the list"><span class="pk-t"><i class="ti ${p.icon}"></i>${p.t}</span><span class="pk-n">${escAttr(p.r.name)}</span><span class="pk-v">${escAttr(p.v)}</span><span class="pk-s">${escAttr(p.s||'')}</span></button>`).join('');
+  });
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest&&e.target.closest('[data-pick]'); if(!b) return;
+  const [tab,sl]=b.dataset.pick.split('/');
+  try{ history.replaceState(null,'',location.pathname+location.search+'#'+tab+'/'+sl); }catch(err){}
+  focusDevice(tab,sl);
+});
+function labelSelects(){
+  document.querySelectorAll('select:not([aria-label])').forEach(sel=>{
+    const first=sel.options&&sel.options[0]?sel.options[0].textContent.trim():'';
+    sel.setAttribute('aria-label',sel.classList.contains('sort-sel')?'Sort by':(first||'Filter'));
+  });
 }
 function applyHash(){
   let h=''; try{ h=decodeURIComponent(location.hash.replace(/^#\/?/,'')); }catch(e){ return false; }
