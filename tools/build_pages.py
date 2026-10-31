@@ -275,7 +275,7 @@ def verdict_class(v):
     return "good" if v in ("excellent", "good") else ("warn" if v == "caution" else ("bad" if v == "poor" else ""))
 
 
-def render(typ, r, sl, siblings):
+def render(typ, r, sl, siblings, vs_links=()):
     name = r["name"].strip()
     label = TYPE_LABEL[typ]
     url = "%s/d/%s/%s/" % (SITE, typ, sl)
@@ -299,6 +299,9 @@ def render(typ, r, sl, siblings):
     if has(r.get("yt")) and re.match(r"https?://", r["yt"]): btns.append('<a class="btn" href="%s" target="_blank" rel="noopener">Watch the review</a>' % E(r["yt"], True))
     for lab, u in shops(r):
         btns.append('<a class="btn" href="%s" target="_blank" rel="nofollow sponsored noopener">Buy: %s</a>' % (E(u, True), E(lab)))
+    meaning = VERDICT_MEANING.get((r.get("v") or "").strip().lower(), "")
+    vs_html = ("<h2>Compare with</h2><ul class=\"more\">%s</ul>" % "".join(
+        '<li><a href="%s">%s vs %s</a></li>' % (u, E(name), E(o)) for u, o in vs_links)) if vs_links else ""
     others = "".join('<li><a href="%s/d/%s/%s/">%s</a></li>' % (SITE, typ, s, E(n)) for n, s in siblings)
     more = ("<h2>More %s tests</h2><ul class=\"more\">%s</ul>" % (label, others)) if others else ""
     ld = ('{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":['
@@ -325,9 +328,11 @@ def render(typ, r, sl, siblings):
 <h1>{E(name)}: {label} test results</h1>
 <div class="meta">{"".join(chips)}</div>
 {('<p class="note">%s</p>' % E(vn)) if vn else ''}
+{('<p class="note"><strong>%s:</strong> %s</p>' % (E(r["v"]), E(meaning))) if meaning else ''}
 {('<img class="hero" src="%s" alt="%s" loading="lazy" onerror="this.remove()">' % (E(ext[0], True), E(name + " exterior", True))) if ext else ''}
 <dl>{facts}</dl>
 <div class="btns">{"".join(btns)}</div>
+{vs_html}
 {more}
 </main>
 <footer>Measured by WhatWatts on a retail unit, with the procedure described on the <a href="/#method">How I test</a> page; see also the <a href="/best/">rankings</a>. This page contains affiliate links: I may earn a commission from qualifying purchases at no extra cost to you. Prices reflect the cost at the time of testing and may have changed since.</footer>
@@ -523,6 +528,189 @@ def build_hub(made):
 """
 
 
+
+# ---------------------------------------------------------------- verdicts
+VERDICT_MEANING = {
+    "excellent": "An outstanding result with no or only negligible drawbacks. I can recommend this device.",
+    "good": "A good result and fine to use. There are a few minor drawbacks that hardly affect the user.",
+    "caution": "There are significant drawbacks. If they are acceptable to you and you know about them, the device can still be a purchase.",
+    "poor": "There are critical drawbacks. I do not recommend this device.",
+}
+
+
+# ---------------------------------------------------------------- comparisons "A vs B"
+import math
+BETTER = {"Peak efficiency": 1, "Efficiency at max power": 1, "Efficiency at 5 V": 1, "Peak ripple": -1,
+          "Resistance": -1, "Measured capacity": 1}
+SUMMARY_ORDER = {"chargers": ["Peak efficiency", "Peak ripple"], "cables": ["Resistance"],
+                 "powerbanks": ["Measured capacity", "Efficiency at max power", "Peak ripple"]}
+PAIRS_PER_DEVICE, MAX_PAIRS_PER_TYPE = 2, 70
+
+
+def pair_info(typ, r):
+    """(similarity key, class key, has enough data) for choosing sensible rivals."""
+    if typ == "chargers":
+        p = _tp(r)
+        return p, None, bool(p and (_eff_c(r) or _rip_c(r)))
+    if typ == "cables":
+        pw = num(r.get("pwr")) or 0
+        tier = 2 if pw >= 240 else (1 if pw >= 100 else 0)
+        return num(r.get("len")) or 1.0, (str(r.get("conn", "")).strip().lower(), tier), bool(num(r.get("res")))
+    p = num(r.get("rated_wh")) or num(r.get("real"))
+    return p, None, bool(num(r.get("real")) and p)
+
+
+def pair_cost(typ, a, b):
+    ka, ca, _ = pair_info(typ, a); kb, cb, _ = pair_info(typ, b)
+    if ca != cb:
+        return None
+    if typ == "cables":
+        return abs(ka - kb)
+    if not ka or not kb:
+        return None
+    c = abs(math.log(ka / kb))
+    return c if c <= math.log(1.34) else None
+
+
+def read_forced(path):
+    """tools/compare_pairs.txt: lines  type | Device A | Device B   (# = comment)"""
+    out = []
+    try:
+        for line in open(path, encoding="utf-8"):
+            line = line.split("#", 1)[0].strip()
+            if line.count("|") == 2:
+                t, a, b = [x.strip() for x in line.split("|")]
+                out.append((t.lower(), a.casefold(), b.casefold()))
+    except OSError:
+        pass
+    return out
+
+
+def pick_pairs(typ, items, forced):
+    ok = [(r, sl) for r, sl in items if pair_info(typ, r)[2]]
+    cand = {}
+    for r, sl in ok:
+        opts = []
+        for r2, sl2 in ok:
+            if sl2 == sl:
+                continue
+            c = pair_cost(typ, r, r2)
+            if c is not None:
+                same = 1 if (has(r.get("brand")) and r.get("brand") == r2.get("brand")) else 0
+                opts.append((same, c, r2["name"].casefold(), sl2))
+        opts.sort()
+        for same, c, _, sl2 in opts[:PAIRS_PER_DEVICE]:
+            cand[tuple(sorted((sl, sl2)))] = (same, c)
+    chosen = sorted(cand.items(), key=lambda kv: (kv[1][1], kv[0]))[:MAX_PAIRS_PER_TYPE]
+    pairs = [k for k, _ in chosen]
+    by_name = {r["name"].casefold(): sl for r, sl in items}
+    for t, a, b in forced:
+        if t == typ:
+            if a in by_name and b in by_name and by_name[a] != by_name[b]:
+                k = tuple(sorted((by_name[a], by_name[b])))
+                if k not in pairs:
+                    pairs.append(k)
+            else:
+                print("WARN compare_pairs.txt: unknown device in '%s | %s | %s'" % (t, a, b))
+    return pairs
+
+
+def metric_value(v):
+    return first_num(v) if v else None
+
+
+def build_compare(typ, ra, sa, rb, sb):
+    label = TYPE_LABEL[typ]
+    url = "%s/vs/%s/%s-vs-%s/" % (SITE, typ, sa, sb)
+    fa, fb = dict(FACTS[typ](ra)), dict(FACTS[typ](rb))
+    labels = [k for k, _ in FACTS[typ](ra)] + [k for k, _ in FACTS[typ](rb) if k not in fa]
+    rows, wins = [], {"a": 0, "b": 0}
+    for k in labels:
+        va, vb = fa.get(k, ""), fb.get(k, "")
+        if not has(va) and not has(vb):
+            continue
+        wa = wb = False
+        if k in BETTER:
+            xa, xb = metric_value(va), metric_value(vb)
+            if xa is not None and xb is not None and xa != xb:
+                wa = BETTER[k] * (xa - xb) > 0
+                wb = not wa
+        wins["a"] += wa; wins["b"] += wb
+        rows.append((k, va or "–", vb or "–", wa, wb))
+    for k, fn in (("Verdict", lambda r: r.get("v", "") if has(r.get("v")) else ""), ("Price at review", lambda r: ("$" + fmt(num(r["price"]))) if num(r.get("price")) else "")):
+        va, vb = fn(ra), fn(rb)
+        if va or vb:
+            rows.append((k, va or "–", vb or "–", False, False))
+    # sentences generated from the measured numbers only
+    bullets = []
+    for k in SUMMARY_ORDER[typ] + [x for x in BETTER if x not in SUMMARY_ORDER[typ]]:
+        row = next((x for x in rows if x[0] == k), None)
+        if row and (row[3] or row[4]):
+            win, lose = (ra, rb) if row[3] else (rb, ra)
+            wv, lv = (row[1], row[2]) if row[3] else (row[2], row[1])
+            word = {"Peak efficiency": "higher peak efficiency", "Efficiency at max power": "higher efficiency at maximum power",
+                    "Efficiency at 5 V": "higher efficiency at 5 V", "Peak ripple": "lower output ripple (cleaner)",
+                    "Resistance": "lower resistance", "Measured capacity": "higher real capacity"}[k]
+            bullets.append("%s has %s: %s vs %s." % (win["name"], word, wv, lv))
+        if len(bullets) >= 4:
+            break
+    va_, vb_ = (ra.get("v") or "").strip(), (rb.get("v") or "").strip()
+    if va_ and vb_ and va_.lower() != vb_.lower():
+        bullets.append("Verdicts: %s is %s, %s is %s." % (ra["name"], va_, rb["name"], vb_))
+    head_a = '<a href="%s/d/%s/%s/">%s</a>' % (SITE, typ, sa, E(ra["name"]))
+    head_b = '<a href="%s/d/%s/%s/">%s</a>' % (SITE, typ, sb, E(rb["name"]))
+    trs = "".join('<tr><th scope="row">%s</th><td%s>%s%s</td><td%s>%s%s</td></tr>' % (
+        E(k), ' class="win"' if wa else "", E(str(va)), ' <span aria-hidden="true">✓</span><span class="sr-only"> (better)</span>' if wa else "",
+        ' class="win"' if wb else "", E(str(vb)), ' <span aria-hidden="true">✓</span><span class="sr-only"> (better)</span>' if wb else "")
+        for k, va, vb, wa, wb in rows)
+    btns = []
+    for tag, r, sl in (("A", ra, sa), ("B", rb, sb)):
+        for lab, u in shops(r)[:2]:
+            btns.append('<a class="btn" href="%s" target="_blank" rel="nofollow sponsored noopener">Buy %s: %s</a>' % (E(u, True), E(r["name"]), E(lab)))
+    title = "%s vs %s: %s comparison | WhatWatts" % (ra["name"], rb["name"], label)
+    desc = ("%s vs %s, measured side by side. %s" % (ra["name"], rb["name"], " ".join(bullets[:2]))).strip()
+    if len(desc) > 158:
+        desc = desc[:155].rsplit(" ", 1)[0] + "…"
+    ld = ('{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":['
+          '{"@type":"ListItem","position":1,"name":"WhatWatts","item":"%s/"},'
+          '{"@type":"ListItem","position":2,"name":%s,"item":"%s"}]}') % (SITE, __import__("json").dumps("%s vs %s" % (ra["name"], rb["name"])), url)
+    bl = "".join("<li>%s</li>" % E(b) for b in bullets)
+    page = head_common(title, desc, url, RANK_CSS + CMP_CSS) + f"""<script type="application/ld+json">{ld}</script>
+</head><body><div class="wrap">
+<header class="top"><a class="logo" href="/">What<b>Watts</b></a><a href="/best/">Rankings →</a></header>
+<main>
+<div class="crumbs"><a href="/">WhatWatts</a> › <a href="/#{typ}">{TYPE_PLURAL[typ]}</a></div>
+<h1>{E(ra["name"])} vs {E(rb["name"])}</h1>
+<p class="note">Both {E(label)}s were tested with the same procedure. The better value in each measured row is marked with ✓.</p>
+{('<ul class="more" style="margin-bottom:18px">%s</ul>' % bl) if bl else ''}
+<div class="rank-wrap"><table class="rank cmp"><caption class="sr-only">{E(ra["name"])} vs {E(rb["name"])}</caption>
+<thead><tr><th scope="col">Measurement</th><th scope="col">{head_a}</th><th scope="col">{head_b}</th></tr></thead><tbody>{trs}</tbody></table></div>
+<div class="btns"><a class="btn primary" href="{SITE}/d/{typ}/{sa}/">{E(ra["name"])}: full results</a><a class="btn primary" href="{SITE}/d/{typ}/{sb}/">{E(rb["name"])}: full results</a>{"".join(btns)}</div>
+</main>
+{FOOT}
+</div>{BEACON_TAG}
+</body></html>
+"""
+    return {"url": url, "html": page, "a": sa, "b": sb}
+
+
+CMP_CSS = """
+table.cmp{min-width:480px}table.cmp th[scope=row]{background:var(--surface);color:var(--text2);font-weight:600;font-size:13px;width:28%}
+table.cmp td.win{background:var(--gbg);color:var(--green);font-weight:700}
+table.cmp thead th a{font-weight:700}
+"""
+
+
+def youtube_links(all_items):
+    out = ["WHATWATTS: ready-made links for YouTube descriptions",
+           "Copy the block of the device from your video into the description.", ""]
+    for typ in ("chargers", "cables", "powerbanks"):
+        out.append("=" * 8 + " " + TYPE_PLURAL[typ].upper() + " " + "=" * 8 + "\n")
+        for r, sl in sorted(all_items.get(typ, []), key=lambda x: x[0]["name"].casefold()):
+            out.append("%s\nFull test results, graphs and verdict: %s/d/%s/%s/\nAll tests and rankings: %s/best/\n" % (r["name"], SITE, typ, sl, SITE))
+    return "\n".join(out) + "\n"
+
+
 # ---------------------------------------------------------------- main
 def load_rows(url):
     header, data = parse(download(url))
@@ -543,6 +731,8 @@ def main(index_path="index.html", out="."):
     lastmods = old_lastmods(sm_path)
     urls, failed, written, unchanged = [], [], 0, 0
     items_by_type = {}
+    pairs_by_type = {}
+    forced = read_forced(os.path.join(os.path.dirname(os.path.abspath(__file__)), "compare_pairs.txt"))
     for typ, src in sheet_urls(index_path).items():
         base = os.path.join(out, "d", typ)
         try:
@@ -563,11 +753,17 @@ def main(index_path="index.html", out="."):
             while sl in seen:
                 sl = "%s-%d" % (base_sl, i); i += 1
             seen.add(sl); items.append((r, sl))
+        pairs_by_type[typ] = pick_pairs(typ, items, forced)
+        name_of = {sl: r["name"] for r, sl in items}
+        vs_map = {}
+        for a, b in pairs_by_type[typ]:
+            u = "%s/vs/%s/%s-vs-%s/" % (SITE, typ, a, b)
+            vs_map.setdefault(a, []).append((u, name_of[b])); vs_map.setdefault(b, []).append((u, name_of[a]))
         for r, sl in items:
             same_brand = [(o["name"], s) for o, s in items if s != sl and has(r.get("brand")) and o.get("brand") == r.get("brand")]
             rest = [(o["name"], s) for o, s in items if s != sl and (o["name"], s) not in same_brand]
             siblings = (same_brand + rest)[:6]
-            page = render(typ, r, sl, siblings)
+            page = render(typ, r, sl, siblings, vs_map.get(sl, [])[:4])
             path = os.path.join(base, sl, "index.html")
             os.makedirs(os.path.dirname(path), exist_ok=True)
             old = open(path, encoding="utf-8").read() if os.path.exists(path) else None
@@ -609,10 +805,39 @@ def main(index_path="index.html", out="."):
             if os.path.isdir(os.path.join(best_dir, sl)) and sl not in keep_dirs:
                 shutil.rmtree(os.path.join(best_dir, sl))
         print("OK   rankings    %d pages + hub" % len(made))
+    # comparisons "A vs B" and the YouTube links file (only when every sheet was downloaded)
+    vs_root = os.path.join(out, "vs")
+    if failed:
+        for t in (os.listdir(vs_root) if os.path.isdir(vs_root) else []):
+            for sl in os.listdir(os.path.join(vs_root, t)):
+                urls.append("%s/vs/%s/%s/" % (SITE, t, sl))
+    else:
+        made_vs = 0
+        for typ, pairs in pairs_by_type.items():
+            by_sl = {sl: r for r, sl in items_by_type[typ]}
+            keep = set()
+            for a, b in pairs:
+                m = build_compare(typ, by_sl[a], a, by_sl[b], b)
+                path = os.path.join(vs_root, typ, "%s-vs-%s" % (a, b), "index.html")
+                keep.add("%s-vs-%s" % (a, b))
+                os.makedirs(os.path.dirname(path), exist_ok=True)
+                old = open(path, encoding="utf-8").read() if os.path.exists(path) else None
+                if old != m["html"]:
+                    open(path, "w", encoding="utf-8", newline="\n").write(m["html"]); written += 1; lastmods[m["url"]] = today
+                else:
+                    unchanged += 1; lastmods.setdefault(m["url"], today)
+                urls.append(m["url"]); made_vs += 1
+            tdir = os.path.join(vs_root, typ)
+            for sl in (os.listdir(tdir) if os.path.isdir(tdir) else []):
+                if sl not in keep:
+                    shutil.rmtree(os.path.join(tdir, sl))
+        print("OK   comparisons %d pages" % made_vs)
+        os.makedirs(os.path.join(out, "links"), exist_ok=True)
+        open(os.path.join(out, "links", "youtube.txt"), "w", encoding="utf-8", newline="\n").write(youtube_links(items_by_type))
     lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
              "  <url>\n    <loc>%s/</loc>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>" % SITE]
     for u in sorted(set(urls)):
-        lines.append("  <url>\n    <loc>%s</loc>\n    <lastmod>%s</lastmod>\n    <priority>%s</priority>\n  </url>" % (u, lastmods.get(u, today), "0.7" if "/best/" in u else "0.6"))
+        lines.append("  <url>\n    <loc>%s</loc>\n    <lastmod>%s</lastmod>\n    <priority>%s</priority>\n  </url>" % (u, lastmods.get(u, today), "0.7" if "/best/" in u else ("0.5" if "/vs/" in u else "0.6")))
     lines.append("</urlset>\n")
     open(sm_path, "w", encoding="utf-8", newline="\n").write("\n".join(lines))
     print("Pages written: %d, unchanged: %d, in sitemap: %d" % (written, unchanged, len(set(urls)) + 1))
