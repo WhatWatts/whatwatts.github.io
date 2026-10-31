@@ -301,28 +301,21 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
 .seg{padding:5px 12px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
 .seg:hover{border-color:var(--accent)}
 .seg[aria-pressed="true"]{background:var(--bluebg);border-color:var(--blueb);color:var(--accent)}
-.seg .n{color:var(--text3);font-weight:500;margin-left:4px}
-.seg[aria-pressed="true"] .n{color:var(--accent)}
-.top-list{list-style:none;margin:0;padding:0;border:1px solid var(--border);border-radius:var(--rl);background:var(--surface)}
-.top-item{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;border-top:1px solid var(--border);position:relative}
-.top-item:first-child{border-top:0;border-radius:var(--rl) var(--rl) 0 0}
-.top-item:last-child{border-radius:0 0 var(--rl) var(--rl)}
-.top-main{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:10px;align-items:center;padding:.6rem .8rem;background:transparent;border:0;text-align:left;color:inherit;font:inherit;cursor:pointer;width:100%}
-.top-main:hover{background:var(--surface2)}
+.top-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
+.top-item{display:block;border:1px solid var(--border);border-radius:var(--rl);background:var(--surface);position:relative;transition:border-color .15s,background .15s}
+.top-item:hover{border-color:var(--accent);background:var(--surface2)}
+.top-main{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:10px;align-items:start;padding:.65rem .8rem .35rem;background:transparent;border:0;text-align:left;color:inherit;font:inherit;cursor:pointer;width:100%;border-radius:var(--rl) var(--rl) 0 0}
 .tr-rank{color:var(--text3);font-weight:700;font-variant-numeric:tabular-nums}
 .tr-name{display:block;font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tr-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px}
 .tr-badges .b{margin-top:0 !important}
 .tr-meta{display:block;font-size:12px;color:var(--text2);margin-top:3px}
 .tr-price{font-weight:700;color:var(--accent);white-space:nowrap;font-variant-numeric:tabular-nums}
-.top-buy{padding-right:.8rem}
-.top-sep{padding:.45rem .8rem;font-size:12px;color:var(--text2);background:var(--surface2);border-top:1px solid var(--border)}
+.top-buy{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:0 .8rem .65rem 2.6rem}
+.top-buy .buy-menu{left:0;right:auto}
 .top-item.menu-open{z-index:3}
-@media(max-width:620px){
-  .tr-name{white-space:normal}
-  .top-item{grid-template-columns:1fr}
-  .top-buy{padding:0 .8rem .65rem 2.6rem}
-}
+@media(max-width:900px){.top-list{grid-template-columns:1fr}}
+@media(max-width:620px){.tr-name{white-space:normal}}
 .how-intro a,.support-note a,footer a{text-decoration:underline}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .sr-only:focus,.sr-only:focus-visible{position:static;width:auto;height:auto;overflow:visible;clip:auto}
@@ -2770,7 +2763,7 @@ function topRow(n,r,i){
         <span class="tr-meta">${escAttr(topMeta(n,r))}</span></span>
       <span class="tr-price">${price}</span>
     </button>
-    <div class="top-buy">${buyBtn(r)}</div>
+    <div class="top-buy">${buyBtn(r)}${reviewBtn(r.yt)}</div>
   </li>`;
 }
 function renderTopSection(n){
@@ -2783,11 +2776,11 @@ function renderTopSection(n){
   const {top,fill}=topList(n,cur,rows);
   let i=0;
   const items=top.map(r=>topRow(n,r,++i)).join('');
-  const fills=fill.length?`<li class="top-sep">With significant drawbacks (shown because fewer than ${TOP_N} devices are recommended in this class)</li>`+fill.map(r=>topRow(n,r,++i)).join(''):'';
+  const fills=fill.map(r=>topRow(n,r,++i)).join('');
   el.innerHTML=`<div class="top-head"><div class="top-title"><i class="ti ti-trophy"></i> Top recommended</div>
       <button type="button" class="top-all" onclick="document.querySelector('#panel-${n} .toolbar').scrollIntoView({behavior:'smooth',block:'start'})">All devices ↓</button></div>
     <div class="top-note">Ordered by my verdict, then value for money, then measurements. Pick a power class:</div>
-    <div class="top-seg" role="group" aria-label="Power class">${classes.map(c=>`<button type="button" class="seg" data-seg="${n}/${c.k}" aria-pressed="${c.k===cur.k}">${c.label}<span class="n">${c.cnt}</span></button>`).join('')}</div>
+    <div class="top-seg" role="group" aria-label="Power class">${classes.map(c=>`<button type="button" class="seg" data-seg="${n}/${c.k}" aria-pressed="${c.k===cur.k}">${c.label}</button>`).join('')}</div>
     <ol class="top-list">${items}${fills}</ol>`;
 }
 function renderTop(){ Object.keys(TOP_CLASSES).forEach(renderTopSection); syncMenuOpen(); }
