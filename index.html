@@ -291,20 +291,37 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
 .card-link{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;color:var(--accent);border:1px solid var(--blueb);border-radius:var(--r);padding:5px 10px;background:var(--bluebg);transition:opacity .15s}
 .card-link:hover{opacity:.8}
 
-/* ── Picks (top of each tab) ── */
-.picks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;margin-top:.9rem}
-.picks:empty{display:none}
-.pick{display:flex;flex-direction:column;gap:2px;text-align:left;padding:.7rem .9rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);cursor:pointer;color:inherit;font:inherit;min-width:0;transition:border-color .15s,background .15s}
-.pick:hover{border-color:var(--accent)}
-.pick:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.pk-t{font-size:10.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text3)}
-.pk-t i{color:var(--accent);margin-right:4px;font-size:12px}
-.pk-n{font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pk-v{font-size:17px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
-.pk-s{font-size:11px;color:var(--text3);min-height:1.2em}
-@media(max-width:900px){
-  .picks{display:flex;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;padding-bottom:4px}
-  .pick{flex:0 0 min(240px,74%);scroll-snap-align:start}
+/* ── Top recommended (first thing on every device tab) ── */
+.top{margin-top:.9rem}
+.top-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px 14px;flex-wrap:wrap}
+.top-title{font-size:15px;font-weight:700;display:flex;align-items:center;gap:6px}.top-title i{color:var(--accent)}
+.top-all{background:none;border:0;color:var(--accent);font:inherit;font-size:12.5px;cursor:pointer;padding:2px 0;text-decoration:underline}
+.top-note{font-size:12.5px;color:var(--text2);margin:2px 0 8px}
+.top-seg{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 .7rem}
+.seg{padding:5px 12px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
+.seg:hover{border-color:var(--accent)}
+.seg[aria-pressed="true"]{background:var(--bluebg);border-color:var(--blueb);color:var(--accent)}
+.seg .n{color:var(--text3);font-weight:500;margin-left:4px}
+.seg[aria-pressed="true"] .n{color:var(--accent)}
+.top-list{list-style:none;margin:0;padding:0;border:1px solid var(--border);border-radius:var(--rl);background:var(--surface)}
+.top-item{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;border-top:1px solid var(--border);position:relative}
+.top-item:first-child{border-top:0;border-radius:var(--rl) var(--rl) 0 0}
+.top-item:last-child{border-radius:0 0 var(--rl) var(--rl)}
+.top-main{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:10px;align-items:center;padding:.6rem .8rem;background:transparent;border:0;text-align:left;color:inherit;font:inherit;cursor:pointer;width:100%}
+.top-main:hover{background:var(--surface2)}
+.tr-rank{color:var(--text3);font-weight:700;font-variant-numeric:tabular-nums}
+.tr-name{display:block;font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tr-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px}
+.tr-badges .b{margin-top:0 !important}
+.tr-meta{display:block;font-size:12px;color:var(--text2);margin-top:3px}
+.tr-price{font-weight:700;color:var(--accent);white-space:nowrap;font-variant-numeric:tabular-nums}
+.top-buy{padding-right:.8rem}
+.top-sep{padding:.45rem .8rem;font-size:12px;color:var(--text2);background:var(--surface2);border-top:1px solid var(--border)}
+.top-item.menu-open{z-index:3}
+@media(max-width:620px){
+  .tr-name{white-space:normal}
+  .top-item{grid-template-columns:1fr}
+  .top-buy{padding:0 .8rem .65rem 2.6rem}
 }
 .how-intro a,.support-note a,footer a{text-decoration:underline}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -487,7 +504,7 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
 
   <!-- ══ CABLES ══ -->
   <div class="panel on" id="panel-cables">
-   <div class="picks" id="picks-cables" aria-label="Top results"></div>
+   <section class="top" id="top-cables" aria-label="Top recommended"></section>
    <div class="toolbar" style="margin-top:.9rem">
     <input type="text" id="s-cables" placeholder="🔍 Search cables…" oninput="applyF('cables')">
     <select id="f-cables-conn" onchange="applyF('cables')">
@@ -545,7 +562,7 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
 
   <!-- ══ CHARGERS ══ -->
   <div class="panel" id="panel-chargers">
-   <div class="picks" id="picks-chargers" aria-label="Top results"></div>
+   <section class="top" id="top-chargers" aria-label="Top recommended"></section>
    <div class="toolbar" style="margin-top:.9rem">
     <input type="text" id="s-chargers" placeholder="🔍 Search chargers…" oninput="applyF('chargers')">
     <select id="f-chargers-pwr" onchange="applyF('chargers')">
@@ -622,7 +639,7 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
 
   <!-- ══ POWERBANKS ══ -->
   <div class="panel" id="panel-powerbanks">
-   <div class="picks" id="picks-powerbanks" aria-label="Top results"></div>
+   <section class="top" id="top-powerbanks" aria-label="Top recommended"></section>
    <div class="toolbar" style="margin-top:.9rem">
     <input type="text" id="s-powerbanks" placeholder="🔍 Search powerbanks…" oninput="applyF('powerbanks')">
     <select id="f-powerbanks-cap" onchange="applyF('powerbanks')">
@@ -1218,7 +1235,7 @@ function applyData(rowsBy,initial){
     const b=document.getElementById('body-'+n); if(b) b.removeAttribute('aria-busy');
   });
   assignSlugs();
-  renderPicks();
+  renderTop();
   labelSelects();
 
   if(initial){
@@ -1437,7 +1454,7 @@ function buyBtn(r){
 function syncMenuOpen(){
   document.querySelectorAll('.menu-open').forEach(el=>el.classList.remove('menu-open'));
   document.querySelectorAll('.buy-menu.show,.proto-menu.show').forEach(m=>{
-    const h=m.closest('td,.dev-card'); if(h) h.classList.add('menu-open');
+    const h=m.closest('td,.dev-card,.top-item'); if(h) h.classList.add('menu-open');
     // inside the scrollable table a menu on the last rows would be cut off: open it upwards instead
     m.classList.remove('up');
     const w=m.closest('.tbl-wrap'); if(!w) return;
@@ -2684,49 +2701,101 @@ function focusDevice(tab,s){
 }
 
 // ══════════════════════════════════════════════
-//  PICKS: top results above each table (computed from the sheet, nothing to maintain)
+//  TOP RECOMMENDED: first block of every tab, built from the sheet (nothing to maintain)
+//  order: verdict (Excellent > Good) -> value tag (Great Value > Good Value > Fair > Overpriced) -> measurements.
+//  Caution / Poor only fill the list when fewer than 10 Excellent/Good devices exist in the class.
 // ══════════════════════════════════════════════
-function bestOf(rows,f,dir,tie){
-  const c=rows.map(r=>({r,v:f(r)})).filter(x=>isNum(x.v));
-  if(!c.length) return null;
-  const best=c.reduce((a,b)=>(dir*(b.v-a.v)>0)?b:a).v;
-  let top=c.filter(x=>x.v===best);
-  const n=top.length;
-  if(tie&&n>1) top=[...top].sort((a,b)=>(tie(a.r)??Infinity)-(tie(b.r)??Infinity));
-  return {r:top[0].r,v:best,n};
-}
-const PICK_DEFS={
+const TOP_N=10;
+const VERD_RANK={Excellent:0,Good:1,Caution:2,Poor:3};
+const VAL_RANK={'Great Value':0,'Good Value':1,'Fair':2,'Overpriced':3};
+const outW=r=>isNum(r.total_pwr)&&r.total_pwr>0?r.total_pwr:(isNum(r.pwr)?r.pwr:null);
+const wClass=(lo,hi)=>r=>{const w=outW(r); return isNum(w)&&w>lo&&w<=hi;};
+const TOP_CLASSES={
   cables:[
-    rows=>{const b=bestOf(rows,r=>isNum(r.res)&&r.res>0?r.res:null,-1); return b&&{icon:'ti-ruler-measure',t:'Lowest resistance',r:b.r,v:b.v+' mΩ',s:isNum(b.r.pwr)?b.r.pwr+' W cable':''};},
-    rows=>{const b=bestOf(rows,r=>isNum(r.spd)&&r.spd>0?r.spd:null,1,r=>isNum(r.res)&&r.res>0?r.res:null);
-      return b&&{icon:'ti-gauge',t:'Fastest data speed',r:b.r,v:b.v+' Gbps',s:(b.n>1?'+'+(b.n-1)+' more · ':'')+(b.v>=20?'my tester limit':'measured')};},
-    rows=>{ // temperatures are only comparable inside the same test tier: use the highest tier that has enough data
-      const tiers=new Map();
-      rows.filter(r=>isNum(r.stress_cable_c)&&r.stress_cable_c>0).forEach(r=>{const k=stressTier(r.pwr); if(!tiers.has(k)) tiers.set(k,{pwr:isNum(r.pwr)?r.pwr:0,rows:[]}); tiers.get(k).rows.push(r);});
-      const t=[...tiers.entries()].filter(([k,g])=>g.rows.length>=2).sort((a,b)=>b[1].pwr-a[1].pwr)[0];
-      if(!t) return null;
-      const b=bestOf(t[1].rows,r=>r.stress_cable_c,-1);
-      return b&&{icon:'ti-temperature',t:'Coolest under load',r:b.r,v:b.v+'°C',s:t[0]};}
-  ],
+    {k:'60',label:'60 W',test:r=>isNum(r.pwr)&&r.pwr<100},
+    {k:'100',label:'100 W',test:r=>isNum(r.pwr)&&r.pwr>=100&&r.pwr<240},
+    {k:'240',label:'240 W',test:r=>isNum(r.pwr)&&r.pwr>=240}],
   chargers:[
-    rows=>{const b=bestOf(rows,r=>isNum(r._effSort)&&r._effSort>0?r._effSort:null,1); return b&&{icon:'ti-trophy',t:'Best efficiency',r:b.r,v:round1(b.v)+'%',s:'peak efficiency'};},
-    rows=>{const b=bestOf(rows,r=>isNum(r._rippleSort)&&r._rippleSort>0?r._rippleSort:null,-1); return b&&{icon:'ti-wave-sine',t:'Lowest ripple',r:b.r,v:b.v+' mV',s:'peak ripple'};},
-    rows=>{const b=bestOf(rows,r=>isNum(r.case_temp_single_c)&&r.case_temp_single_c>0?r.case_temp_single_c:null,-1); return b&&{icon:'ti-temperature',t:'Coolest under load',r:b.r,v:b.v+'°C',s:isNum(b.r.pwr)?'case, at '+b.r.pwr+' W output':'case temperature'};}
-  ],
+    {k:'a',label:'Up to 60 W',test:wClass(0,60)},{k:'b',label:'61–100 W',test:wClass(60,100)},
+    {k:'c',label:'101–140 W',test:wClass(100,140)},{k:'d',label:'141 W+',test:wClass(140,Infinity)}],
   powerbanks:[
-    rows=>{const b=bestOf(rows,r=>isNum(r._effMax)&&r._effMax>0?r._effMax:null,1); return b&&{icon:'ti-trophy',t:'Best efficiency',r:b.r,v:round1(b.v)+'%',s:'at max power'};},
-    rows=>{const b=bestOf(rows,r=>isNum(r._rippleSort)&&r._rippleSort>0?r._rippleSort:null,-1); return b&&{icon:'ti-wave-sine',t:'Lowest ripple',r:b.r,v:b.v+' mV',s:'peak ripple'};},
-    rows=>{const b=bestOf(rows,r=>isNum(r.real)&&r.real>0?r.real:null,1); return b&&{icon:'ti-battery-4',t:'Highest real capacity',r:b.r,v:round1(b.v)+' Wh',s:isNum(b.r._ratedWh)?'measured · '+b.r._ratedWh+' Wh rated':'measured'};}
-  ]
+    {k:'a',label:'Up to 60 W',test:wClass(0,60)},{k:'b',label:'61–100 W',test:wClass(60,100)},
+    {k:'c',label:'101–140 W',test:wClass(100,140)},{k:'d',label:'141 W+',test:wClass(140,Infinity)}]
 };
-function renderPicks(){
-  Object.keys(PICK_DEFS).forEach(n=>{
-    const el=document.getElementById('picks-'+n); if(!el) return;
-    const rows=DATA[n]||[];
-    const picks=rows.length<2?[]:PICK_DEFS[n].map(f=>{try{return f(rows);}catch(e){return null;}}).filter(Boolean);
-    el.innerHTML=picks.map(p=>`<button type="button" class="pick" data-pick="${n}/${escAttr(p.r._slug||'')}" title="Show ${escAttr(p.r.name)} in the list"><span class="pk-t"><i class="ti ${p.icon}"></i>${p.t}</span><span class="pk-n">${escAttr(p.r.name)}</span><span class="pk-v">${escAttr(p.v)}</span><span class="pk-s">${escAttr(p.s||'')}</span></button>`).join('');
-  });
+// measured tie-breakers, smaller sorts first
+const TOP_METRIC={
+  cables:r=>[isNum(r.res)&&r.res>0?r.res:Infinity],
+  chargers:r=>[isNum(r._effSort)&&r._effSort>0?-r._effSort:Infinity,isNum(r._rippleSort)&&r._rippleSort>0?r._rippleSort:Infinity],
+  powerbanks:r=>[isNum(r._effMax)&&r._effMax>0?-r._effMax:Infinity,isNum(r.real)&&r.real>0?-r.real:Infinity]
+};
+function topMeta(n,r){
+  const m=[];
+  if(n==='chargers'){
+    if(isNum(r._effSort)&&r._effSort>0) m.push(round1(r._effSort)+'% peak eff.');
+    if(isNum(r._rippleSort)&&r._rippleSort>0) m.push(r._rippleSort+' mV ripple');
+    if(isNum(outW(r))) m.push(outW(r)+' W');
+  }else if(n==='cables'){
+    if(isNum(r.res)&&r.res>0) m.push(r.res+' mΩ');
+    if(r.spd_lbl) m.push(r.spd_lbl);
+    if(isNum(r.pwr)) m.push(r.pwr+' W');
+  }else{
+    if(isNum(r.real)&&r.real>0) m.push(round1(r.real)+' Wh measured');
+    if(isNum(r._effMax)&&r._effMax>0) m.push(round1(r._effMax)+'% eff. at max');
+    if(isNum(outW(r))) m.push(outW(r)+' W out');
+  }
+  return m.join(' · ');
 }
+const TOPSEL={};
+function topKey(n,r){
+  return [VERD_RANK[r.v]??9,VAL_RANK[r.value]??9,...TOP_METRIC[n](r)];
+}
+function cmpArr(a,b){for(let i=0;i<Math.max(a.length,b.length);i++){const d=(a[i]??Infinity)-(b[i]??Infinity); if(d) return d; } return 0;}
+function topList(n,cls,rows){
+  const inCls=rows.filter(r=>cls.test(r)&&r.v in VERD_RANK);
+  const sort=a=>a.sort((x,y)=>cmpArr(topKey(n,x),topKey(n,y))||String(x.name).localeCompare(String(y.name)));
+  const rec=sort(inCls.filter(r=>r.v==='Excellent'||r.v==='Good'));
+  const rest=sort(inCls.filter(r=>r.v==='Caution'||r.v==='Poor'));
+  const top=rec.slice(0,TOP_N);
+  const fill=top.length<TOP_N?rest.slice(0,TOP_N-top.length):[];
+  return {top,fill,total:inCls.length};
+}
+function topRow(n,r,i){
+  const v=r.v, vb=`<span class="b ${vc[v]||'bx'}"><i class="ti ${vi[v]||'ti-minus'}" style="font-size:11px"></i> ${v}</span>`;
+  const price=isNum(r.price)?'$'+r.price:'';
+  return `<li class="top-item">
+    <button type="button" class="top-main" data-pick="${n}/${escAttr(r._slug||'')}" title="Show in the full list below">
+      <span class="tr-rank">${i}</span>
+      <span><span class="tr-name">${escAttr(r.name)}</span>
+        <span class="tr-badges">${vb}${r.value?valueTag(r.value):''}</span>
+        <span class="tr-meta">${escAttr(topMeta(n,r))}</span></span>
+      <span class="tr-price">${price}</span>
+    </button>
+    <div class="top-buy">${buyBtn(r)}</div>
+  </li>`;
+}
+function renderTopSection(n){
+  const el=document.getElementById('top-'+n); if(!el) return;
+  const rows=DATA[n]||[]; if(rows.length<2){ el.innerHTML=''; return; }
+  const classes=TOP_CLASSES[n].map(c=>({...c,cnt:rows.filter(r=>c.test(r)&&r.v in VERD_RANK).length})).filter(c=>c.cnt>0);
+  if(!classes.length){ el.innerHTML=''; return; }
+  if(!classes.some(c=>c.k===TOPSEL[n])) TOPSEL[n]=classes.reduce((a,b)=>b.cnt>a.cnt?b:a).k;   // start with the biggest class
+  const cur=classes.find(c=>c.k===TOPSEL[n]);
+  const {top,fill}=topList(n,cur,rows);
+  let i=0;
+  const items=top.map(r=>topRow(n,r,++i)).join('');
+  const fills=fill.length?`<li class="top-sep">With significant drawbacks (shown because fewer than ${TOP_N} devices are recommended in this class)</li>`+fill.map(r=>topRow(n,r,++i)).join(''):'';
+  el.innerHTML=`<div class="top-head"><div class="top-title"><i class="ti ti-trophy"></i> Top recommended</div>
+      <button type="button" class="top-all" onclick="document.querySelector('#panel-${n} .toolbar').scrollIntoView({behavior:'smooth',block:'start'})">All devices ↓</button></div>
+    <div class="top-note">Ordered by my verdict, then value for money, then measurements. Pick a power class:</div>
+    <div class="top-seg" role="group" aria-label="Power class">${classes.map(c=>`<button type="button" class="seg" data-seg="${n}/${c.k}" aria-pressed="${c.k===cur.k}">${c.label}<span class="n">${c.cnt}</span></button>`).join('')}</div>
+    <ol class="top-list">${items}${fills}</ol>`;
+}
+function renderTop(){ Object.keys(TOP_CLASSES).forEach(renderTopSection); syncMenuOpen(); }
+document.addEventListener('click',e=>{
+  const b=e.target.closest&&e.target.closest('[data-seg]'); if(!b) return;
+  const [n,k]=b.dataset.seg.split('/'); TOPSEL[n]=k; renderTopSection(n);
+  const nb=document.querySelector(`#top-${n} [data-seg="${n}/${k}"]`); if(nb) nb.focus();
+});
 document.addEventListener('click',e=>{
   const b=e.target.closest&&e.target.closest('[data-pick]'); if(!b) return;
   const [tab,sl]=b.dataset.pick.split('/');
