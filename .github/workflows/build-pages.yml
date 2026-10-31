@@ -25,7 +25,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add d best sitemap.xml
+          git add d best vs links sitemap.xml
           if git diff --cached --quiet; then
             echo "Nothing changed since the last build."
           else
