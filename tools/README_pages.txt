@@ -9,6 +9,13 @@ What it does
   (most efficient chargers, lowest ripple, lowest cable resistance, highest real power bank
   capacity and so on), a hub page https://whatwatts.github.io/best/ and rewrites
   sitemap.xml (home page + device pages + rankings).
+  It also builds comparison pages "A vs B" in the folder vs/ (for example
+  /vs/chargers/anker-nano-45w-a121d-vs-ugreen-nexode-45w-x604/). Pairs are chosen automatically:
+  devices of the same kind and a similar class (chargers: total power within about 1.3x; cables:
+  same connector and power tier; power banks: similar rated Wh), preferably from different brands.
+  Extra pairs you want for sure: write them into tools/compare_pairs.txt (one per line).
+  The file links/youtube.txt holds ready-made lines with the page address of every device,
+  to paste into YouTube descriptions.
   Every ranking is sorted by one measured value, there are no invented scores. A ranking is
   published only when at least 3 devices have the needed data; at most 30 are listed.
   Nothing else is touched: index.html, media/ and the main site work exactly as before.
