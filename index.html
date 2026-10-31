@@ -742,6 +742,17 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
      </div>
 
     </div>
+    <div class="section-title" style="margin-top:1.4rem">What the verdicts mean</div>
+    <div class="how-grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))">
+     <div class="card"><div class="card-name"><span class="vbadge v-excellent" style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;background:var(--gbg);color:var(--green);border:1px solid var(--gb)">Excellent</span></div>
+      <div class="card-sub">An outstanding result with no or only negligible drawbacks. I can recommend this device.</div></div>
+     <div class="card"><div class="card-name"><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;background:var(--gbg);color:var(--green);border:1px solid var(--gb)">Good</span></div>
+      <div class="card-sub">A good result and fine to use. There are a few minor drawbacks that hardly affect the user.</div></div>
+     <div class="card"><div class="card-name"><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;background:var(--obg);color:var(--orange);border:1px solid var(--ob)">Caution</span></div>
+      <div class="card-sub">There are significant drawbacks. If they are acceptable to you and you know about them, the device can still be a purchase.</div></div>
+     <div class="card"><div class="card-name"><span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;background:var(--rbg);color:var(--red);border:1px solid var(--rb)">Poor</span></div>
+      <div class="card-sub">There are critical drawbacks. I do not recommend this device.</div></div>
+    </div>
     <div class="support-note">Measurements come from my own test setup and describe the specific unit I bought. Another batch or firmware version can behave differently.</div>
    </div>
   </div>
@@ -975,7 +986,7 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
     <div>© <span id="cur-year"></span> WhatWatts · Independent USB Testing Database</div>
     <div>As an Amazon Associate I earn from qualifying purchases. All measurements are independently tested with Power-Z, WITRN, FNB58, oscilloscope and thermal camera. Prices reflect the cost at time of testing and may have changed since — check the Buy link for current pricing.</div>
    </div>
-   <div><span id="rank-wrap" hidden><a href="best/" style="color:var(--text3)">Rankings →</a> &nbsp;·&nbsp; </span><a href="https://www.youtube.com/@What_Watts" target="_blank" rel="noopener" style="color:var(--text3)">YouTube →</a></div>
+   <div><a href="best/" style="color:var(--text3)">Rankings →</a> &nbsp;·&nbsp; <a href="https://www.youtube.com/@What_Watts" target="_blank" rel="noopener" style="color:var(--text3)">YouTube →</a></div>
   </div>
  </div>
 </footer>
@@ -2722,8 +2733,6 @@ document.addEventListener('click',e=>{
   try{ history.replaceState(null,'',location.pathname+location.search+'#'+tab+'/'+sl); }catch(err){}
   focusDevice(tab,sl);
 });
-// show the footer link to the rankings only when the generated /best/ folder exists
-fetch('best/',{method:'HEAD'}).then(r=>{ if(r.ok){ const w=document.getElementById('rank-wrap'); if(w) w.hidden=false; } }).catch(()=>{});
 function labelSelects(){
   document.querySelectorAll('select:not([aria-label])').forEach(sel=>{
     const first=sel.options&&sel.options[0]?sel.options[0].textContent.trim():'';
