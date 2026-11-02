@@ -1,0 +1,541 @@
+WHATWATTS: ready-made links for YouTube descriptions
+Copy the block of the device from your video into the description.
+
+======== CHARGERS ========
+
+Anker Nano 45W A121D
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/anker-nano-45w-a121d/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Anker Nano II 45W (A2664)
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/anker-nano-ii-45w-a2664/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Anker Prime 160W Charger A2687
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/anker-prime-160w-charger-a2687/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Anker Prime 240W GaN Desktop Charger (A2342)
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/anker-prime-240w-gan-desktop-charger-a2342/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Anker Prime Charger 250W A2345
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/anker-prime-charger-250w-a2345/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Anker ZOLO 140W B2697
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/anker-zolo-140w-b2697/
+All tests and rankings: https://whatwatts.github.io/best/
+
+AOHI MAGCUBE PD 140W AOC-C012
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/aohi-magcube-pd-140w-aoc-c012/
+All tests and rankings: https://whatwatts.github.io/best/
+
+AOHI The Youth 65W AOC-C019
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/aohi-the-youth-65w-aoc-c019/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus EnerFill 140W FH11
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/baseus-enerfill-140w-fh11/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus EnerFill 45W FN22 CCGAN45E
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/baseus-enerfill-45w-fn22-ccgan45e/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus EnerFill FH21 120W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/baseus-enerfill-fh21-120w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus Enerfill FH22 100W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/baseus-enerfill-fh22-100w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus GaN 5 Pro 160W (CCGAN160CE)
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/baseus-gan-5-pro-160w-ccgan160ce/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus GaN 6 Pro 65W (CCGAN65E6)
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/baseus-gan-6-pro-65w-ccgan65e6/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus GaN5 Pro Ultra-SLIM 65W (CCGAN65S5-OE)
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/baseus-gan5-pro-ultra-slim-65w-ccgan65s5-oe/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus NOMOS Qi2 5-in-1 140W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/baseus-nomos-qi2-5-in-1-140w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus PicoGo 100W AE21
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/baseus-picogo-100w-ae21/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus Super GaN Desktop Charger 100W (CCSPC100CE)
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/baseus-super-gan-desktop-charger-100w-ccspc100ce/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Cuktech 6 Ultra 100W AD653U
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/cuktech-6-ultra-100w-ad653u/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Cuktech GaN Charger Ultra 10 120W AD1204U
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/cuktech-gan-charger-ultra-10-120w-ad1204u/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Cuktech GaN Charging Station 140W TA1406U
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/cuktech-gan-charging-station-140w-ta1406u/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen 100W X765
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-100w-x765/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen 200W X766
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-200w-x766/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen 65W CD224
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-65w-cd224/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen 65W Universal Travel Adapter S550
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-65w-universal-travel-adapter-s550/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen 65W X767
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-65w-x767/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode 100W CD226
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-100w-cd226/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode 100W X606
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-100w-x606/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode 140W CD289
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-140w-cd289/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode 160W X762
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-160w-x762/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode 200W X764
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-200w-x764/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode 300W CD333
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-300w-cd333/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode 45W X604
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-45w-x604/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode 65W X605
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-65w-x605/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode Air 100W X880
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-air-100w-x880/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode Air 45W X840
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-air-45w-x840/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode Air 65W X860
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-air-65w-x860/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode CD327 65W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-cd327-65w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode Pro 100W X757
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-pro-100w-x757/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode Pro 100W X773
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-pro-100w-x773/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode Pro 160W X763
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-pro-160w-x763/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode Pro 160W X774
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-pro-160w-x774/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode Pro 160W X776
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-pro-160w-x776/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode Pro 300W X783
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-pro-300w-x783/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode Pro 65W X755
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-pro-65w-x755/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode UNO RG 30W CD359
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-uno-rg-30w-cd359/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode UNO RG 65W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-uno-rg-65w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode X 100W X756
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-x-100w-x756/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode X759 500W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-nexode-x759-500w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Travel Adapter 45W S534
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-travel-adapter-45w-s534/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Uno 45W X640
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-uno-45w-x640/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Uno RG 100W X688
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/ugreen-uno-rg-100w-x688/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Vention 140W TZ-FCO
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/vention-140w-tz-fco/
+All tests and rankings: https://whatwatts.github.io/best/
+
+VOLTME Revo 140W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/chargers/voltme-revo-140w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+======== CABLES ========
+
+Anker 310 Bio-TPE A80N1011
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/anker-310-bio-tpe-a80n1011/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Anker 544 Bio-Nylon
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/anker-544-bio-nylon/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Anker PowerLine II (A8465)
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/anker-powerline-ii-a8465/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Anker Series 5 543
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/anker-series-5-543/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus 100W Fast charging cable
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/baseus-100w-fast-charging-cable/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus Cafele 100W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/baseus-cafele-100w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus Cafele Series 100W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/baseus-cafele-series-100w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus Crystal 100W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/baseus-crystal-100w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus Discolor 100W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/baseus-discolor-100w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus Display Fast Charging Data Cable 100W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/baseus-display-fast-charging-data-cable-100w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus Superior Series 2
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/baseus-superior-series-2/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus Tungsten Gold 240W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/baseus-tungsten-gold-240w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+CABLETIME CU40E
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/cabletime-cu40e/
+All tests and rankings: https://whatwatts.github.io/best/
+
+CUKTECH Charge Cable No.10
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/cuktech-charge-cable-no-10/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Cuktech No.6
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/cuktech-no-6/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Hagibis SX02 240W 40Gbps
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/hagibis-sx02-240w-40gbps/
+All tests and rankings: https://whatwatts.github.io/best/
+
+HAGIBIS UC40Z
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/hagibis-uc40z/
+All tests and rankings: https://whatwatts.github.io/best/
+
+I2C Turbo TU1
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/i2c-turbo-tu1/
+All tests and rankings: https://whatwatts.github.io/best/
+
+I2C Turbo TU2
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/i2c-turbo-tu2/
+All tests and rankings: https://whatwatts.github.io/best/
+
+ORICO 240A1-40
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/orico-240a1-40/
+All tests and rankings: https://whatwatts.github.io/best/
+
+ORICO 240B2-40
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/orico-240b2-40/
+All tests and rankings: https://whatwatts.github.io/best/
+
+ORICO CC240-40-15
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/orico-cc240-40-15/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Rocoren 100W 3C Digital
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/rocoren-100w-3c-digital/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Toocki TQ-X04
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/toocki-tq-x04/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Toocki USB 4.0 240W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/toocki-usb-4-0-240w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN 50567
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-50567/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN 60W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-60w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN L512 100W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-l512-100w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN L513 240W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-l513-240w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN L520 100W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-l520-100w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN L523 60W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-l523-60w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN L524 60W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-l524-60w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN L528 100W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-l528-100w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen L529
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-l529/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen L530 240W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-l530-240w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN L532 240W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-l532-240w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN L534 240W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-l534-240w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN L701 240W 10Gbps
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-l701-240w-10gbps/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN L705 240W 40Gbps
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-l705-240w-40gbps/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN L706 240W 80 GBPS
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-l706-240w-80-gbps/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN Nexode L531 100W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-nexode-l531-100w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN UNO L509
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-uno-l509/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN US316
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-us316/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN US355 240W 10Gbps
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-us355-240w-10gbps/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN US535 240W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-us535-240w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN US541
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-us541/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN US561 100W 2 in 1
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-us561-100w-2-in-1/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN US563 60W
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/ugreen-us563-60w/
+All tests and rankings: https://whatwatts.github.io/best/
+
+VOLTME PowerLink UTRON 240W 40Gbps
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/voltme-powerlink-utron-240w-40gbps/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Yottamaster P-CC240B-40
+Full test results, graphs and verdict: https://whatwatts.github.io/d/cables/yottamaster-p-cc240b-40/
+All tests and rankings: https://whatwatts.github.io/best/
+
+======== POWER BANKS ========
+
+Anker 737 PowerCore 24K
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/anker-737-powercore-24k/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus Blade H1 100W 20000mAh PPBLD100HD
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/baseus-blade-h1-100w-20000mah-ppbld100hd/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus EnerFill FC41 100W 20000 mAh E0028N
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/baseus-enerfill-fc41-100w-20000-mah-e0028n/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus EnerFill FC41 145W 25000 mAh E0028H
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/baseus-enerfill-fc41-145w-25000-mah-e0028h/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus EnerGeek GP12 145W 20800mAh PPAP-20E5
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/baseus-energeek-gp12-145w-20800mah-ppap-20e5/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus EnerGeek GR11 145W 20000mAh PPCJB-20E5
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/baseus-energeek-gr11-145w-20000mah-ppcjb-20e5/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus Free2Pull 30W 10000mAh
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/baseus-free2pull-30w-10000mah/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Baseus Free2Pull 65W 20000 mAh
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/baseus-free2pull-65w-20000-mah/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen 145W 20000mAh PB551
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-145w-20000mah-pb551/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen 145W 25000mAh PB205
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-145w-25000mah-pb205/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen 165W 25000mAh PB552
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-165w-25000mah-pb552/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen 22.5W 20000 mAh PB525
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-22-5w-20000-mah-pb525/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN 33W 10000mAh PB584
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-33w-10000mah-pb584/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen 55W 10000 mAh PB727
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-55w-10000-mah-pb727/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen 67W 20000mAh PB550
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-67w-20000mah-pb550/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen MagFlow Air 20W 5000 mAh PB580
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-magflow-air-20w-5000-mah-pb580/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen MagFlow Air 30W 10000mAh PB570
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-magflow-air-30w-10000mah-pb570/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode 100W 20000mAh PB720
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-nexode-100w-20000mah-pb720/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode 100W 20000mAh PB725
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-nexode-100w-20000mah-pb725/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode 130W 20000mAh PB721
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-nexode-130w-20000mah-pb721/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode 130W 20000mAh PB723
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-nexode-130w-20000mah-pb723/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode 165W 20000mAh PB726
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-nexode-165w-20000mah-pb726/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode 200W 25000mAh PB722
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-nexode-200w-25000mah-pb722/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN Nexode 20W 5000 mAh PB506
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-nexode-20w-5000-mah-pb506/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode 300W 48000mAh PB770
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-nexode-300w-48000mah-pb770/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode 45W 20000mAh PB536
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-nexode-45w-20000mah-pb536/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Nexode Pro 200W 25000mAh PB728
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-nexode-pro-200w-25000mah-pb728/
+All tests and rankings: https://whatwatts.github.io/best/
+
+UGREEN Qi2.2 25W 10000mAh PB773
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-qi2-2-25w-10000mah-pb773/
+All tests and rankings: https://whatwatts.github.io/best/
+
+Ugreen Wavy 45W 10000 mAh PB603
+Full test results, graphs and verdict: https://whatwatts.github.io/d/powerbanks/ugreen-wavy-45w-10000-mah-pb603/
+All tests and rankings: https://whatwatts.github.io/best/
+
