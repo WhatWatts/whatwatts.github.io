@@ -98,6 +98,14 @@ def temp(c):
     return "" if x is None else "%s °C (%d °F)" % (fmt(x), round(x * 9 / 5 + 32))
 
 
+def res_per_m(r):
+    """Measured resistance / cable length; lengths outside 0.1-10 m are treated as a typo in the sheet (same rule as the site)."""
+    res, ln = num(r.get("res")), num(r.get("len"))
+    if res and ln and 0.1 <= ln <= 10:
+        return round(res / ln, 1)
+    return None
+
+
 def curve_max(text, unit):
     vals = [float(v) for v in re.findall(r"(\d+(?:\.\d+)?)\s*" + unit, str(text or ""))]
     return max(vals) if vals else None
@@ -124,6 +132,7 @@ def facts_cables(r):
     if num(r.get("len")): f.append(("Length", "%s m" % fmt(num(r["len"]))))
     if num(r.get("pwr")): f.append(("Max power", "%s W" % fmt(num(r["pwr"]))))
     if num(r.get("res")): f.append(("Resistance", "%s mΩ" % fmt(num(r["res"]))))
+    if res_per_m(r): f.append(("Resistance per meter", "%s mΩ/m" % fmt(res_per_m(r))))
     if has(r.get("spd_lbl")):
         s = r["spd_lbl"]
         if num(r.get("adv_spd")) and num(r.get("spd")) and num(r["spd"]) > num(r["adv_spd"]):
@@ -396,10 +405,15 @@ RANKINGS = [
      lambda r: _pos(_eff_c(r)), True, lambda r: (_tp(r) or 0) > 100, _pct,
      [("Total power", lambda r: _w(_tp(r))), ("Peak ripple", lambda r: _mv(_pos(_rip_c(r)))), ("Verdict", _verdict), ("Price", _price)]),
 
+    ("cables-lowest-resistance-per-meter", "cables", "USB-C cables with the lowest resistance per meter", "cables ranked by resistance per meter",
+     "Measured resistance divided by the cable length, so cables of different lengths can be compared. The connectors add a fixed part, so for short cables this is only an estimate.",
+     lambda r: _pos(res_per_m(r)), False, None, lambda x: "%s mΩ/m" % fmt(x),
+     [("Measured", lambda r: ("%s mΩ" % fmt(num(r["res"]))) if num(r.get("res")) else ""), ("Length", lambda r: ("%s m" % fmt(num(r["len"]))) if num(r.get("len")) else ""),
+      ("Rated power", lambda r: _w(num(r.get("pwr")))), ("Verdict", _verdict), ("Price", _price)]),
     ("cables-lowest-resistance", "cables", "USB-C cables with the lowest resistance", "cables ranked by measured resistance",
-     "Resistance is measured on the whole cable, connectors included. Lower resistance means less voltage drop and less heat at high current.",
+     "Resistance is measured on the whole cable, connectors included. Lower resistance means less voltage drop and less heat at high current. Compare cables of similar length or see the per-meter ranking.",
      lambda r: _pos(num(r.get("res"))), False, None, lambda x: "%s mΩ" % fmt(x),
-     [("Rated power", lambda r: _w(num(r.get("pwr")))), ("Data speed", lambda r: r.get("spd_lbl", "") if has(r.get("spd_lbl")) else ""), ("Verdict", _verdict), ("Price", _price)]),
+     [("Length", lambda r: ("%s m" % fmt(num(r["len"]))) if num(r.get("len")) else ""), ("Per meter", lambda r: ("%s mΩ/m" % fmt(res_per_m(r))) if res_per_m(r) else ""), ("Rated power", lambda r: _w(num(r.get("pwr")))), ("Data speed", lambda r: r.get("spd_lbl", "") if has(r.get("spd_lbl")) else ""), ("Verdict", _verdict), ("Price", _price)]),
     ("cables-240w-resistance", "cables", "240 W cables ranked by resistance", "240 W cables ranked by measured resistance",
      "Cables rated for 240 W, ranked by measured resistance (lowest first).",
      lambda r: _pos(num(r.get("res"))), False, lambda r: (num(r.get("pwr")) or 0) >= 240, lambda x: "%s mΩ" % fmt(x),
@@ -473,7 +487,7 @@ def build_ranking(rk, items_by_type):
     top = rows[0]
     title = "%s – tested ranking | WhatWatts" % h1
     desc = "%d %s. Top: %s (%s)." % (total, short, top[1]["name"], vfmt(top[0]))
-    label = ("Case temperature" if "coolest" in key else "Resistance" if "resistance" in key else "Measured speed" if "fastest" in key
+    label = ("Case temperature" if "coolest" in key else "Resistance per meter" if key.endswith("per-meter") else "Resistance" if "resistance" in key else "Measured speed" if "fastest" in key
              else "Measured capacity" if "capacity" in key else "Output power" if key.endswith("output") else "Peak ripple" if "ripple" in key
              else "Peak efficiency" if typ == "chargers" else "Efficiency at max power")
     heads = "".join('<th scope="col"%s>%s</th>' % (' class="key"' if i == 2 else "", E(h)) for i, h in enumerate(["#", "Device", label] + [c[0] for c in cols]))
@@ -541,8 +555,8 @@ VERDICT_MEANING = {
 # ---------------------------------------------------------------- comparisons "A vs B"
 import math
 BETTER = {"Peak efficiency": 1, "Efficiency at max power": 1, "Efficiency at 5 V": 1, "Peak ripple": -1,
-          "Resistance": -1, "Measured capacity": 1}
-SUMMARY_ORDER = {"chargers": ["Peak efficiency", "Peak ripple"], "cables": ["Resistance"],
+          "Resistance": -1, "Resistance per meter": -1, "Measured capacity": 1}
+SUMMARY_ORDER = {"chargers": ["Peak efficiency", "Peak ripple"], "cables": ["Resistance per meter", "Resistance"],
                  "powerbanks": ["Measured capacity", "Efficiency at max power", "Peak ripple"]}
 PAIRS_PER_DEVICE, MAX_PAIRS_PER_TYPE = 2, 70
 
@@ -650,7 +664,7 @@ def build_compare(typ, ra, sa, rb, sb):
             wv, lv = (row[1], row[2]) if row[3] else (row[2], row[1])
             word = {"Peak efficiency": "higher peak efficiency", "Efficiency at max power": "higher efficiency at maximum power",
                     "Efficiency at 5 V": "higher efficiency at 5 V", "Peak ripple": "lower output ripple (cleaner)",
-                    "Resistance": "lower resistance", "Measured capacity": "higher real capacity"}[k]
+                    "Resistance": "lower resistance", "Resistance per meter": "lower resistance per meter", "Measured capacity": "higher real capacity"}[k]
             bullets.append("%s has %s: %s vs %s." % (win["name"], word, wv, lv))
         if len(bullets) >= 4:
             break
