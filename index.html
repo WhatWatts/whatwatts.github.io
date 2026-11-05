@@ -301,12 +301,12 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
 .seg{padding:5px 12px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
 .seg:hover{border-color:var(--accent)}
 .seg[aria-pressed="true"]{background:var(--bluebg);border-color:var(--blueb);color:var(--accent)}
-.top-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
+.top-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}
 .top-item{display:block;border:1px solid var(--border);border-radius:var(--rl);background:var(--surface);position:relative;transition:border-color .15s,background .15s}
 .top-item:hover{border-color:var(--accent);background:var(--surface2)}
 .top-main{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:10px;align-items:start;padding:.65rem .8rem .35rem;background:transparent;border:0;text-align:left;color:inherit;font:inherit;cursor:pointer;width:100%;border-radius:var(--rl) var(--rl) 0 0}
 .tr-rank{color:var(--text3);font-weight:700;font-variant-numeric:tabular-nums}
-.tr-name{display:block;font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tr-name{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-weight:600;font-size:14px;overflow:hidden;line-height:1.3}
 .tr-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px}
 .tr-badges .b{margin-top:0 !important}
 .tr-meta{display:block;font-size:12px;color:var(--text2);margin-top:3px}
@@ -314,11 +314,14 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0;font-size:11px;color:
 .top-buy{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:0 .8rem .65rem 2.6rem}
 .top-buy .buy-menu{left:0;right:auto}
 .top-item.menu-open{z-index:3}
-@media(max-width:900px){.top-list{grid-template-columns:1fr}}
-@media(max-width:620px){.tr-name{white-space:normal}}
+@media(max-width:1099px){.top-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.top-list{grid-template-columns:1fr}}
 .how-intro a,.support-note a,footer a{text-decoration:underline}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .sr-only:focus,.sr-only:focus-visible{position:static;width:auto;height:auto;overflow:visible;clip:auto}
+.pm{display:block;font-size:11px;font-weight:400;color:var(--text2);white-space:nowrap}
+.pm-h{display:block;font-size:10.5px;font-weight:600;color:var(--accent);cursor:pointer;margin-top:2px}
+.pm-h.on{text-decoration:underline}
 /* ── How I test ── */
 .how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:.9rem;align-items:start;margin-bottom:1rem}
 .how-grid .card-sub{margin-bottom:.4rem}
@@ -538,7 +541,7 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
       <th class="nm-th" onclick="srt('cables','name')" data-sort-key="name">Cable <span class="sa">↕</span></th>
       <th onclick="srt('cables','conn')" data-sort-key="conn">Type <span class="sa">↕</span></th>
       <th onclick="srt('cables','len')" data-sort-key="len">Length <span class="sa">↕</span></th>
-      <th onclick="srt('cables','res')" data-sort-key="res">Resistance <span class="sa">↕</span></th>
+      <th onclick="srt('cables','res')" data-sort-key="res">Resistance <span class="sa">↕</span><span class="pm-h" role="button" tabindex="0" title="Sort by resistance per meter" onclick="event.stopPropagation();srt('cables','_resM')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();srt('cables','_resM')}">per m ↕</span></th>
       <th onclick="srt('cables','pwr')" data-sort-key="pwr">Max Power <span class="sa">↕</span></th>
       <th onclick="srt('cables','spd')" data-sort-key="spd">Speed <span class="sa">↕</span></th>
       <th>E-Marker</th>
@@ -725,6 +728,7 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
        <li><b>E-marker.</b> The chip is read with the tester to see what the cable declares: power rating, speed and cable type.</li>
        <li><b>Data speed.</b> Measured on a real link and compared with the advertised speed. My equipment tops out at 20 Gbps, so faster cables are tested up to that limit.</li>
        <li><b>Heat under load.</b> A 30-minute run at 60 W, 100 W and 140 W, with the temperature of the cable and its connectors checked afterwards.</li>
+       <li><b>Resistance per meter.</b> Shown under the measured resistance: the measured value divided by the cable length, so cables of different lengths can be compared. The connectors add a fixed part, so for short cables it is only an estimate.</li>
        <li><b>240 W cables.</b> The 140 W step is run at 28 V / 5 A. The current is the same 5 A as at 240 W (48 V), so the heating of the cable is the same.</li>
       </ul>
      </div>
@@ -1210,6 +1214,7 @@ function effPairHtml(r){
 function applyData(rowsBy,initial){
   DATA.cables=rowsBy.cables; DATA.chargers=rowsBy.chargers; DATA.powerbanks=rowsBy.powerbanks;
 
+  DATA.cables.forEach(r=>{ r._resM=(isNum(r.res)&&isNum(r.len)&&r.len>=0.1&&r.len<=10)?Math.round(r.res/r.len*10)/10:null; });   /* lengths outside 0.1-10 m are treated as a typo in the sheet */
   DATA.chargers.forEach(r=>{ try{
     const effPts = parseEffCurve(r.eff_curve);
     r._effSort = effPts.length ? Math.max(...effPts.map(p=>p.val)) : (r.eff||0);
@@ -1308,6 +1313,9 @@ function yn(v){
 function rc(v){return v<100?'vg':v<200?'vo':'vr'}
 function ec(v){return v>=88?'vg':v>=80?'vo':'vr'}
 function resStr(v){ return isNum(v) ? `<span class="${rc(v)}">${v} mΩ</span>` : DASH; }
+// Resistance per metre = measured resistance / cable length (connectors add a fixed part, so it is an estimate)
+const PM_TIP='Calculated: measured resistance divided by cable length. The connectors add a fixed part, so for short cables this is only an estimate.';
+function resPerM(r,block){ return isNum(r._resM) ? `<span class="pm" title="${PM_TIP}">${block?'':'≈ '}${r._resM} mΩ/m</span>` : ''; }
 // Power bank efficiency colours: below 75% red, 75-85% yellow, above 85% green
 function pbEffCls(v){ return v>85?'vg':v>=75?'vo':'vr'; }
 function effPctStr(v){ return isNum(v) ? `<span class="${pbEffCls(v)}">${v}%</span>` : DASH; }
@@ -1381,6 +1389,10 @@ function reviewBtn(yt){
     ${id?`<img class="yt-thumb" src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="" loading="lazy">`:''}
     <span class="btn btn-yt"><i class="ti ti-brand-youtube" style="font-size:13px"></i> Review</span>
   </a>`;
+}
+function reviewBtnSmall(yt){   // compact variant without the video thumbnail (top list)
+  if(!yt||yt==='#') return '';
+  return `<a class="btn btn-yt" href="${safeUrl(yt)}" target="_blank" rel="nofollow"><i class="ti ti-brand-youtube" style="font-size:13px"></i> Review</a>`;
 }
 const valColor={'Great Value':'bg','Good Value':'bo','Fair':'bo','Overpriced':'br'};
 const valIcon={'Great Value':'ti-thumb-up','Good Value':'ti-thumb-up','Fair':'ti-minus','Overpriced':'ti-thumb-down'};
@@ -1689,6 +1701,7 @@ const CMP_FIELDS={
     {label:'Connector',      get:r=>`<span class="chip">${escAttr(r.conn)}</span>`},
     {label:'Length',         get:r=>`<span class="num">${lenStr(r.len)}</span>`},
     {label:'Resistance',     get:r=>ph('cables',r,'res','Resistance',resStr(r.res)), win:rows=>minBy(rows,'res')},
+    {label:'Resistance per meter', get:r=>isNum(r._resM)?`<span class="num">${r._resM} mΩ/m</span>`:DASH, win:rows=>minBy(rows,'_resM'), info:'Measured resistance divided by the cable length (calculated). The connectors add a fixed part, so for short cables this is only an estimate.'},
     {label:'Max Power',      get:r=>`<span class="num">${isNum(r.pwr)?r.pwr+' W':DASH}</span>`, win:rows=>maxBy(rows,'pwr')},
     {label:'Speed',          get:r=>ph('cables',r,'speed','Speed',`${escAttr(r.spd_lbl)}${isNum(r.spd)&&isNum(r.adv_spd)&&r.spd>r.adv_spd?`<div style="font-size:11px;font-weight:600;color:var(--green)">↑ real: ${escAttr(r.real_spd)}</div>`:''}`,true), win:rows=>maxBy(rows,'spd')},
     {label:'E-Marker',       get:r=>ph('cables',r,'emark','E-Marker',yn(r.emark))},
@@ -1999,7 +2012,7 @@ function renderCables(rows){
     </td>
     <td><span class="chip">${escAttr(r.conn)}</span></td>
     <td class="num">${lenStr(r.len)}</td>
-    <td class="num">${proofSpan('cables',r.name,'res',r.photos_res,r.name+' — Resistance',resStr(r.res))}</td>
+    <td class="num">${proofSpan('cables',r.name,'res',r.photos_res,r.name+' — Resistance',resStr(r.res))}${resPerM(r)}</td>
     <td class="num">${isNum(r.pwr)?r.pwr+' W':DASH}</td>
     <td>
       ${proofSpan('cables',r.name,'speed',r.photos_speed,r.name+' — Speed',`<div style="font-size:11px;color:var(--text3)">${escAttr(r.spd_lbl)}</div>
@@ -2158,7 +2171,7 @@ const CARD_DEF={
     tags:r=>[r.conn&&escAttr(r.conn), isNum(r.len)&&lenStr(r.len), r.display&&'📺 Display'],
     met:r=>{
       const ex=isNum(r.spd)&&isNum(r.adv_spd)&&r.spd>r.adv_spd;
-      return [[isNum(r.pwr)?r.pwr+' W':DASH,'max power'],[r.spd_lbl?escAttr(ex&&r.real_spd?r.real_spd:r.spd_lbl):DASH,ex?'real speed':'speed'],[resStr(r.res),'resistance']];
+      return [[isNum(r.pwr)?r.pwr+' W':DASH,'max power'],[r.spd_lbl?escAttr(ex&&r.real_spd?r.real_spd:r.spd_lbl):DASH,ex?'real speed':'speed'],[resStr(r.res)+(isNum(r._resM)?`<span class="pm">${r._resM} mΩ/m</span>`:''),'resistance']];
     }
   },
   chargers:{
@@ -2223,7 +2236,7 @@ function renderCards(name,rows){
   return failed;
 }
 const SORT_OPTS={
-  cables:[['Name A–Z','name',1],['Price: low → high','price',1],['Price: high → low','price',0],['Max power: high → low','pwr',0],['Speed: fast → slow','spd',0],['Resistance: low → high','res',1]],
+  cables:[['Name A–Z','name',1],['Price: low → high','price',1],['Price: high → low','price',0],['Max power: high → low','pwr',0],['Speed: fast → slow','spd',0],['Resistance: low → high','res',1],['Resistance per meter: low → high','_resM',1]],
   chargers:[['Name A–Z','name',1],['Price: low → high','price',1],['Price: high → low','price',0],['Total power: high → low','total_pwr',0],['Efficiency: high → low','_effSort',0],['Ripple: low → high','_rippleSort',1]],
   powerbanks:[['Name A–Z','name',1],['Price: low → high','price',1],['Price: high → low','price',0],['Power per port: high → low','pwr',0],['Measured Wh: high → low','real',0],['Rated Wh: high → low','_ratedWh',0],['Ripple: low → high','_rippleSort',1]]
 };
@@ -2284,7 +2297,7 @@ const FINDER={
         ['E-Marker',r=>!!r.emark],['Display',r=>!!r.display],['1 m or longer',r=>(r.len||0)>=1],['2 m or longer',r=>(r.len||0)>=2]]},
       {id:'prio',label:'What matters most?',type:'single',opts:[
         ['Lowest price',null,['price',1]],
-        ['Lowest resistance',null,['res',1]],
+        ['Lowest resistance',null,['_resM',1]],
         ['Highest power',null,['pwr',0]],
         ['Fastest data',null,['spd',0]]]}
     ]}
@@ -2534,6 +2547,7 @@ function markSort(name){
     const a=th.querySelector('.sa');
     if(a)a.textContent=on?(s.asc?'↑':'↓'):'↕';
   });
+  if(name==='cables'){ const pm=document.querySelector('#tbl-cables .pm-h'); if(pm){ const on=s.col==='_resM'; pm.textContent='per m '+(on?(s.asc?'↑':'↓'):'↕'); pm.classList.toggle('on',on); } }
 }
 function setSort(name,key,asc){
   const s=S[name];
@@ -2717,7 +2731,7 @@ const TOP_CLASSES={
 };
 // measured tie-breakers, smaller sorts first
 const TOP_METRIC={
-  cables:r=>[isNum(r.res)&&r.res>0?r.res:Infinity],
+  cables:r=>[isNum(r._resM)&&r._resM>0?r._resM:(isNum(r.res)&&r.res>0?r.res:Infinity)],
   chargers:r=>[isNum(r._effSort)&&r._effSort>0?-r._effSort:Infinity,isNum(r._rippleSort)&&r._rippleSort>0?r._rippleSort:Infinity],
   powerbanks:r=>[isNum(r._effMax)&&r._effMax>0?-r._effMax:Infinity,isNum(r.real)&&r.real>0?-r.real:Infinity]
 };
@@ -2728,7 +2742,7 @@ function topMeta(n,r){
     if(isNum(r._rippleSort)&&r._rippleSort>0) m.push(r._rippleSort+' mV ripple');
     if(isNum(outW(r))) m.push(outW(r)+' W');
   }else if(n==='cables'){
-    if(isNum(r.res)&&r.res>0) m.push(r.res+' mΩ');
+    if(isNum(r.res)&&r.res>0) m.push(r.res+' mΩ'+(isNum(r._resM)?' ('+r._resM+' mΩ/m)':''));
     if(r.spd_lbl) m.push(r.spd_lbl);
     if(isNum(r.pwr)) m.push(r.pwr+' W');
   }else{
@@ -2763,7 +2777,7 @@ function topRow(n,r,i){
         <span class="tr-meta">${escAttr(topMeta(n,r))}</span></span>
       <span class="tr-price">${price}</span>
     </button>
-    <div class="top-buy">${buyBtn(r)}${reviewBtn(r.yt)}</div>
+    <div class="top-buy">${buyBtn(r)}${reviewBtnSmall(r.yt)}</div>
   </li>`;
 }
 function renderTopSection(n){
