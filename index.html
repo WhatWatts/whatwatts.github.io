@@ -729,7 +729,7 @@ tbody.fade-in,.cards.fade-in{animation:fadeIn .18s ease}
        <li><b>E-marker.</b> The chip is read with the tester to see what the cable declares: power rating, speed and cable type.</li>
        <li><b>Data speed.</b> Measured on a real link and compared with the advertised speed. My equipment tops out at 20 Gbps, so faster cables are tested up to that limit.</li>
        <li><b>Heat under load.</b> A 30-minute run at 60 W, 100 W and 140 W, with the temperature of the cable and its connectors checked afterwards.</li>
-       <li><b>Resistance per meter.</b> Shown under the measured resistance: the measured value divided by the cable length, so cables of different lengths can be compared. The connectors add a fixed part, so for short cables it is only an estimate. The colour of the resistance is based on this value: green below 100 mΩ/m, yellow 100–150, red above 150.</li>
+       <li><b>Resistance per meter.</b> Shown under the measured resistance: the measured value divided by the cable length, so cables of different lengths can be compared. The connectors add a fixed part of the resistance, so short cables can show a high value per meter partly because of their connectors, not only the wire. For short cables it is only an estimate. The colour of the resistance is based on this value: green below 100 mΩ/m, yellow 100–150, red above 150.</li>
        <li><b>240 W cables.</b> The 140 W step is run at 28 V / 5 A. The current is the same 5 A as at 240 W (48 V), so the heating of the cable is the same.</li>
       </ul>
      </div>
@@ -1315,7 +1315,7 @@ function rc(v){return v<100?'vg':v<=150?'vo':'vr'}   // resistance colour is bas
 function ec(v){return v>=88?'vg':v>=80?'vo':'vr'}
 function resStr(v,r){ if(!isNum(v)) return DASH; const x=(r&&isNum(r._resM))?r._resM:v; /* no usable length: the measured value is judged as if the cable were 1 m */ return `<span class="${rc(x)}">${v} mΩ</span>`; }
 // Resistance per metre = measured resistance / cable length (connectors add a fixed part, so it is an estimate)
-const PM_TIP='Calculated: measured resistance divided by cable length. The connectors add a fixed part, so for short cables this is only an estimate.';
+const PM_TIP='Calculated: measured resistance divided by cable length. The connectors add a fixed part of the resistance, so short cables can show a high value per meter partly because of their connectors, not only the wire. For short cables this is only an estimate.';
 function resPerM(r,block){ return isNum(r._resM) ? `<span class="pm ${rc(r._resM)}" title="${PM_TIP}">${block?'':'≈ '}${r._resM} mΩ/m</span>` : ''; }
 // Power bank efficiency colours: below 75% red, 75-85% yellow, above 85% green
 function pbEffCls(v){ return v>85?'vg':v>=75?'vo':'vr'; }
@@ -1702,7 +1702,7 @@ const CMP_FIELDS={
     {label:'Connector',      get:r=>`<span class="chip">${escAttr(r.conn)}</span>`},
     {label:'Length',         get:r=>`<span class="num">${lenStr(r.len)}</span>`},
     {label:'Resistance',     get:r=>ph('cables',r,'res','Resistance',resStr(r.res,r)), win:rows=>minBy(rows,'res')},
-    {label:'Resistance per meter', get:r=>isNum(r._resM)?`<span class="num ${rc(r._resM)}">${r._resM} mΩ/m</span>`:DASH, win:rows=>minBy(rows,'_resM'), info:'Measured resistance divided by the cable length (calculated). The connectors add a fixed part, so for short cables this is only an estimate. Colour: green below 100 mΩ/m, yellow 100-150, red above 150.'},
+    {label:'Resistance per meter', get:r=>isNum(r._resM)?`<span class="num ${rc(r._resM)}">${r._resM} mΩ/m</span>`:DASH, win:rows=>minBy(rows,'_resM'), info:'Measured resistance divided by the cable length (calculated). The connectors add a fixed part, so short cables can show a high value partly because of their connectors, not only the wire; for them this is only an estimate. Colour: green below 100 mΩ/m, yellow 100-150, red above 150.'},
     {label:'Max Power',      get:r=>`<span class="num">${isNum(r.pwr)?r.pwr+' W':DASH}</span>`, win:rows=>maxBy(rows,'pwr')},
     {label:'Speed',          get:r=>ph('cables',r,'speed','Speed',`${escAttr(r.spd_lbl)}${isNum(r.spd)&&isNum(r.adv_spd)&&r.spd>r.adv_spd?`<div style="font-size:11px;font-weight:600;color:var(--green)">↑ real: ${escAttr(r.real_spd)}</div>`:''}`,true), win:rows=>maxBy(rows,'spd')},
     {label:'E-Marker',       get:r=>ph('cables',r,'emark','E-Marker',yn(r.emark))},
