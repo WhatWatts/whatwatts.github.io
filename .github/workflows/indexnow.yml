@@ -1,0 +1,32 @@
+name: Notify IndexNow
+
+# Runs by itself after every successful GitHub Pages deployment and tells Bing/Yandex
+# and other IndexNow partners about the pages that changed in that commit.
+# By hand: Actions -> Notify IndexNow -> Run workflow (mode "all" sends the whole sitemap).
+on:
+  workflow_run:
+    workflows: ["pages build and deployment"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "changed = pages from the last commit, all = every URL in sitemap.xml"
+        type: choice
+        options: [changed, all]
+        default: changed
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Send changed URLs to IndexNow
+        run: python3 tools/indexnow.py --mode "${{ github.event.inputs.mode || 'changed' }}"
